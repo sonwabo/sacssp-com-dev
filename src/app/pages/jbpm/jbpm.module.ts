@@ -7,10 +7,10 @@ import { JbpmRoutingModule, routedComponents } from './jbpm-routing.module';
 import { CaseStatusRenderComponent } from './blocks/case-status-render.component';
 import { SlaComplianceRenderComponent } from './blocks/sla-compliance-render.component';
 import { EpochDateRenderComponent } from './blocks/epoch-date-render.component';
-import { FundManagementUpdateRequestComponent } from './tasks/fm-update-request/fund-management-update-request.component';
+import { FundManagementUpdateRequestComponent } from './fm-update-request/fund-management-update-request.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TaskCommentsComponent } from './tasks/comments/task-comments.component';
-import { CaseFileComponent } from './tasks/case-file/case-file.component';
+import { TaskCommentsComponent } from './task-comments/task-comments.component';
+import { CaseFileComponent } from './case-file/case-file.component';
 
 
 @NgModule({

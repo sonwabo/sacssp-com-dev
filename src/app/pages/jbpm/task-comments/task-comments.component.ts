@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
-import { TaskService } from '../../../../jbpm/service/task.service';
-import { EpochDateRenderComponent } from '../../blocks/epoch-date-render.component';
+import { TaskService } from '../../../jbpm/service/task.service';
+import { EpochDateRenderComponent } from '../blocks/epoch-date-render.component';
 
 
 @Component({

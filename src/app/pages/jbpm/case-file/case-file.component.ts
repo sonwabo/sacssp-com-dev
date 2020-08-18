@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { CaseService } from '../../../../jbpm/service/case.service';
+import { CaseService } from '../../../jbpm/service/case.service';
 
 
 @Component({
