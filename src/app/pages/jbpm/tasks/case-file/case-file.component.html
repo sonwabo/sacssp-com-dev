@@ -1,0 +1,43 @@
+    <form [formGroup]="caseForm">
+      <label class="label" for="input-email">Received From <nb-icon icon="question-mark-circle"  nbTooltip="The person who made the request" nbTooltipStatus="primary" status="info"></nb-icon></label> <input nbInput fullWidth type="text" formControlName="receivedFrom" id="input-email">
+      <label class="label" for="input-subject">Subject <nb-icon icon="question-mark-circle"  nbTooltip="What is the request about" nbTooltipStatus="primary" status="info"></nb-icon></label> <input nbInput fullWidth type="text" formControlName="subject" id="input-subject">
+      <label class="label" for="input-description">Description <nb-icon icon="question-mark-circle"  nbTooltip="Outline what needs to be delivered and provide some background" nbTooltipStatus="primary" status="info"></nb-icon></label><textarea nbInput fullWidth type="text" formControlName="description" id="input-email"></textarea>
+      
+      <label class="label" for="input-serviceProviderNetwork">Service Provider Network <nb-icon icon="question-mark-circle"  nbTooltip="Select the Service Provider Network involved" nbTooltipStatus="primary" status="info"></nb-icon></label> 
+      <nb-select placeholder="Select Service Provider Network" formControlName="serviceProviderNetwork" id="input-serviceProviderNetwork">
+        <nb-option value="serviceProviderNetwork.text" *ngFor="let serviceProviderNetwork of serviceProviderNetworks">{{serviceProviderNetwork.description}}</nb-option>
+      </nb-select><br/>
+
+      <label class="label" for="input-division">Service Provider Network <nb-icon icon="question-mark-circle"  nbTooltip="From which department at the scheme did this request originate from" nbTooltipStatus="primary" status="info"></nb-icon></label> 
+      <nb-select placeholder="Select Division" formControlName="division" id="input-division">
+        <nb-option value="division.text" *ngFor="let division of divisions">{{division.description}}</nb-option>
+      </nb-select><br/>
+      
+      <label class="label" for="input-origin">Origin <nb-icon icon="question-mark-circle"  nbTooltip="Where the request originated from" nbTooltipStatus="primary" status="info"></nb-icon></label> 
+      <nb-select placeholder="Select origin" formControlName="origin" id="input-origin">
+        <nb-option value="origin" *ngFor="let origin of origins">{{origin}}</nb-option>
+      </nb-select><br/>
+
+      <label class="label" for="input-receivedDate">Date Received <nb-icon icon="question-mark-circle"  nbTooltip="Date the request was received from the Scheme" nbTooltipStatus="primary" status="info"></nb-icon></label> <input nbInput  formControlName="receivedDate" id="input-receivedDate" [nbDatepicker]="receivedDate"><nb-datepicker #receivedDate></nb-datepicker><br/>
+      <label class="label" for="input-dueDate">Due Date <nb-icon icon="question-mark-circle"  nbTooltip="To track when the request is due for delivery" nbTooltipStatus="primary" status="info"></nb-icon></label> <input nbInput  formControlName="dueDate" id="input-dueDate" [nbDatepicker]="dueDate"><nb-datepicker #dueDate></nb-datepicker><br/>
+      <label class="label" for="input-receiptAcknowledgementDate">Receipt Acknowledge Date <nb-icon icon="question-mark-circle"  nbTooltip="To track when we acknowledged request" nbTooltipStatus="primary" status="info"></nb-icon></label> <input nbInput  formControlName="receiptAcknowledgementDate" id="input-receiptAcknowledgementDate" [nbDatepicker]="receiptAcknowledgementDate"><nb-datepicker #receiptAcknowledgementDate></nb-datepicker><br/>
+      <label class="label" for="input-priority">Priority <nb-icon icon="question-mark-circle"  nbTooltip="Assign priority level" nbTooltipStatus="primary" status="info"></nb-icon></label> 
+      <nb-select placeholder="Select Priority" formControlName="priority" id="input-priority">
+        <nb-option value="priority.value" *ngFor="let priority of priorities">{{priority.value}} {{priority.description}}</nb-option>
+      </nb-select><br/>      
+
+
+      <label class="label" for="input-submissionDate">Submission Date <nb-icon icon="question-mark-circle"  nbTooltip="Select the date in which the enquiry was completed and send to the requestor" nbTooltipStatus="primary" status="info"></nb-icon></label> <input nbInput  formControlName="submissionDate" id="input-submissionDate" [nbDatepicker]="submissionDate"><nb-datepicker #submissionDate></nb-datepicker><br/>
+      <label class="label" for="input-assignedTo">Assigned To <nb-icon icon="question-mark-circle"  nbTooltip="Find the person from the drop down who is supposed to action the request" nbTooltipStatus="primary" status="info"></nb-icon></label> 
+      <nb-select placeholder="Select Assignee" formControlName="assignedTo" id="input-assignedTo">
+        <nb-option value="fundManagementUser" *ngFor="let fundManagementUser of fundManagementUsers">{{fundManagementUser}}</nb-option>
+      </nb-select><br/>
+      <label class="label" for="input-assignedDate">Assigned Date <nb-icon icon="question-mark-circle"  nbTooltip="To date you send the request to the assignee" nbTooltipStatus="primary" status="info"></nb-icon></label> <input nbInput  formControlName="assignedDate" id="input-assignedDate" [nbDatepicker]="assignedDate"><nb-datepicker #assignedDate></nb-datepicker><br/>
+
+      <label class="label" for="input-manager">Manager <nb-icon icon="question-mark-circle"  nbTooltip="Find the Head of Department responsible for the division in which the assigned person is reporting to" nbTooltipStatus="primary" status="info"></nb-icon></label> 
+      <nb-select placeholder="Select Manager" formControlName="manager" id="input-manager">
+        <nb-option value="fundManagementManager" *ngFor="let fundManagementManager of fundManagementManagers">{{fundManagementManager}}</nb-option>
+      </nb-select><br/>
+  </form>
+
+

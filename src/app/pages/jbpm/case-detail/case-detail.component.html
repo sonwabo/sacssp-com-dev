@@ -1,0 +1,40 @@
+<nb-card>
+  <nb-card-body>
+    <nb-tabset>
+      <nb-tab tabTitle="Case Details" tabIcon="clipboard">
+        <ngx-fund-management-update-request [taskSummary]='currentTaskSummary' [case]='case' *ngIf="'Fund Management Update Task' === currentTaskSummary['task-name']"></ngx-fund-management-update-request> 
+        <ngx-case-file [case]='case'></ngx-case-file>
+      </nb-tab>
+      <nb-tab tabTitle="Tasks" tabIcon="list">
+        <nb-accordion>
+          <nb-accordion-item *ngFor="let taskSummary of taskSummaries; let i = index">
+           <nb-accordion-item-header>{{taskSummary['task-name']}}</nb-accordion-item-header>
+           <nb-accordion-item-body>
+             
+            <nb-accordion>
+              <nb-accordion-item>
+               <nb-accordion-item-header><nb-icon icon="message-square"></nb-icon> Comments</nb-accordion-item-header>
+               <nb-accordion-item-body>
+                <ngx-task-comments [taskSummary]='taskSummary' [case]='case'></ngx-task-comments>
+               </nb-accordion-item-body>
+              </nb-accordion-item>
+
+              <nb-accordion-item>
+                <nb-accordion-item-header><nb-icon icon="eye"></nb-icon> Audit Log</nb-accordion-item-header>
+                <nb-accordion-item-body>
+                 Yet to be implemented
+                </nb-accordion-item-body>
+               </nb-accordion-item>
+
+             </nb-accordion>
+
+           </nb-accordion-item-body>
+          </nb-accordion-item>
+         </nb-accordion>
+    </nb-tab>
+    <nb-tab tabTitle="Documents" tabIcon="file">
+      Documents go here
+    </nb-tab>
+    </nb-tabset>
+  </nb-card-body>
+</nb-card>

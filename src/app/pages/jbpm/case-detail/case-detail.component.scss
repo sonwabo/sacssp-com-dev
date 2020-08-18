@@ -1,0 +1,36 @@
+@import '../../../@theme/styles/themes';
+
+@include nb-install-component() {
+  nb-card {
+    transform: translate3d(0, 0, 0);
+  }
+
+}
+
+:host {
+  display: block;
+  max-height: 75rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.card-row {
+  display: flex;
+  margin: 0 -0.5rem;
+}
+
+.card-col {
+  flex: 1 0 calc(50% - 1rem);
+  margin: 0 0.5rem;
+}
+
+.step-content {
+  width: 100%;
+
+}
+
+
+
+
+
+

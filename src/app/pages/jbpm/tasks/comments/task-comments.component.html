@@ -1,0 +1,21 @@
+<nb-flip-card [showToggleButton]="false" [flipped]="cardFlipped">
+  <nb-card-front>
+    <nb-card>
+      <nb-card-body>
+        <ng2-smart-table [settings]="settings" [source]="source" (create)="flipCard()"></ng2-smart-table>
+      </nb-card-body>
+    </nb-card>
+  </nb-card-front>
+  <nb-card-back>
+    <nb-card>
+      <nb-card-header>Add Your Comment</nb-card-header>
+      <nb-card-body>
+        <textarea nbInput fullWidth></textarea>
+      </nb-card-body>
+      <nb-card-footer>
+        <button nbButton status="info"  >Add Comment</button>&nbsp;
+        <button nbButton status="danger" (click)="flipCard()">Discard Comment</button>
+      </nb-card-footer>
+    </nb-card>
+  </nb-card-back>
+</nb-flip-card>
