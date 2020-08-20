@@ -22,10 +22,13 @@ export class CaseStatusRenderComponent implements ViewCell, OnInit {
                 this.status = 'Closed';
                 break;
             case 3:
+                this.status = 'Completed';
+                break;
+            case 4:
                 this.status = 'Cancelled';
                 break;
             default:
-                this.status = 'Unknown'
+                this.status = 'Unknown';
                 break;
         };
 

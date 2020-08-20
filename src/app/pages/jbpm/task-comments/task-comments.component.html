@@ -1,3 +1,4 @@
+<form [formGroup]="commentForm" (ngSubmit)="attachComment(commentForm)" >
 <nb-flip-card [showToggleButton]="false" [flipped]="cardFlipped">
   <nb-card-front>
     <nb-card>
@@ -10,12 +11,14 @@
     <nb-card>
       <nb-card-header>Add Your Comment</nb-card-header>
       <nb-card-body>
-        <textarea nbInput fullWidth></textarea>
+        <textarea nbInput fullWidth type="text" formControlName="comment" id="input-task-comment"></textarea>
       </nb-card-body>
       <nb-card-footer>
-        <button nbButton status="info"  >Add Comment</button>&nbsp;
-        <button nbButton status="danger" (click)="flipCard()">Discard Comment</button>
+        <button nbButton status="info" type="submit" id="btn-add-comment" >Add Comment</button>&nbsp;
+        <button nbButton status="danger" (click)="flipCard()" id="btn-discard-comment" >Discard Comment</button>
       </nb-card-footer>
     </nb-card>
   </nb-card-back>
-</nb-flip-card> 
+</nb-flip-card>
+</form>
+

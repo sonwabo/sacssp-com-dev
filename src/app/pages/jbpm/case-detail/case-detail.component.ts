@@ -13,25 +13,31 @@ export class CaseDetailComponent implements OnInit {
   taskSummaries: any[];
   currentTaskSummary: any;
   selectedIndex: number = 0;
-  @ViewChild('stepper') stepper:NbStepperComponent;
+  taskName: string = '';
+
+  @ViewChild('stepper') stepper: NbStepperComponent;
 
   ngOnInit(): void {
     if (history.state.data && history.state.data.case) {
       this.case = history.state.data.case;
+       console.error("=========== Case Detail Case ==============");
+       console.error( this.case );
+
       this.caseService.getTasks(this.case['container-id'], this.case['case-id']).subscribe(
         value => {
           this.taskSummaries = value['task-summary'];
-          this.taskSummaries.sort((a,b) =>   a['task-id'] < b['task-id'] ? -1 : a['task-id'] > b['task-id'] ? 1 : 0)
-          this.currentTaskSummary = this.taskSummaries[this.taskSummaries.length == 0? 0 : this.taskSummaries.length - 1];
+          this.taskSummaries.sort((a,b) =>   a['task-id'] < b['task-id'] ? -1 : a['task-id'] > b['task-id'] ? 1 : 0);
+
+          const orderNum = this.taskSummaries[this.taskSummaries.length === 0? 0 : this.taskSummaries.length - 1];
+          console.error( orderNum );
+          this.currentTaskSummary = orderNum;
+          this.taskName = this.currentTaskSummary['task-name'];
         }
       );
-
+    }
   }
-}
 
-  public constructor(
-    private caseService: CaseService,
-  ) {}
+  public constructor(private caseService: CaseService) {}
 
 
 

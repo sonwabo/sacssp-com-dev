@@ -10,4 +10,9 @@
 
 export const environment = {
   production: false,
+  baseUrl : '/kie-server/services/rest/server',
+  containerId : 'RequestTracker_1.0.0-SNAPSHOT' ,
+  caseDefinition : 'RequestTracker.TrackRequest',
+  username: 'fund-administrator',
+  password: 'jumpco2017'
 };

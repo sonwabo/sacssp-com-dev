@@ -4,20 +4,20 @@ import { Routes, RouterModule } from '@angular/router';
 import { JbpmComponent } from './jbpm.component';
 import { CasesTableComponent } from './cases-table/cases-table.component';
 import { CaseDetailComponent } from './case-detail/case-detail.component';
+import { APP_ROUTES } from './utils/routes-list-enum';
 
 const routes: Routes = [{
   path: '',
   component: JbpmComponent,
   children: [
     {
-      path: 'cases-table',
+      path: APP_ROUTES.CASES_TABLES,
       component: CasesTableComponent,
     },
     {
-      path: 'case-detail',
+      path: APP_ROUTES.CASE_DETAIL,
       component: CaseDetailComponent,
-    }
-  ],
+    }],
 }];
 
 @NgModule({

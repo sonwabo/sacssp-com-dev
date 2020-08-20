@@ -4,7 +4,10 @@
   </nb-card-header>
 
   <nb-card-body>
-    <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEdit($event)">
+    <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEdit($event)" >
     </ng2-smart-table>
   </nb-card-body>
+  <nb-card-footer>
+    <button nbButton status="info" (click)="onCreateConfirm($event)" >Create Case</button>&nbsp;
+  </nb-card-footer>
 </nb-card>

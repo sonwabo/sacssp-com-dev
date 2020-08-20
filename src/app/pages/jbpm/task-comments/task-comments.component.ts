@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
 import { TaskService } from '../../../jbpm/service/task.service';
 import { EpochDateRenderComponent } from '../blocks/epoch-date-render.component';
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {TaskInputs} from "../../../jbpm/domain/demand";
 
 
 @Component({
@@ -16,6 +18,7 @@ export class TaskCommentsComponent implements OnInit {
   @Input() taskSummary: any;
   @Input() case: any = {};
   cardFlipped = false;
+  commentForm: FormGroup;
 
   source: LocalDataSource;
   settings = {
@@ -35,7 +38,7 @@ export class TaskCommentsComponent implements OnInit {
     columns: {
       'comment': {
         title: 'Comment',
-        filter: false
+        filter: false,
       },
       'comment-added-by': {
         title: 'Commentor',
@@ -49,8 +52,9 @@ export class TaskCommentsComponent implements OnInit {
         renderComponent: EpochDateRenderComponent,
         editable: false,
       },
-    }
-  };
+    }};
+
+  taskComment: string = '';
 
   constructor(
     protected taskService: TaskService,
@@ -59,12 +63,25 @@ export class TaskCommentsComponent implements OnInit {
 
   }
   ngOnInit(): void {
+    this.commentForm = new FormGroup({comment: new FormControl()});
+    this.loadComments();
+  }
+
+  loadComments(): void {
     this.taskService.getTaskComments(this.case['container-id'], this.taskSummary['task-id']).subscribe(
-      data => {this.source = new LocalDataSource(data['task-comment']);}
-    )
+      data => {this.source = new LocalDataSource(data['task-comment']); });
+  }
+
+  attachComment(commentForm: FormGroup): void {
+     if(this.commentForm.value.comment.trim().length === 0) return;
+     this.taskService.attachComment( this.case['container-id'], this.taskSummary['task-id']
+      , this.commentForm.value.comment).subscribe( res => {
+       this.commentForm.controls['comment'].reset();
+    });
   }
 
   flipCard(): void {
     this.cardFlipped = !this.cardFlipped;
+    this.loadComments();
   }
 }

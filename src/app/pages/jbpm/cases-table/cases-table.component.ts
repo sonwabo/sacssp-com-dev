@@ -1,3 +1,4 @@
+import { environment } from './../../../../environments/environment';
 import { Component } from '@angular/core';
 import { CaseService } from '../../../jbpm/service/case.service';
 import { LocalDataSource, ServerDataSource } from 'ng2-smart-table';
@@ -17,15 +18,13 @@ export class CasesTableComponent {
   settings = {
     mode: 'external',
     actions: {
-      add: true,
+      add: false,
       edit: true,
       delete: false,
       position: 'right',
     },
     add: {
       addButtonContent: '<i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
       confirmCreate: true,
     },
     edit: {
@@ -68,28 +67,41 @@ export class CasesTableComponent {
         title: 'Completed',
         type: 'custom',
         renderComponent: EpochDateRenderComponent,
-      }
+      },
     },
   };
 
-  //source: LocalDataSource;
+  // source: LocalDataSource;
   source: ServerDataSource;
 
   constructor(
     protected service: CaseService,
     protected router: Router,
     protected http: HttpClient) {
-    //this.source = new LocalDataSource();
+      // tslint:disable-next-line:max-line-length
+    this.source = this.loadCases();
+  }
 
-    //this.service.getCases().subscribe(
-    //data => this.source.load(data['instances'])
-    //)    
-
-    this.source = new ServerDataSource(http, { endPoint: '/kie-server/services/rest/server/queries/cases/instances', dataKey: 'instances' });
+  loadCases(): ServerDataSource {
+    const datasource = new ServerDataSource(this.http,
+      { endPoint: `${environment.baseUrl}/queries/cases/instances`, dataKey: 'instances' });
+    return datasource;
   }
 
   onEdit(event): void {
+    const _data = event.data;
     this.router.navigate(['pages/jbpm/case-detail'],
-      { state: { data: { case: event.data } } });
+      { state: { data: { case: _data } } });
   }
+
+  onCreateConfirm(event) {
+      this.service.createCase(environment.containerId, environment.caseDefinition).subscribe(res => {
+        this.source = this.loadCases();
+        this.source.load;
+      }, err => {
+          console.error(' ======== Error ======== ');
+          console.error( err );
+      });
+  }
+
 }

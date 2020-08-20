@@ -1,5 +1,10 @@
 import { NgModule } from '@angular/core';
-import { NbCardModule, NbIconModule, NbInputModule, NbTreeGridModule, NbTabsetModule, NbStepperModule, NbTooltipModule, NbDatepickerModule, NbSelectModule, NbAccordionModule, NbButtonModule } from '@nebular/theme';
+import {
+  NbCardModule, NbIconModule, NbInputModule,
+  NbTreeGridModule, NbTabsetModule, NbStepperModule,
+  NbTooltipModule, NbDatepickerModule, NbSelectModule,
+  NbAccordionModule, NbButtonModule, NbDialogModule, NbCheckboxModule
+} from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 import { ThemeModule } from '../../@theme/theme.module';
@@ -11,6 +16,8 @@ import { FundManagementUpdateRequestComponent } from './fm-update-request/fund-m
 import { ReactiveFormsModule } from '@angular/forms';
 import { TaskCommentsComponent } from './task-comments/task-comments.component';
 import { CaseFileComponent } from './case-file/case-file.component';
+import {CaseDocumentComponent} from "./case-documents/case-document.component";
+
 
 
 @NgModule({
@@ -30,6 +37,8 @@ import { CaseFileComponent } from './case-file/case-file.component';
     NbAccordionModule,
     NbCardModule,
     NbButtonModule,
+    NbDialogModule,
+    NbCheckboxModule,
   ],
   declarations: [
     ...routedComponents,
@@ -39,6 +48,7 @@ import { CaseFileComponent } from './case-file/case-file.component';
     CaseFileComponent,
     FundManagementUpdateRequestComponent,
     TaskCommentsComponent,
+    CaseDocumentComponent,
   ],
   entryComponents: [
     CaseStatusRenderComponent,

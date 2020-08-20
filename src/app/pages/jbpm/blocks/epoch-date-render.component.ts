@@ -14,7 +14,7 @@ export class EpochDateRenderComponent implements ViewCell, OnInit {
 
 
     ngOnInit() {
-      if (this.value && this.value['java.util.Date']){
+      if (this.value && this.value['java.util.Date']) {
         this.dateString = this.value['java.util.Date'];
       } else  if (this.value) {
         this.dateString = this.value;
