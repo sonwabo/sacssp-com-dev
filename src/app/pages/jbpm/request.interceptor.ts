@@ -29,7 +29,7 @@ export class RequestInterceptor implements HttpInterceptor, OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  //NOTE: I'll set this up a bit
+  //NOTE: I'll set this up on I have the log in page up and running
   private getHeaders(): HttpHeaders {
     const headerStr = `Basic ` + btoa(`${environment.username}:${environment.password}`);
     let headers = new HttpHeaders({

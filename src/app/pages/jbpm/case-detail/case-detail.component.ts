@@ -11,33 +11,29 @@ import { NbStepperComponent } from '@nebular/theme';
 export class CaseDetailComponent implements OnInit {
   case: any = {};
   taskSummaries: any[];
-  currentTaskSummary: any;
+  currentTaskSummary: Promise<any>;
   selectedIndex: number = 0;
-  taskName: string = '';
 
   @ViewChild('stepper') stepper: NbStepperComponent;
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  public constructor(private caseService: CaseService) {
+
     if (history.state.data && history.state.data.case) {
       this.case = history.state.data.case;
-       console.error("=========== Case Detail Case ==============");
-       console.error( this.case );
-
       this.caseService.getTasks(this.case['container-id'], this.case['case-id']).subscribe(
         value => {
           this.taskSummaries = value['task-summary'];
           this.taskSummaries.sort((a,b) =>   a['task-id'] < b['task-id'] ? -1 : a['task-id'] > b['task-id'] ? 1 : 0);
 
           const orderNum = this.taskSummaries[this.taskSummaries.length === 0? 0 : this.taskSummaries.length - 1];
-          console.error( orderNum );
-          this.currentTaskSummary = orderNum;
-          this.taskName = this.currentTaskSummary['task-name'];
+          this.currentTaskSummary = Promise.resolve(orderNum);
         }
       );
     }
-  }
 
-  public constructor(private caseService: CaseService) {}
+  }
 
 
 

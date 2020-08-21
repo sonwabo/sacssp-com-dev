@@ -1,7 +1,7 @@
     <form [formGroup]="caseForm" (ngSubmit)="formSubmit(caseForm)" >
 
       <div>
-        <label class="label"><h5>Task Name : {{taskName}} </h5></label>
+        <label class="label"><h5>{{taskName}} </h5></label>
       </div>
 
       <label class="label" for="input-email">Received From <nb-icon icon="question-mark-circle"  nbTooltip="The person who made the request" nbTooltipStatus="primary" status="info"></nb-icon></label> <input nbInput fullWidth type="text" formControlName="receivedFrom" id="input-email">
@@ -45,16 +45,20 @@
       </nb-select><br/>
 
        <div *ngIf="taskName && 'Fund Management Update Task' === taskName || 'Operations Update Task' === taskName ">
-          <label class="label" for="input-operations">Send to Operations<nb-icon icon="question-mark-circle"  nbTooltip="Send Operations a message to review" nbTooltipStatus="primary" status="info"></nb-icon></label>
-          <nb-checkbox (checkedChange)="sendToOperationsCheck($event)"  id="input-operations"></nb-checkbox>
-          <textarea  *ngIf="sendToOperations" nbInput fullWidth type="text" formControlName="operations" id="input-operations-text"></textarea><br/>
+          <label class="label" for="input-operations">Actions<nb-icon icon="question-mark-circle"  nbTooltip="Send Operations for review or Close case" nbTooltipStatus="primary" status="info"></nb-icon></label>
+          <nb-select placeholder="" (selectedChange)="sendToOperationsCheck($event)" formControlName="input_operations" id="input-operations">
+             <nb-option [value]="operation" *ngFor="let operation of operationList">{{operation}}</nb-option>
+          </nb-select>
+          <textarea  *ngIf="sendToOperations" nbInput fullWidth type="text" formControlName="operations" id="input-operations-text" placeholder="Instructions for operations"></textarea><br/>
+
+         <div *ngIf="operationsResponse">
+             <label class="label" for="input-operations-response-text">Operation Feedback<nb-icon icon="question-mark-circle"  nbTooltip="Response From Operations" nbTooltipStatus="primary" status="info"></nb-icon></label>
+            <textarea  *ngIf="operationsResponse" nbInput fullWidth type="text" formControlName="operationsResponse" id="input-operations-response-text" placeholder="Operations feedback"></textarea><br/>
+         </div>
        </div>
 
       <!-- <button nbButton type="submit"  size="default" color="primary" [disabled]="!caseForm.valid" >Submit</button> -->
       <button *ngIf="taskCompleted" nbButton type="submit" color="blue" (click)="formSubmit(caseForm)">Submit</button>
-
-
-
 
   </form>
 

@@ -45,8 +45,8 @@ export class CaseService {
   }
 
   getCase(containerId: string, caseId: string): Observable<any> {
-    let headers = new HttpHeaders();
-    let params = new HttpParams()
+    const headers = new HttpHeaders();
+    const params = new HttpParams()
     .append('withData', "true")
     .append('withRoles', "true")
     .append('withMilestones', "true")
@@ -65,9 +65,22 @@ export class CaseService {
     const group = {};
     const restrictions = {};
 
-    const params = new HttpParams({fromObject : { 'case-data': data, 'case-user-assignments': case_ass, 'case-group-assignments': group, 'case-data-restrictions': restrictions  }  });
+    const params = new HttpParams({fromObject : { 'case-data': data,
+        'case-user-assignments': case_ass,
+        'case-group-assignments': group,
+        'case-data-restrictions': restrictions  }  });
+
     const url = `${environment.baseUrl}/containers/${containerId}/cases/${caseDefinition}/instances`;
     return this.http.post<any[]>(url , { headers: headers, params : params });
+  }
+
+  closeCase(containerId: string, caseId: string):  Observable<any> {
+    const headers = new HttpHeaders();
+    const params = new HttpParams();
+
+    const url = `${environment.baseUrl}/containers/${containerId}/cases/instances/${caseId}`;
+
+    return this.http.post<any[]>(url, { headers: headers, params : params } );
   }
 
   private getHeaders(): HttpHeaders {

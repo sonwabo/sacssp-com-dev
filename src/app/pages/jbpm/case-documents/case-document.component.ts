@@ -5,20 +5,18 @@ import { LocalDataSource } from 'ng2-smart-table';
 import { TaskService } from '../../../jbpm/service/task.service';
 import { EpochDateRenderComponent } from '../blocks/epoch-date-render.component';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {TaskInputs} from "../../../jbpm/domain/demand";
 
 
 @Component({
-  selector: 'ngx-task-comments',
-  templateUrl: './task-comments.component.html',
-  styleUrls: ['./task-comments.component.scss'],
+  selector: 'ngx-case-documents',
+  templateUrl: './case-document.component.html',
+  styleUrls: ['./case-document.component.scss'],
 })
 
-export class TaskCommentsComponent implements OnInit {
+export class CaseDocumentComponent implements OnInit {
   @Input() taskSummary: any;
   @Input() case: any = {};
   cardFlipped = false;
-  commentForm: FormGroup;
 
   source: LocalDataSource;
   settings = {
@@ -63,7 +61,6 @@ export class TaskCommentsComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    this.commentForm = new FormGroup({comment: new FormControl('')});
     this.loadComments();
   }
 
@@ -73,11 +70,6 @@ export class TaskCommentsComponent implements OnInit {
   }
 
   attachComment(commentForm: FormGroup): void {
-     this.taskService.attachComment( this.case['container-id'], this.taskSummary['task-id']
-      , this.commentForm.value.comment).subscribe( res => {
-       this.commentForm.controls['comment'].reset();
-       this.flipCard();
-    });
   }
 
   flipCard(): void {

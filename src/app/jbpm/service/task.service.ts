@@ -34,6 +34,11 @@ export class TaskService {
       return this.http.get<any[]>(url, { headers: this.getHeaders(), params : new HttpParams() });
   }
 
+  getTaskInputs(containerId: string, taskid: string): Observable<any[]> {
+    const url = `${environment.baseUrl}/containers/${containerId}/tasks/${taskid}/contents/input`;
+    return this.http.get<any[]>(url, { headers: this.getHeaders(), params : new HttpParams() });
+  }
+
   claimTask(container: string, taskid: string): void {
     const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/claimed`;
     this.http.put<any[]>(url, { headers: this.getHeaders(), params : new HttpParams() })
@@ -50,7 +55,23 @@ export class TaskService {
 
     const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/completed`;
     const request = {'io.jumpco.metropolitan.requesttracker.Demand' : taskInputes.demand };
-    return this.http.put<any[]>(url, {'request' : request , status : taskInputes.status} );
+
+    const ops = (taskInputes.operations !== null
+      && taskInputes.operations !== undefined
+      &&    taskInputes.operations.length > 0) ? true : false;
+
+    let closeCase = true;
+    if ( ops ) {
+       closeCase = false;
+    }
+
+    return this.http.put<any[]>(url, {'request' : request,
+      status : taskInputes.status,
+      'routeToOperations' : ops  ,
+      'closeCase' : closeCase,
+      'operations-directive' : taskInputes.operations,
+      'operations-response': taskInputes.operationsResponse,
+    });
   }
 
   private getHeaders(): HttpHeaders {
