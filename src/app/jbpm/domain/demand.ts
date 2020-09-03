@@ -1,5 +1,3 @@
-import {FormGroup} from "@angular/forms";
-
 export class Demand {
       acknowledgementDate: any;
       dueDate: any;
@@ -34,6 +32,109 @@ export class Demand {
       }
   }
 
+export class Request {
+
+  origin: string;
+  emailFrom: string;
+  subject: string;
+  description: string;
+  priority: number;
+  receivedDate: any;
+  receiptAcknowledgementDate: any;
+  dueDate: any;
+  assignedTo: string;
+  assignedHod: string;
+  fmAdministrator: string;
+  fmManager: string;
+  spnInvolved: Array<string>;
+  tags: Array<string>;
+  categories: any;
+  completeDate: any;
+  division: string;
+  validity: string;
+
+  // tslint:disable-next-line:max-line-length
+  constructor(receivedDate: any,
+              acknowledgementDate: any,
+              dueDate: any,
+              origin: string,
+              emailFrom: string,
+              subject: string,
+              description: string,
+              assignedTo: string,
+              assignedHod: string,
+              fmAdministrator: string,
+              fmManager: string,
+              spnInvolved: Array<string>,
+              tags: Array<string>,
+              categories: any,
+              completeDate: any,
+              validity: string,
+              priority: number,
+              division: string) {
+
+    const receievedOnDate  = ( receivedDate instanceof Date )
+      ? receivedDate.getTime()
+      : receivedDate;
+    this.receivedDate = {'java.util.Date' : receievedOnDate };
+
+    const acknowledgement = ( acknowledgementDate instanceof Date )
+      ? acknowledgementDate.getTime()
+      : acknowledgementDate;
+    this.receiptAcknowledgementDate = {'java.util.Date' : acknowledgement };
+
+    const due = ( dueDate instanceof Date )
+      ? dueDate.getTime()
+      : dueDate;
+    this.dueDate = {'java.util.Date' : due };
+
+
+    const _completeDate = ( completeDate instanceof Date )
+      ? completeDate.getTime()
+      : completeDate;
+    this.completeDate = {'java.util.Date' : _completeDate };
+
+    this.division = division;
+    this.origin = origin;
+    this.subject = subject;
+    this.emailFrom = emailFrom;
+    this.description = description;
+    this.priority = priority;
+    this.assignedTo = assignedTo;
+    this.assignedHod = assignedHod;
+    this.fmAdministrator = fmAdministrator;
+    this.fmManager = fmManager;
+    this.spnInvolved = spnInvolved;
+    this.tags = tags;
+    this.categories = categories;
+    this.validity = validity;
+  }
+}
+
+
+export class Settings {
+    caseSLA: string;
+    captureTaskSLA: string;
+    classifySLA: string;
+    trackSLA: string;
+    sendAcknowledgements: boolean;
+}
+
+export class CaseRequest {
+      request: Request;
+      settings: Settings;
+      attachments?: any;
+      status: string;
+
+
+  constructor(request: Request, settings: Settings, status: string, attachments?: any) {
+          this.request = request;
+          this.settings = settings;
+          this.attachments = attachments;
+      }
+}
+
+
   export class TaskInputs {
       demand: Demand;
       status: string;
@@ -56,7 +157,7 @@ export class Demand {
   }
 
   export enum CustomKeys {
-    DEMANOBJECTKEY = 'io.jumpco.metropolitan.requesttracker.Demand'
+    DEMANOBJECTKEY = 'io.jumpco.metropolitan.requesttracker.Demand',
   }
 
   export enum Status {
@@ -70,7 +171,7 @@ export class Demand {
     FAILED = 'Failed',
     ERROR = 'Error',
     EXITED = 'Exited',
-    OBSOLETE = 'Obsolete'
+    OBSOLETE = 'Obsolete',
   }
 
 

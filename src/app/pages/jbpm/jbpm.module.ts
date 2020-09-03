@@ -17,6 +17,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TaskCommentsComponent } from './task-comments/task-comments.component';
 import { CaseFileComponent } from './case-file/case-file.component';
 import {CaseDocumentComponent} from "./case-documents/case-document.component";
+import {DocumentRenderComponent} from "./blocks/document-render.component";
 
 
 
@@ -45,6 +46,7 @@ import {CaseDocumentComponent} from "./case-documents/case-document.component";
     CaseStatusRenderComponent,
     SlaComplianceRenderComponent,
     EpochDateRenderComponent,
+    DocumentRenderComponent,
     CaseFileComponent,
     FundManagementUpdateRequestComponent,
     TaskCommentsComponent,

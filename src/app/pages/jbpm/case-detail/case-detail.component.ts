@@ -25,16 +25,12 @@ export class CaseDetailComponent implements OnInit {
       this.caseService.getTasks(this.case['container-id'], this.case['case-id']).subscribe(
         value => {
           this.taskSummaries = value['task-summary'];
-          this.taskSummaries.sort((a,b) =>   a['task-id'] < b['task-id'] ? -1 : a['task-id'] > b['task-id'] ? 1 : 0);
+          this.taskSummaries.sort((a, b) =>   a['task-id'] < b['task-id'] ? -1 : a['task-id'] > b['task-id'] ? 1 : 0);
 
           const orderNum = this.taskSummaries[this.taskSummaries.length === 0? 0 : this.taskSummaries.length - 1];
           this.currentTaskSummary = Promise.resolve(orderNum);
         }
-      );
+     );
     }
-
   }
-
-
-
 }

@@ -1,10 +1,11 @@
-import { CustomKeys } from './../domain/demand';
+import {CustomKeys, CaseRequest} from './../domain/demand';
 import { HeaderComponent } from './../../@theme/components/header/header.component';
 import { environment } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TaskInputs } from '../domain/demand';
+import {UserDetails} from "../../authentication/model/user.details";
 
 
 @Injectable({
@@ -23,7 +24,7 @@ export class TaskService {
 
   attachComment(containerId: string, taskInstanceId: string, comments: string): Observable<any> {
     const  comment = {  'comment-id' : 'null',
-                        'comment-added-by': 'fund-administrator',
+                        'comment-added-by': UserDetails.owner,
                         'comment': comments};
     const url = `${environment.baseUrl}/containers/${containerId}/tasks/${taskInstanceId}/comments`;
     return this.http.post<any[]>(url, comment);
@@ -39,46 +40,51 @@ export class TaskService {
     return this.http.get<any[]>(url, { headers: this.getHeaders(), params : new HttpParams() });
   }
 
+  activateTask(container: string, taskid: string): void {
+    const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/activated`;
+    const params = new HttpParams();
+    params.set('user', UserDetails.owner);
+
+    this.http.put<any[]>(url, { headers: this.getHeaders(), params })
+      .subscribe(res => { console.error('Task Activated ' , res ); });
+  }
+
   claimTask(container: string, taskid: string): void {
     const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/claimed`;
-    this.http.put<any[]>(url, { headers: this.getHeaders(), params : new HttpParams() })
+    const params = new HttpParams();
+    params.set('user', UserDetails.owner);
+
+    this.http.put<any[]>(url, { headers: this.getHeaders(), params })
       .subscribe(res => { console.error('Task Claimed ' , res ); });
   }
 
   startClaimedTask(container: string, taskid: string): void {
     const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/started`;
-    this.http.put<any[]>(url, { headers: this.getHeaders(), params : new HttpParams() })
+    const params = new HttpParams();
+    params.set('user', UserDetails.owner);
+    this.http.put<any[]>(url, { headers: this.getHeaders(), params })
       .subscribe(res => { console.error('Start Claimed Task', res); });
   }
 
-  completeClaimedTask(container: string, taskid: string, taskInputes: TaskInputs): Observable<any> {
+  completeClaimedTask(container: string, taskid: string, parentRequest: CaseRequest): Observable<any> {
 
-    const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/completed`;
-    const request = {'io.jumpco.metropolitan.requesttracker.Demand' : taskInputes.demand };
-
-    const ops = (taskInputes.operations !== null
-      && taskInputes.operations !== undefined
-      &&    taskInputes.operations.length > 0) ? true : false;
-
-    let closeCase = true;
-    if ( ops ) {
-       closeCase = false;
-    }
-
-    return this.http.put<any[]>(url, {'request' : request,
-      status : taskInputes.status,
-      'routeToOperations' : ops  ,
-      'closeCase' : closeCase,
-      'operations-directive' : taskInputes.operations,
-      'operations-response': taskInputes.operationsResponse,
-    });
+    const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/completed?auto-progress=true&user=${UserDetails.owner}`;
+    const request = {'io.jumpco.metropolitan.tracker.demand.Request' : parentRequest.request };
+    const settings = {'io.jumpco.metropolitan.tracker.demand.Settings' : parentRequest.settings};
+    const documents = {};
+    // {'org.jbpm.document.service.impl.DocumentImpl' : parentRequest.attachments};
+    const body = {
+      status : parentRequest.status,
+      'request' : request,
+      'settings' : settings,
+      'attachments' : {documents : []},
+    };
+    return this.http.put<any[]>(url, body);
   }
 
   private getHeaders(): HttpHeaders {
-    const headerStr = `Basic ` + btoa(`${environment.username}:${environment.password}`);
     let headers = new HttpHeaders({
       Accept: 'application/json',
-      Authorization: headerStr
     });
     headers = headers.append('Content-Type', 'application/json');
     return headers;

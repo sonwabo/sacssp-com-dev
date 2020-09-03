@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { CaseStatusRenderComponent } from '../blocks/case-status-render.component';
 import { SlaComplianceRenderComponent } from '../blocks/sla-compliance-render.component';
 import { EpochDateRenderComponent } from '../blocks/epoch-date-render.component';
+import {UserDetails} from '../../../authentication/model/user.details';
 
 @Component({
   selector: 'ngx-cases-table',
@@ -71,8 +72,7 @@ export class CasesTableComponent {
     },
   };
 
-  // source: LocalDataSource;
-  source: ServerDataSource;
+   source: ServerDataSource;
 
   constructor(
     protected service: CaseService,
@@ -84,7 +84,7 @@ export class CasesTableComponent {
 
   loadCases(): ServerDataSource {
     const datasource = new ServerDataSource(this.http,
-      { endPoint: `${environment.baseUrl}/queries/cases/instances`, dataKey: 'instances' });
+      { endPoint: `${environment.baseUrl}/queries/cases/instances?owner=${UserDetails.owner}`, dataKey: 'instances' });
     return datasource;
   }
 

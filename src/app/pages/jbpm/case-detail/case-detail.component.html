@@ -34,26 +34,14 @@
           </nb-accordion-item>
          </nb-accordion>
     </nb-tab>
+
+
     <nb-tab tabTitle="Documents" tabIcon="file">
-      <nb-accordion>
-        <nb-accordion-item *ngFor="let taskSummary of taskSummaries; let i = index">
-          <nb-accordion-item-header>{{taskSummary['task-name']}}</nb-accordion-item-header>
-          <nb-accordion-item-body>
+      <ngx-case-documents [case]='case'></ngx-case-documents>
+    </nb-tab>
 
-            <nb-accordion>
-              <nb-accordion-item>
-                <nb-accordion-item-header><nb-icon icon="message-square"></nb-icon>Docs</nb-accordion-item-header>
-                <nb-accordion-item-body>
-                  <ngx-case-documents [taskSummary]='taskSummary' [case]='case'></ngx-case-documents>
-                </nb-accordion-item-body>
-              </nb-accordion-item>
-            </nb-accordion>
-
-          </nb-accordion-item-body>
-        </nb-accordion-item>
-      </nb-accordion>    </nb-tab>
     <nb-tab tabTitle="Linked Cases" tabIcon="file">
-      Documents go here
+      Linked Caes: Yet to be implemented
     </nb-tab>
     </nb-tabset>
   </nb-card-body>

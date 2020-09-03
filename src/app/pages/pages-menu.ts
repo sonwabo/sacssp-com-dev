@@ -35,7 +35,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
         title: 'SLA',
         link: '/pages/tables/smart-table',
       },
-    ]
+    ],
   },
   {
     title: 'Scheme Officials',

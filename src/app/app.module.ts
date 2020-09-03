@@ -11,6 +11,9 @@ import { CoreModule } from './@core/core.module';
 import { ThemeModule } from './@theme/theme.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+
+import {NbPasswordAuthStrategy, NbAuthModule } from '@nebular/auth';
+
 import {
   NbChatModule,
   NbDatepickerModule,
@@ -21,6 +24,7 @@ import {
   NbWindowModule,
 } from '@nebular/theme';
 import { RequestInterceptor } from './pages/jbpm/request.interceptor';
+import {AuthGuard} from "./authentication/auth-guard/auth-guard.service";
 
 @NgModule({
   declarations: [AppComponent],
@@ -40,11 +44,13 @@ import { RequestInterceptor } from './pages/jbpm/request.interceptor';
     }),
     CoreModule.forRoot(),
     ThemeModule.forRoot(),
+
   ],
   bootstrap: [AppComponent],
-  providers:[
-    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor,   multi: true},
-  ]
+  providers: [
+    AuthGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
+  ],
 })
 export class AppModule {
 }

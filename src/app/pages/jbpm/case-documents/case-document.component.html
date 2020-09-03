@@ -2,19 +2,26 @@
   <nb-card-front>
     <nb-card>
       <nb-card-body>
+        <div class="alert alert-light" role="alert">{{ message }}</div>
+
         <ng2-smart-table [settings]="settings" [source]="source" (create)="flipCard()"></ng2-smart-table>
+
       </nb-card-body>
     </nb-card>
   </nb-card-front>
   <nb-card-back>
     <nb-card>
-      <nb-card-header>Add Your Comment</nb-card-header>
+      <nb-card-header>Add Your Document</nb-card-header>
       <nb-card-body>
-        <textarea nbInput fullWidth type="text" id="input-task-comment"></textarea>
+
+        <label class="btn btn-default">
+            <input nbInput fullWidth type="file" multiple (change)="selectFiles($event)"  #uploaddoc>
+        </label>
+
       </nb-card-body>
       <nb-card-footer>
-        <button nbButton status="info" type="submit" id="btn-add-comment" >Add Comment</button>&nbsp;
-        <button nbButton status="danger" (click)="flipCard()" id="btn-discard-comment" >Discard Comment</button>
+        <button nbButton status="info"  (click)="addDocuments()" type="submit" id="btn-add-document" >Add Document</button>&nbsp;
+        <button nbButton status="danger" (click)="flipCard()" id="btn-cancel-doc-upload" >Cancel</button>
       </nb-card-footer>
     </nb-card>
   </nb-card-back>

@@ -1,4 +1,4 @@
-import {Demand, Status, TaskInputs, TaskNames} from './../../../jbpm/domain/demand';
+import {Demand, Request, CaseRequest, Settings, Status, TaskInputs, TaskNames} from './../../../jbpm/domain/demand';
 import { environment } from './../../../../environments/environment';
 import { ProcessService } from './../../../jbpm/service/process.service';
 import { TaskService } from './../../../jbpm/service/task.service';
@@ -10,18 +10,12 @@ import {
   Input,
   OnChanges,
   OnInit,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { CaseService } from '../../../jbpm/service/case.service';
-import {Observable} from "rxjs";
-import {APP_ROUTES} from "../utils/routes-list-enum";
-import {async} from "rxjs-compat/scheduler/async";
-
-
-
 
 @Component({
   selector: 'ngx-case-file',
@@ -37,7 +31,7 @@ export class CaseFileComponent implements OnInit {
   fundManagementUsers: string[] = ['fund-administrator', 'fund-manager'];
   fundManagementManagers: string[] = ['fund-manager'];
   origins: string[] = ['Engagement', 'Telecon', 'Email from Scheme'];
-  operationList: string[] = ['Sent to Operations', 'Close Case'];
+  caseValidityList: string[] = ['Valid', 'Invalid'];
   serviceProviderNetworks: any[] = [{ value: 'GEMS', description: 'Government Employee Medical Scheme' }];
   divisions: any[] = [{ value: 'MHRS', description: 'Medscheme Health Risk Solutions' }, { value: 'DENIS', description: 'Dental Management Services' }];
   priorities: any[] = [
@@ -73,7 +67,6 @@ export class CaseFileComponent implements OnInit {
     this.initialiseFormControl();
 
     this.taskSummary.then(res => {
-
       this.taskSummaryValue = res;
       this.taskName = res['task-name'];
       const containerId = res['task-container-id'];
@@ -140,17 +133,28 @@ export class CaseFileComponent implements OnInit {
       description: new FormControl('', Validators.required),
       priority: new FormControl('', Validators.required),
       receiptAcknowledgementDate: new FormControl('', Validators.required),
-      dueDate: new FormControl({value: '', disabled: true}, Validators.required),
+    //  dueDate: new FormControl({value: '', disabled: true}, Validators.required),
+
+      dueDate: new FormControl('', Validators.required),
       status: new FormControl('', Validators.required),
-      assignedTo: new FormControl('', Validators.email),
-      manager: new FormControl('', Validators.email),
+      fundAdministrator: new FormControl('', Validators.required),
+      manager: new FormControl('', Validators.required),
+      operationsUser: new FormControl('', Validators.required),
+      operationsHod: new FormControl('', Validators.required),
+
+
       serviceProviderNetwork: new FormControl('', Validators.required),
       assignedDate: new FormControl('', Validators.required),
-      progress: new FormControl('', Validators.required),
+      create: new FormControl('', Validators.required),
       submissionDate: new FormControl('', Validators.required),
       fmAllocated: new FormControl('', Validators.required),
       operations: new FormControl('', Validators.required),
       operationsResponse: new FormControl('', Validators.required),
+      createdOn: new FormControl('', Validators.required),
+      caseValidity: new FormControl('', Validators.required),
+      tag: new FormControl('', Validators.required),
+
+
 
     });
   }
@@ -162,6 +166,12 @@ export class CaseFileComponent implements OnInit {
     const taskId = this.taskSummaryValue['task-id'];
     const taskStatus = this.taskSummaryValue['task-status'];
 
+    if (taskStatus === undefined) { throw Error('Task Status is missing'); }
+
+    if (  taskStatus === Status.CREATED) {
+      this.taskService.activateTask(containerId, taskId);
+    }
+
     if (  taskStatus === Status.READY) {
          this.taskService.claimTask(containerId, taskId);
          this.taskService.startClaimedTask(containerId, taskId);
@@ -169,43 +179,44 @@ export class CaseFileComponent implements OnInit {
 
     this.taskService.getTaskInformation(containerId, taskId).subscribe(taskRes => {
 
-        const input: TaskInputs = this.mapper(formdata, taskRes['task-status']);
-
-        this.taskService.completeClaimedTask(containerId, taskId, input).subscribe(res => {
+        const caseRequest: CaseRequest = this.mapper(formdata, taskRes['task-status']);
+        this.taskService.completeClaimedTask(containerId, taskId, caseRequest).subscribe(res => {
           alert('Task Completed Successfullty');
           this.router.navigate(['pages/jbpm/cases-table'], {replaceUrl: true});
         }, error => {
             console.error('========= Task Complete Error ===========');
             console.error(error );
         });
-    });
+   });
   }
 
-  sendToOperationsCheck(event: any): void {
-    this.sendToOperations = (event === 'Sent to Operations');
-  }
+  private mapper(formdata: any, taskStatus: string): CaseRequest {
+    const requestObj = new Request(formdata.createdOn,
+      formdata.receiptAcknowledgementDate,
+      formdata.dueDate,
+      formdata.origin,
+      formdata.receivedFrom,
+      formdata.subject,
+      formdata.description,
+      formdata.operationsUser,
+      formdata.operationsHod,
+      formdata.fundAdministrator,
+      formdata.manager,
+      [formdata.serviceProviderNetwork],
+      [formdata.tag],
+      null,
+      formdata.submissionDate,
+      formdata.validity,
+      formdata.priority,
+      formdata.division);
 
-  private mapper(formData: any, taskStatus: string): TaskInputs {
-
-    console.error( formData );
-
-     const demand = new Demand(
-        formData.receiptAcknowledgementDate,
-        formData.dueDate,
-        formData.division,
-        formData.receivedFrom,
-        formData.description,
-        formData.origin,
-        formData.serviceProviderNetwork,
-        formData.subject,
-        formData.description); //Set the demand field to be the descriptions
-
-     const taskInput: TaskInputs = new TaskInputs(demand, taskStatus, formData.operations, formData.operationsResponse);
-     return taskInput;
+     const caseInputs: CaseRequest = new CaseRequest(requestObj, new Settings(), taskStatus, [] );
+     return caseInputs;
   }
 
 
   private disableForm(): void {
+
     this.caseForm.controls['receivedFrom'].disable({onlySelf: true});
     this.caseForm.controls['subject'].disable({onlySelf: true});
     this.caseForm.controls['description'].disable({onlySelf: true});

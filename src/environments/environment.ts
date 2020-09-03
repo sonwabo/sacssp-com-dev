@@ -10,9 +10,12 @@
 
 export const environment = {
   production: false,
+  baseAuthUrl: '/auth/realms/JBPM/protocol/openid-connect',
   baseUrl : '/kie-server/services/rest/server',
-  containerId : 'RequestTracker_1.0.0-SNAPSHOT' ,
-  caseDefinition : 'RequestTracker.TrackRequest',
-  username: 'fund-administrator',
-  password: 'jumpco2017'
+  containerId : 'DemandTracker_1.0.0-SNAPSHOT' ,
+  caseDefinition : 'SchemeDemandTracker.DemandTracker',
+  username: 'wbadmin',
+  password: 'jumpco2017',
+  clientSecrete: 'c90badbb-442c-41f0-8719-e9fbc894cd21',
+  client_id: 'kie-execution-server',
 };
