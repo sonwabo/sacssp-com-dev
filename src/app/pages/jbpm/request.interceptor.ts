@@ -1,7 +1,6 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import {HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpHeaders} from '@angular/common/http';
+import {HttpInterceptor, HttpRequest, HttpHandler, HttpEvent} from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import {environment} from '../../../environments/environment';
 import {NbAuthService} from '@nebular/auth';
 import {map, switchMap, tap} from 'rxjs/operators';
 

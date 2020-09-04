@@ -41,6 +41,7 @@ export class Request {
   priority: number;
   receivedDate: any;
   receiptAcknowledgementDate: any;
+  assignedDate: any;
   dueDate: any;
   assignedTo: string;
   assignedHod: string;
@@ -54,7 +55,8 @@ export class Request {
   validity: string;
 
   // tslint:disable-next-line:max-line-length
-  constructor(receivedDate: any,
+  constructor(assignedDate: any,
+              receivedDate: any,
               acknowledgementDate: any,
               dueDate: any,
               origin: string,
@@ -72,6 +74,11 @@ export class Request {
               validity: string,
               priority: number,
               division: string) {
+
+    const assignedDateOnDate  = ( assignedDate instanceof Date )
+      ? assignedDate.getTime()
+      : assignedDate;
+    this.assignedDate = {'java.util.Date' : assignedDateOnDate };
 
     const receievedOnDate  = ( receivedDate instanceof Date )
       ? receivedDate.getTime()
@@ -125,12 +132,32 @@ export class CaseRequest {
       settings: Settings;
       attachments?: any;
       status: string;
+      Comment?: string;
+      TaskName?: string;
+      NodeName?: string;
+      Skippable?: string;
+      Actorid?: string;
+      GroupId?: string;
 
 
-  constructor(request: Request, settings: Settings, status: string, attachments?: any) {
+  constructor(request: Request,
+              settings: Settings,
+              status: string,
+              attachments?: any,
+              comment?: string,
+              taskName?: string,
+              nodeName?: string,
+              skippable?: string,
+              actorid?: string,
+              groupid?: string ) {
           this.request = request;
           this.settings = settings;
           this.attachments = attachments;
+          this.Comment = comment;
+          this.TaskName = taskName;
+          this.Skippable = skippable;
+          this.Actorid = actorid;
+          this.GroupId = groupid;
       }
 }
 
@@ -178,4 +205,5 @@ export class CaseRequest {
   export enum TaskNames {
     FUND_MANAGEMENT_TASK = 'Fund Management Update Task',
     OPERATIONS_MANAGEMENT_TASK = 'Operations Update Task',
+    MANUAL_CLASSIFICATION = 'Manual Classification',
   }

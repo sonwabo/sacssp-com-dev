@@ -113,17 +113,7 @@
 
       <div class="col">
 
-        <label class="label" for="input-createdOnDate">Created On
-          <nb-icon icon="question-mark-circle"
-                   nbTooltip="Select the date in which the enquiry was completed and send to the requestor"
-                   nbTooltipStatus="primary" status="info"></nb-icon>
-        </label> <input nbInput formControlName="createdOn" id="input-createdOnDate"
-                        [nbDatepicker]="createdOn">
-        <nb-datepicker #createdOn></nb-datepicker>
-        <br/>
-
-
-        <label class="label" for="input-assignedDate">Assigned Date
+        <label class="label" for="input-assignedDate">Created On
           <nb-icon icon="question-mark-circle" nbTooltip="To date you send the request to the assignee"
                    nbTooltipStatus="primary" status="info"></nb-icon>
         </label> <input nbInput formControlName="assignedDate" id="input-assignedDate" [nbDatepicker]="assignedDate">
@@ -163,6 +153,14 @@
         <nb-datepicker #submissionDate></nb-datepicker>
         <br/>
 
+        <label class="label" for="input-tags">Case Tag
+          <nb-icon icon="question-mark-circle"
+                   nbTooltip="Tag case, for later searching"
+                   nbTooltipStatus="primary" status="info"></nb-icon>
+        </label><input nbInput fullWidth type="text" formControlName="tag" id="input-tags">
+        <br/>
+
+        <div *ngIf="enableClassification">
         <label class="label" for="input-case-validity">Case Validity
           <nb-icon icon="question-mark-circle" nbTooltip="Case validity"
                    nbTooltipStatus="primary" status="info"></nb-icon>
@@ -171,20 +169,22 @@
                    id="input-case-validity">
           <nb-option [value]="result" *ngFor="let result of caseValidityList">{{result}}</nb-option>
         </nb-select>
+        </div>
 
-        <label class="label" for="input-tags">Case Tag
-          <nb-icon icon="question-mark-circle"
-                   nbTooltip="Tag case, for later searching"
+
+        <div *ngIf="enableTracking">
+          <label class="label" for="input-close-or-reassign">Close or Reassign
+            <nb-icon icon="question-mark-circle" nbTooltip="Close or Reassign case"
                    nbTooltipStatus="primary" status="info"></nb-icon>
-        </label><input nbInput fullWidth type="text" formControlName="tag" id="input-tags">
-        <br/>
-
+          </label>
+          <nb-select formControlName="closureStatus"
+                   id="input-close-or-reassign">
+            <nb-option [value]="result.value" *ngFor="let result of closureStatusList">{{result.description}}</nb-option>
+          </nb-select>
+        </div>
 
       </div>
-
     </div>
   </div>
   <!-- <button nbButton type="submit"  size="default" color="primary" [disabled]="!caseForm.valid" >Submit</button> -->
 </form>
-
-

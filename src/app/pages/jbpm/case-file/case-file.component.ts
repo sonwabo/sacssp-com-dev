@@ -1,16 +1,10 @@
-import {Demand, Request, CaseRequest, Settings, Status, TaskInputs, TaskNames} from './../../../jbpm/domain/demand';
-import { environment } from './../../../../environments/environment';
+import { Request, CaseRequest, Settings, Status } from './../../../jbpm/domain/demand';
 import { ProcessService } from './../../../jbpm/service/process.service';
 import { TaskService } from './../../../jbpm/service/task.service';
 import {
-  AfterContentChecked,
-  AfterContentInit,
-  AfterViewInit,
-  Component, ElementRef,
+  Component,
   Input,
-  OnChanges,
   OnInit,
-  ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -28,8 +22,10 @@ export class CaseFileComponent implements OnInit {
   @Input() taskSummary?: Promise<any>;
 
   caseForm: FormGroup;
-  fundManagementUsers: string[] = ['fund-administrator', 'fund-manager'];
-  fundManagementManagers: string[] = ['fund-manager'];
+
+  closureStatusList: any[] = [
+    {value: 'true', description: 'Close'},
+    {value: 'false', description: 'Re-Assign'}];
   origins: string[] = ['Engagement', 'Telecon', 'Email from Scheme'];
   caseValidityList: string[] = ['Valid', 'Invalid'];
   serviceProviderNetworks: any[] = [{ value: 'GEMS', description: 'Government Employee Medical Scheme' }];
@@ -53,6 +49,8 @@ export class CaseFileComponent implements OnInit {
   taskCompleted: boolean = true;
   taskName: string = '';
   taskSummaryValue: any;
+  enableTracking: boolean;
+  enableClassification: boolean = true;
 
   constructor(
     protected caseService: CaseService,
@@ -70,27 +68,16 @@ export class CaseFileComponent implements OnInit {
       this.taskSummaryValue = res;
       this.taskName = res['task-name'];
       const containerId = res['task-container-id'];
+      const processId = res['task-proc-inst-id'];
       const taskId = res['task-id'];
 
       if ( this.taskName !== 'Create Request' ) { //Any other task except for the request must go in
-
-        this.taskService.getTaskInputs(containerId, taskId).subscribe(input  => {
-
-          if ( this.taskName === TaskNames.FUND_MANAGEMENT_TASK) {
-            if (input['operations-response'] !== undefined && input['operations-response'].length > 0) {
-              this.caseForm.controls['operationsResponse'].setValue( input['operations-response']);
-              this.caseForm.controls['operationsResponse'].disable({onlySelf: true});
-              this.operationsResponse = true;
-            }
-          }
-
-          if (this.taskName === TaskNames.OPERATIONS_MANAGEMENT_TASK) {
-            this.sendToOperations = true;
-            this.operationsResponse = true;
-            this.caseForm.controls['operations'].setValue(input['operations-directive']);
-            this.caseForm.controls['operations'].disable({onlySelf: true});
-          }
-        });
+        // this.taskService.getTaskInputs(containerId, taskId).subscribe(input  => {
+        // });
+      }
+      if (this.taskName === 'Tracking') {
+        this.enableTracking = true;
+        this.enableClassification = false;
       }
 
       if ( res['task-status'] === Status.COMPLETED) {
@@ -106,26 +93,42 @@ export class CaseFileComponent implements OnInit {
 
     this.caseService.getCaseModel(this.case['container-id'], this.case['case-id']).subscribe(
       data => {
-        this.caseForm.controls['dueDate'].setValue(this.case['case-sla-due-date']);
-        this.caseForm.controls['receivedDate'].setValue(this.case['case-started-at']);
 
         if (data === null || data === undefined) {
           return;
         }
+        console.error('------------ request data ----------------');
+        console.error(data);
 
-        this.caseForm.controls['receivedFrom'].setValue(data.clientEmail);
-        this.caseForm.controls['subject'].setValue(data.subject);
-        this.caseForm.controls['description'].setValue(data.demand);
-        this.caseForm.controls['origin'].setValue(data.origin);
-        this.caseForm.controls['serviceProviderNetwork'].setValue(data.spn);
-        this.caseForm.controls['division'].setValue(data.division);
-        this.caseForm.controls['receiptAcknowledgementDate'].setValue(data.acknowledgementDate['java.util.Date']);
+        const request = data['io.jumpco.metropolitan.tracker.demand.Request'];
+
+        this.caseForm.controls['dueDate'].setValue(new Date(request['dueDate']['java.util.Date']));
+        this.caseForm.controls['receivedDate'].setValue(new Date(request['receivedDate']['java.util.Date']))
+        this.caseForm.controls['assignedDate'].setValue(new Date(request['assignedDate']['java.util.Date']));
+        this.caseForm.controls['receiptAcknowledgementDate'].setValue(new Date(request['receiptAcknowledgementDate']['java.util.Date']));
+        this.caseForm.controls['submissionDate'].setValue(new Date(request['completeDate']['java.util.Date']));
+
+        this.caseForm.controls['receivedFrom'].setValue(request['emailFrom']);
+        this.caseForm.controls['subject'].setValue(request['subject']);
+        this.caseForm.controls['description'].setValue(request['description']);
+        this.caseForm.controls['origin'].setValue(request['origin']);
+        this.caseForm.controls['serviceProviderNetwork'].setValue(request['spnInvolved'][0]);
+        this.caseForm.controls['division'].setValue(request['division']);
+        this.caseForm.controls['priority'].setValue(request['priority']);
+
+        this.caseForm.controls['fundAdministrator'].setValue(request['fmAdministrator']);
+        this.caseForm.controls['manager'].setValue(request['fmManager']);
+        this.caseForm.controls['operationsUser'].setValue(request['assignedTo']);
+        this.caseForm.controls['operationsHod'].setValue(request['assignedHod']);
+        this.caseForm.controls['tag'].setValue(request['tags'][0]);
+        this.caseForm.controls['caseValidity'].setValue(request['validity']);
+
       });
   }
 
   private initialiseFormControl() {
     this.caseForm = new FormGroup({
-      receivedDate: new FormControl({value: '', disabled: true}, [Validators.required]),
+      receivedDate: new FormControl('', [Validators.required]),
       origin: new FormControl('', Validators.required),
       receivedFrom: new FormControl('', [Validators.required, Validators.email]),
       division: new FormControl('', Validators.required),
@@ -150,11 +153,9 @@ export class CaseFileComponent implements OnInit {
       fmAllocated: new FormControl('', Validators.required),
       operations: new FormControl('', Validators.required),
       operationsResponse: new FormControl('', Validators.required),
-      createdOn: new FormControl('', Validators.required),
       caseValidity: new FormControl('', Validators.required),
       tag: new FormControl('', Validators.required),
-
-
+      closureStatus: new FormControl('', Validators.required),
 
     });
   }
@@ -162,6 +163,7 @@ export class CaseFileComponent implements OnInit {
   formSubmit(userProfileForm: FormGroup) {
 
     const formdata = userProfileForm.value;
+
     const containerId = this.taskSummaryValue['task-container-id'];
     const taskId = this.taskSummaryValue['task-id'];
     const taskStatus = this.taskSummaryValue['task-status'];
@@ -191,7 +193,8 @@ export class CaseFileComponent implements OnInit {
   }
 
   private mapper(formdata: any, taskStatus: string): CaseRequest {
-    const requestObj = new Request(formdata.createdOn,
+    const requestObj = new Request(formdata.assignedDate,
+      formdata.receivedDate,
       formdata.receiptAcknowledgementDate,
       formdata.dueDate,
       formdata.origin,
@@ -206,7 +209,7 @@ export class CaseFileComponent implements OnInit {
       [formdata.tag],
       null,
       formdata.submissionDate,
-      formdata.validity,
+      formdata.caseValidity,
       formdata.priority,
       formdata.division);
 
