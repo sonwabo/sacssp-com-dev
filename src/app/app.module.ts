@@ -24,7 +24,7 @@ import {
   NbWindowModule,
 } from '@nebular/theme';
 import { RequestInterceptor } from './pages/jbpm/request.interceptor';
-import {AuthGuard} from "./authentication/auth-guard/auth-guard.service";
+import {AuthGuard} from './authentication/auth-guard/auth-guard.service';
 
 @NgModule({
   declarations: [AppComponent],

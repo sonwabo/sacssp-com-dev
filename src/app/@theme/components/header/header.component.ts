@@ -5,9 +5,9 @@ import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import {getDeepFromObject, NB_AUTH_OPTIONS, NbAuthResult, NbAuthService} from "@nebular/auth";
-import {Router} from "@angular/router";
-import {UserDetails} from "../../../authentication/model/user.details";
+import {getDeepFromObject, NB_AUTH_OPTIONS, NbAuthResult, NbAuthService} from '@nebular/auth';
+import {Router} from '@angular/router';
+import {UserDetails} from '../../../authentication/model/user.details';
 
 @Component({
   selector: 'ngx-header',

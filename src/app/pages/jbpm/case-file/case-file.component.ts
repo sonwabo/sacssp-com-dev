@@ -83,13 +83,12 @@ export class CaseFileComponent implements OnInit {
       if ( res['task-status'] === Status.COMPLETED) {
         this.caseForm.disable({onlySelf: true});
       }
-
     });
 
     this.populateFormControls();
   }
 
-  private populateFormControls() {
+  private populateFormControls(): void {
 
     this.caseService.getCaseModel(this.case['container-id'], this.case['case-id']).subscribe(
       data => {
@@ -97,9 +96,6 @@ export class CaseFileComponent implements OnInit {
         if (data === null || data === undefined) {
           return;
         }
-        console.error('------------ request data ----------------');
-        console.error(data);
-
         const request = data['io.jumpco.metropolitan.tracker.demand.Request'];
 
         this.caseForm.controls['dueDate'].setValue(new Date(request['dueDate']['java.util.Date']));
