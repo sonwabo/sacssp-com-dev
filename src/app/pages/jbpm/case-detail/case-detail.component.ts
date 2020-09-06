@@ -12,7 +12,6 @@ export class CaseDetailComponent implements OnInit {
   case: any = {};
   taskSummaries: any[];
   currentTaskSummary: Promise<any>;
-  selectedIndex: number = 0;
 
   @ViewChild('stepper') stepper: NbStepperComponent;
 
@@ -27,9 +26,9 @@ export class CaseDetailComponent implements OnInit {
           this.taskSummaries = value['task-summary'];
           this.taskSummaries.sort((a, b) =>   a['task-id'] < b['task-id'] ? -1 : a['task-id'] > b['task-id'] ? 1 : 0);
 
-          const orderNum = this.taskSummaries[this.taskSummaries.length === 0? 0 : this.taskSummaries.length - 1];
+          const orderNum = this.taskSummaries[this.taskSummaries.length === 0 ? 0 : this.taskSummaries.length - 1];
           this.currentTaskSummary = Promise.resolve(orderNum);
-        }
+        },
      );
     }
   }

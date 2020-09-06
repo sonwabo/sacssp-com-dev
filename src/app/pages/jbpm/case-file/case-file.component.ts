@@ -1,4 +1,4 @@
-import { Request, CaseRequest, Settings, Status } from './../../../jbpm/domain/demand';
+import {Request, CaseRequest, Settings, Status, TaskNames} from './../../../jbpm/domain/demand';
 import { ProcessService } from './../../../jbpm/service/process.service';
 import { TaskService } from './../../../jbpm/service/task.service';
 import {
@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { CaseService } from '../../../jbpm/service/case.service';
+import {NbToastrService} from "@nebular/theme";
 
 @Component({
   selector: 'ngx-case-file',
@@ -24,8 +25,8 @@ export class CaseFileComponent implements OnInit {
   caseForm: FormGroup;
 
   closureStatusList: any[] = [
-    {value: 'true', description: 'Close'},
-    {value: 'false', description: 'Re-Assign'}];
+    {value: true, description: 'Close'},
+    {value: false, description: 'Re-Assign'}];
   origins: string[] = ['Engagement', 'Telecon', 'Email from Scheme'];
   caseValidityList: string[] = ['Valid', 'Invalid'];
   serviceProviderNetworks: any[] = [{ value: 'GEMS', description: 'Government Employee Medical Scheme' }];
@@ -56,6 +57,7 @@ export class CaseFileComponent implements OnInit {
     protected caseService: CaseService,
     protected taskService: TaskService,
     protected processService: ProcessService,
+    private toastrService: NbToastrService,
     protected router: Router,
     protected http: HttpClient) {
   }
@@ -67,15 +69,8 @@ export class CaseFileComponent implements OnInit {
     this.taskSummary.then(res => {
       this.taskSummaryValue = res;
       this.taskName = res['task-name'];
-      const containerId = res['task-container-id'];
-      const processId = res['task-proc-inst-id'];
-      const taskId = res['task-id'];
 
-      if ( this.taskName !== 'Create Request' ) { //Any other task except for the request must go in
-        // this.taskService.getTaskInputs(containerId, taskId).subscribe(input  => {
-        // });
-      }
-      if (this.taskName === 'Tracking') {
+      if (this.taskName === TaskNames.TRACKING) {
         this.enableTracking = true;
         this.enableClassification = false;
       }
@@ -99,7 +94,7 @@ export class CaseFileComponent implements OnInit {
         const request = data['io.jumpco.metropolitan.tracker.demand.Request'];
 
         this.caseForm.controls['dueDate'].setValue(new Date(request['dueDate']['java.util.Date']));
-        this.caseForm.controls['receivedDate'].setValue(new Date(request['receivedDate']['java.util.Date']))
+        this.caseForm.controls['receivedDate'].setValue(new Date(request['receivedDate']['java.util.Date']));
         this.caseForm.controls['assignedDate'].setValue(new Date(request['assignedDate']['java.util.Date']));
         this.caseForm.controls['receiptAcknowledgementDate'].setValue(new Date(request['receiptAcknowledgementDate']['java.util.Date']));
         this.caseForm.controls['submissionDate'].setValue(new Date(request['completeDate']['java.util.Date']));
@@ -178,13 +173,22 @@ export class CaseFileComponent implements OnInit {
     this.taskService.getTaskInformation(containerId, taskId).subscribe(taskRes => {
 
         const caseRequest: CaseRequest = this.mapper(formdata, taskRes['task-status']);
-        this.taskService.completeClaimedTask(containerId, taskId, caseRequest).subscribe(res => {
-          alert('Task Completed Successfullty');
-          this.router.navigate(['pages/jbpm/cases-table'], {replaceUrl: true});
-        }, error => {
+        caseRequest.closureStatus = ( taskRes['task-name'] === TaskNames.TRACKING
+                      && formdata.closureStatus);
+
+        if (!caseRequest.closureStatus && taskRes['task-name'] === TaskNames.TRACKING) {
+            this.taskService.releaseTask(containerId, taskId).subscribe(res => {
+              this.showToast('Task has been released successfully');
+            });
+
+        } else {
+          this.taskService.completeClaimedTask(containerId, taskId, caseRequest).subscribe(res => {
+            this.showToast('Task completed successfully');
+          }, error => {
             console.error('========= Task Complete Error ===========');
             console.error(error );
-        });
+          });
+        }
    });
   }
 
@@ -209,10 +213,13 @@ export class CaseFileComponent implements OnInit {
       formdata.priority,
       formdata.division);
 
-     const caseInputs: CaseRequest = new CaseRequest(requestObj, new Settings(), taskStatus, [] );
+     const caseInputs: CaseRequest = new CaseRequest(requestObj, new Settings(), taskStatus, false ,[]);
      return caseInputs;
   }
 
+   private navigate(): void {
+     this.router.navigate(['pages/jbpm/cases-table'], {replaceUrl: true});
+   }
 
   private disableForm(): void {
 
@@ -229,5 +236,29 @@ export class CaseFileComponent implements OnInit {
     this.caseForm.controls['fmAllocated'].disable({onlySelf: true});
     this.caseForm.controls['submissionDate'].disable({onlySelf: true});
     this.caseForm.controls['operations'].disable({onlySelf: true});
+  }
+
+  showToast(msg: string): void {
+    // @ts-ignore
+    this.toastrService.show(
+      `${msg}`,
+      ``,
+      {
+        destroyByClick: false,
+        duplicatesBehaviour: undefined,
+        duration: 3000,
+        hasIcon: false,
+        icon: undefined,
+        iconPack: '',
+        limit: 0,
+        preventDuplicates: true,
+        status: 'success',
+        toastClass: '',
+        // @ts-ignore
+        position: 'top-end'});
+
+    setTimeout(() => {
+        this.navigate();
+    }, 3000);
   }
 }

@@ -18,7 +18,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
   userPictureOnly: boolean = false;
-  user: any;
+  user: { name: '', picture: ''};
 
   themes = [
     {
@@ -60,7 +60,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.currentTheme = this.themeService.currentTheme;
-
     // this.userService.getUsers()
     //   .pipe(takeUntil(this.destroy$))
     //   .subscribe((users: any) => this.user = users.nick);
@@ -90,7 +89,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   logout(strategy: string): void {
     this.service.logout(strategy).subscribe((result: NbAuthResult) => {
         UserDetails.owner = null;
-       return this.router.navigate(['verify/login'], {replaceUrl: true});
+      setTimeout(() => {
+        return this.router.navigate(['verify/login'], {replaceUrl: true});
+      }, 1000);
     });
   }
 

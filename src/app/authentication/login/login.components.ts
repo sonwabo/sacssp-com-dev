@@ -9,6 +9,7 @@ import {UserDetails} from '../model/user.details';
 export class NgxLoginComponent extends NbLoginComponent {
   login() {
     UserDetails.owner = this.user.email;
+    this.user.name = UserDetails.owner;
     super.login();
   }
 }

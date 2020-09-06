@@ -1,7 +1,7 @@
 import { environment } from './../../../../environments/environment';
 import { Component } from '@angular/core';
 import { CaseService } from '../../../jbpm/service/case.service';
-import { LocalDataSource, ServerDataSource } from 'ng2-smart-table';
+import { ServerDataSource } from 'ng2-smart-table';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CaseStatusRenderComponent } from '../blocks/case-status-render.component';
@@ -15,6 +15,8 @@ import {UserDetails} from '../../../authentication/model/user.details';
   styleUrls: ['./cases-table.component.scss'],
 })
 export class CasesTableComponent {
+
+  static CASES: string = 'Cases';
 
   settings = {
     mode: 'external',
@@ -72,7 +74,8 @@ export class CasesTableComponent {
     },
   };
 
-   source: ServerDataSource;
+  source: ServerDataSource;
+  loading: boolean = true;
 
   constructor(
     protected service: CaseService,
@@ -82,26 +85,51 @@ export class CasesTableComponent {
     this.source = this.loadCases();
   }
 
-  loadCases(): ServerDataSource {
-    const datasource = new ServerDataSource(this.http,
-      { endPoint: `${environment.baseUrl}/queries/cases/instances?owner=${UserDetails.owner}`, dataKey: 'instances' });
+  loadCases(allCases: boolean = false): ServerDataSource {
+    let datasource: ServerDataSource  = null;
+
+    if (!allCases) {
+      datasource = new ServerDataSource(this.http,
+        // tslint:disable-next-line:max-line-length
+        { endPoint: `${environment.baseUrl}/queries/cases/instances?owner=${UserDetails.owner}`, dataKey: 'instances' });
+    } else {
+      datasource = new ServerDataSource(this.http,
+        { endPoint: `${environment.baseUrl}/queries/cases/instances`, dataKey: 'instances' });
+    }
+    datasource.getElements().then(value => {
+      this.isLoading(false);
+    });
     return datasource;
   }
 
   onEdit(event): void {
+    this.isLoading(true);
     const _data = event.data;
-    this.router.navigate(['pages/jbpm/case-detail'],
-      { state: { data: { case: _data } } });
+    this.router.navigate(['pages/jbpm/case-detail'], { state: { data: { case: _data } } });
+    this.isLoading(false);
   }
 
   onCreateConfirm(event) {
+      this.isLoading(true);
       this.service.createCase(environment.containerId, environment.caseDefinition).subscribe(res => {
         this.source = this.loadCases();
         this.source.load;
+        this.service.getCase(environment.containerId, res).subscribe(_res => {
+            this.router.navigate(['pages/jbpm/case-detail'], { state: { data: { case: _res } } });
+            this.isLoading(false);
+        });
       }, err => {
           console.error(' ======== Error ======== ');
           console.error( err );
       });
+  }
+
+  private isLoading(loading: boolean ): void {
+    this.loading = loading;
+  }
+
+  onSelectedTab(_event: any): void {
+     this.loadCases((_event.tabTitle === CasesTableComponent.CASES) );
   }
 
 }

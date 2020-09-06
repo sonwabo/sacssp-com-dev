@@ -3,7 +3,7 @@ import {
   NbCardModule, NbIconModule, NbInputModule,
   NbTreeGridModule, NbTabsetModule, NbStepperModule,
   NbTooltipModule, NbDatepickerModule, NbSelectModule,
-  NbAccordionModule, NbButtonModule, NbDialogModule, NbCheckboxModule
+  NbAccordionModule, NbButtonModule, NbDialogModule, NbCheckboxModule, NbSpinnerModule, NbToastrModule
 } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
@@ -16,8 +16,8 @@ import { FundManagementUpdateRequestComponent } from './fm-update-request/fund-m
 import { ReactiveFormsModule } from '@angular/forms';
 import { TaskCommentsComponent } from './task-comments/task-comments.component';
 import { CaseFileComponent } from './case-file/case-file.component';
-import {CaseDocumentComponent} from "./case-documents/case-document.component";
-import {DocumentRenderComponent} from "./blocks/document-render.component";
+import {CaseDocumentComponent} from './case-documents/case-document.component';
+import {DocumentRenderComponent} from './blocks/document-render.component';
 
 
 
@@ -40,6 +40,8 @@ import {DocumentRenderComponent} from "./blocks/document-render.component";
     NbButtonModule,
     NbDialogModule,
     NbCheckboxModule,
+    NbSpinnerModule,
+    NbToastrModule.forRoot(),
   ],
   declarations: [
     ...routedComponents,
@@ -56,6 +58,6 @@ import {DocumentRenderComponent} from "./blocks/document-render.component";
     CaseStatusRenderComponent,
     SlaComplianceRenderComponent,
     EpochDateRenderComponent,
-  ]
+  ],
 })
 export class JbpmModule { }

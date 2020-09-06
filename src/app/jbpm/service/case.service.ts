@@ -57,7 +57,7 @@ export class CaseService {
   }
 
   createCase(containerId: string, caseDefinition: string, administrator?: string, manager?: string): Observable<any> {
-    const case_ass = {'owner' : UserDetails.owner};
+    const case_ass = {'administrator' : UserDetails.owner, 'reviewer': UserDetails.owner};
     const data = {};
     const group = {};
     const restrictions = {};

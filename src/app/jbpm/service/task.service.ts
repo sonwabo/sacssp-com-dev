@@ -72,13 +72,26 @@ export class TaskService {
     const settings = {'io.jumpco.metropolitan.tracker.demand.Settings' : parentRequest.settings};
     const documents = {};
     // {'org.jbpm.document.service.impl.DocumentImpl' : parentRequest.attachments};
-    const body = {
+    let  body = {
       status : parentRequest.status,
       'request' : request,
       'settings' : settings,
       'attachments' : {documents : []},
     };
+
+    if ( parentRequest.closureStatus ) {
+      // @ts-ignore
+      body = {'closeCase': parentRequest.closureStatus};
+    }
+
     return this.http.put<any[]>(url, body);
+  }
+
+  releaseTask(container: string, taskid: string):  Observable<any> {
+    const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/released`;
+    const params = new HttpParams();
+    params.set('user', UserDetails.owner);
+    return this.http.put<any[]>(url, { headers: this.getHeaders(), params });
   }
 
   private getHeaders(): HttpHeaders {

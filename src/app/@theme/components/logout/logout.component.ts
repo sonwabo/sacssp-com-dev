@@ -13,7 +13,7 @@ import { NbAuthService, NB_AUTH_OPTIONS, NbAuthResult, getDeepFromObject } from 
 })
 export class NbLogoutComponent implements OnInit {
 
-  redirectDelay: number = 0;
+  redirectDelay: number = 1000;
   strategy: string = '';
 
   constructor(protected service: NbAuthService,

@@ -95,20 +95,7 @@
         </label><input nbInput fullWidth type="text" formControlName="operationsHod" id="input-operation-head">
         <br/>
 
-        <!--      <div *ngIf="taskName && 'Fund Management Update Task' === taskName || 'Operations Update Task' === taskName ">-->
-        <!--        <textarea *ngIf="sendToOperations" nbInput fullWidth type="text" formControlName="operations"-->
-        <!--                  id="input-operations-text" placeholder="Instructions for operations"></textarea><br/>-->
-
-        <!--        <div *ngIf="operationsResponse">-->
-        <!--          <label class="label" for="input-operations-response-text">Operation Feedback-->
-        <!--            <nb-icon icon="question-mark-circle" nbTooltip="Response From Operations" nbTooltipStatus="primary"-->
-        <!--                     status="info"></nb-icon>-->
-        <!--          </label>-->
-        <!--          <textarea *ngIf="operationsResponse" nbInput fullWidth type="text" formControlName="operationsResponse"-->
-        <!--                    id="input-operations-response-text" placeholder="Operations feedback"></textarea><br/>-->
-        <!--        </div>-->
         <button *ngIf="taskCompleted" nbButton type="submit" color="blue" (click)="formSubmit(caseForm)">Submit</button>
-
       </div>
 
       <div class="col">

@@ -138,14 +138,16 @@ export class CaseRequest {
       Skippable?: string;
       Actorid?: string;
       GroupId?: string;
+      closureStatus: boolean;
 
 
   constructor(request: Request,
               settings: Settings,
               status: string,
+              closureStatus: boolean = false,
               attachments?: any,
-              comment?: string,
               taskName?: string,
+              comment?: string,
               nodeName?: string,
               skippable?: string,
               actorid?: string,
@@ -158,6 +160,7 @@ export class CaseRequest {
           this.Skippable = skippable;
           this.Actorid = actorid;
           this.GroupId = groupid;
+          this.closureStatus = closureStatus;
       }
 }
 
@@ -206,4 +209,5 @@ export class CaseRequest {
     FUND_MANAGEMENT_TASK = 'Fund Management Update Task',
     OPERATIONS_MANAGEMENT_TASK = 'Operations Update Task',
     MANUAL_CLASSIFICATION = 'Manual Classification',
+    TRACKING = 'Tracking',
   }
