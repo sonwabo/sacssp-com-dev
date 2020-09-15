@@ -10,6 +10,7 @@ export class NgxLoginComponent extends NbLoginComponent {
   login() {
     UserDetails.owner = this.user.email;
     this.user.name = UserDetails.owner;
+    UserDetails.hideMenu = (this.user.email === 'operations_sme');
     super.login();
   }
 }

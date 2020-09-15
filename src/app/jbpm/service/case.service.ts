@@ -2,8 +2,7 @@ import { environment } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { flatMap, map } from 'rxjs/operators';
-import {UserDetails} from '../../authentication/model/user.details';
+import { flatMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -45,6 +44,16 @@ export class CaseService {
     return this.http.get<any[]>(`${environment.baseUrl}/containers/${containerId}/cases/instances/${caseId}/caseFile/request`);
   }
 
+  getCaseInstances(containerId: string, caseDefId: string): Observable<any> {
+    const headers = new HttpHeaders();
+    const params = new HttpParams();
+    // return this.http.get<any[]>(`${environment.baseUrl}/containers/${containerId}/cases/${caseDefId}/instances`, {
+      return this.http.get<any[]>(`${environment.baseUrl}/containers/${containerId}/cases/instances`, {
+      headers: headers,
+      params: params,
+    });
+  }
+
   getCase(containerId: string, caseId: string): Observable<any> {
     const headers = new HttpHeaders();
     const params = new HttpParams()
@@ -57,13 +66,15 @@ export class CaseService {
   }
 
   createCase(containerId: string, caseDefinition: string, administrator?: string, manager?: string): Observable<any> {
-    const case_ass = {'administrator' : UserDetails.owner, 'reviewer': UserDetails.owner};
+  //  const case_ass = {'administrator' : UserDetails.owner, 'reviewer': UserDetails.owner};
+    const case_ass = {'administrator' : environment.administrator, 'reviewer': environment.reviewer };
     const data = {};
     const group = {};
     const restrictions = {};
     // @ts-ignore
     const url = `${environment.baseUrl}/containers/${containerId}/cases/${caseDefinition}/instances`;
-    return this.http.post<any[]>(url ,  { 'case-data': data,
+    return this.http.post<any[]>(url ,  {
+      'case-data': data,
       'case-user-assignments': case_ass,
       'case-group-assignments': group,
       'case-data-restrictions': restrictions  } );
@@ -76,6 +87,20 @@ export class CaseService {
     const url = `${environment.baseUrl}/containers/${containerId}/cases/instances/${caseId}`;
 
     return this.http.post<any[]>(url, { headers: headers, params : params } );
+  }
+
+  search(_url: string, method: string, body: string ): Observable<any> {
+    const url = `${environment.baseUrl}${_url}`;
+    if (method === 'post') {
+        return   this.http.post<any[]>(url, body);
+    }
+    if (method === 'put') {
+      return   this.http.post<any[]>(url, body);
+    }
+    if (method === 'get') {
+      return   this.http.get<any[]>(url, {});
+    }
+    return null;
   }
 
   private getHeaders(): HttpHeaders {

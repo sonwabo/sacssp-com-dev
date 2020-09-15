@@ -34,15 +34,6 @@ export class CaseStatusRenderComponent implements ViewCell, OnInit {
             default:
                 this.status = 'Unknown';
                 break;
-        };
-
-      // this.caseService.getTasks(this.rowData['container-id'], this.rowData['case-id']).subscribe(
-      //   res => {
-      //     const taskSummaries = res['task-summary'];
-      //     taskSummaries.sort((a, b) =>   a['task-id'] < b['task-id'] ? -1 : a['task-id'] > b['task-id'] ? 1 : 0);
-      //     const finalTask = taskSummaries[taskSummaries.length === 0 ? 0 : taskSummaries.length - 1];
-      //     this.status = finalTask['task-status'];
-      //   },
-      //);
+        }
     }
 }

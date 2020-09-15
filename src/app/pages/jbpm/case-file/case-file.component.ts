@@ -10,7 +10,8 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { CaseService } from '../../../jbpm/service/case.service';
-import {NbToastrService} from "@nebular/theme";
+import {NbToastrService} from '@nebular/theme';
+import {UserDetails} from '../../../authentication/model/user.details';
 
 @Component({
   selector: 'ngx-case-file',
@@ -49,6 +50,8 @@ export class CaseFileComponent implements OnInit {
   operationsResponse: boolean = false;
   taskCompleted: boolean = true;
   taskName: string = '';
+  caseId: string = '';
+
   taskSummaryValue: any;
   enableTracking: boolean;
   enableClassification: boolean = true;
@@ -66,13 +69,28 @@ export class CaseFileComponent implements OnInit {
 
     this.initialiseFormControl();
 
+    console.error('=========  Error ==============');
+    console.error(this.taskSummary);
+
     this.taskSummary.then(res => {
       this.taskSummaryValue = res;
       this.taskName = res['task-name'];
+      this.caseId = this.case['case-id'];
 
       if (this.taskName === TaskNames.TRACKING) {
         this.enableTracking = true;
         this.enableClassification = false;
+
+        this.taskService.getTaskInputs(
+          res['task-container-id'],
+          res['task-id']).subscribe( inputs => {
+          this.populateFields(inputs['request']);
+        });
+
+        this.processService.getProcessInformation(
+          res['task-container-id'],
+          res['task-proc-inst-id'])
+          .subscribe(proces => this.caseId = proces['correlation-key'] );
       }
 
       if ( res['task-status'] === Status.COMPLETED) {
@@ -84,37 +102,68 @@ export class CaseFileComponent implements OnInit {
   }
 
   private populateFormControls(): void {
-
+   if (this.case === undefined && this.case['case-id'] === undefined) { return; }
     this.caseService.getCaseModel(this.case['container-id'], this.case['case-id']).subscribe(
       data => {
-
         if (data === null || data === undefined) {
           return;
         }
-        const request = data['io.jumpco.metropolitan.tracker.demand.Request'];
-
-        this.caseForm.controls['dueDate'].setValue(new Date(request['dueDate']['java.util.Date']));
-        this.caseForm.controls['receivedDate'].setValue(new Date(request['receivedDate']['java.util.Date']));
-        this.caseForm.controls['assignedDate'].setValue(new Date(request['assignedDate']['java.util.Date']));
-        this.caseForm.controls['receiptAcknowledgementDate'].setValue(new Date(request['receiptAcknowledgementDate']['java.util.Date']));
-        this.caseForm.controls['submissionDate'].setValue(new Date(request['completeDate']['java.util.Date']));
-
-        this.caseForm.controls['receivedFrom'].setValue(request['emailFrom']);
-        this.caseForm.controls['subject'].setValue(request['subject']);
-        this.caseForm.controls['description'].setValue(request['description']);
-        this.caseForm.controls['origin'].setValue(request['origin']);
-        this.caseForm.controls['serviceProviderNetwork'].setValue(request['spnInvolved'][0]);
-        this.caseForm.controls['division'].setValue(request['division']);
-        this.caseForm.controls['priority'].setValue(request['priority']);
-
-        this.caseForm.controls['fundAdministrator'].setValue(request['fmAdministrator']);
-        this.caseForm.controls['manager'].setValue(request['fmManager']);
-        this.caseForm.controls['operationsUser'].setValue(request['assignedTo']);
-        this.caseForm.controls['operationsHod'].setValue(request['assignedHod']);
-        this.caseForm.controls['tag'].setValue(request['tags'][0]);
-        this.caseForm.controls['caseValidity'].setValue(request['validity']);
-
+        this.populateFields(data);
       });
+  }
+
+  private populateFields(data) {
+    const request = data['io.jumpco.metropolitan.tracker.demand.Request'];
+
+    this.setDatesOnFields(request);
+
+    this.caseForm.controls['receivedFrom'].setValue(request['emailFrom']);
+    this.caseForm.controls['subject'].setValue(request['subject']);
+    this.caseForm.controls['description'].setValue(request['description']);
+    this.caseForm.controls['origin'].setValue(request['origin']);
+
+    if ( request['spnInvolved']) {
+      this.caseForm.controls['serviceProviderNetwork'].setValue(request['spnInvolved'][0]);
+    }
+    this.caseForm.controls['division'].setValue(request['division']);
+    this.caseForm.controls['priority'].setValue(request['priority']);
+
+    this.caseForm.controls['fundAdministrator'].setValue(request['fmAdministrator']);
+    this.caseForm.controls['manager'].setValue(request['fmManager']);
+    this.caseForm.controls['operationsUser'].setValue(request['assignedTo']);
+    this.caseForm.controls['operationsHod'].setValue(request['assignedHod']);
+    this.caseForm.controls['caseValidity'].setValue(request['validity']);
+    if ( request['tags']) {
+      this.caseForm.controls['tag'].setValue(request['tags'][0]);
+    }
+  }
+
+  private getDate(value: string, data: any): Date {
+    if (data[`${value}`]) {
+      const date = (data[`${value}`]['java.util.Date']) ? data[`${value}`]['java.util.Date'] : data[`${value}`]['java.sql.Timestamp'];
+      return new Date(date);
+    }
+    return null;
+  }
+
+  private setDatesOnFields(request): void {
+    if (this.getDate('dueDate', request)) {
+      this.caseForm.controls['dueDate'].setValue(this.getDate('receivedDate', request));
+    }
+    if (this.getDate('receivedDate', request) !== null) {
+      this.caseForm.controls['receivedDate'].setValue(this.getDate('receivedDate', request));
+    }
+    if (this.getDate('assignedDate', request)) {
+      this.caseForm.controls['assignedDate'].setValue(this.getDate('assignedDate', request));
+    }
+    if (this.getDate('receiptAcknowledgementDate', request)) {
+      this.caseForm.controls['receiptAcknowledgementDate']
+        .setValue(this.getDate('receiptAcknowledgementDate', request));
+    }
+    if (this.getDate('completeDate', request)) {
+      this.caseForm.controls['submissionDate']
+        .setValue(this.getDate('completeDate', request));
+    }
   }
 
   private initialiseFormControl() {
@@ -213,7 +262,7 @@ export class CaseFileComponent implements OnInit {
       formdata.priority,
       formdata.division);
 
-     const caseInputs: CaseRequest = new CaseRequest(requestObj, new Settings(), taskStatus, false ,[]);
+     const caseInputs: CaseRequest = new CaseRequest(requestObj, new Settings(), taskStatus, false , []);
      return caseInputs;
   }
 

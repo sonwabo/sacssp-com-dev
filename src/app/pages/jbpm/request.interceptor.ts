@@ -8,16 +8,17 @@ import {map, switchMap, tap} from 'rxjs/operators';
 export class RequestInterceptor implements HttpInterceptor, OnInit, OnDestroy {
 
   private static authUrl: string = 'auth/realms';
+  private static be: string = 'demandtracker';
+
 
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(private authService: NbAuthService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if ( request.url.match(RequestInterceptor.authUrl)) {
+    if ( request.url.match(RequestInterceptor.authUrl) || request.url.match(RequestInterceptor.be) ) {
        return next.handle(request);
     }
-
     return this.authService.isAuthenticatedOrRefresh()
       .pipe(
         switchMap(authenticated => {

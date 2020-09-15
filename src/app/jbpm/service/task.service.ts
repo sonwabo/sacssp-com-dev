@@ -1,17 +1,18 @@
-import {CustomKeys, CaseRequest} from './../domain/demand';
-import { HeaderComponent } from './../../@theme/components/header/header.component';
+import { CaseRequest} from './../domain/demand';
 import { environment } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {UserDetails} from '../../authentication/model/user.details';
+import { UserDetails } from '../../authentication/model/user.details';
+import { ProcessService } from './process.service';
+import { CaseService } from './case.service';
 
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, protected processService: ProcessService, private caseService: CaseService) { }
 
   get(): Observable<any[]> {
     return this.http.get<any[]>(`${environment.baseUrl}/queries/tasks/instances`);
@@ -34,9 +35,31 @@ export class TaskService {
       return this.http.get<any[]>(url, { headers: this.getHeaders(), params : new HttpParams() });
   }
 
+  getTaskOutput(containerId: string, taskid: string): Observable<any[]> {
+    const url = `${environment.baseUrl}/containers/${containerId}/tasks/${taskid}/contents/output`;
+    return this.http.get<any[]>(url, { headers: this.getHeaders(), params : new HttpParams() });
+  }
+
+
   getTaskInputs(containerId: string, taskid: string): Observable<any[]> {
     const url = `${environment.baseUrl}/containers/${containerId}/tasks/${taskid}/contents/input`;
     return this.http.get<any[]>(url, { headers: this.getHeaders(), params : new HttpParams() });
+  }
+
+  // @ts-ignore
+  getPotOwnerTasks(): Observable<any> {
+    const url = `${environment.baseUrl}/queries/tasks/instances/pot-owners?user=${UserDetails.owner}`;
+    return new Observable<any>(obs => {
+      this.http.get<any[]>(url, { headers: this.getHeaders(), params : new HttpParams() }).subscribe(value => {
+        this.processService.getProcessInformation(value['task-summary'][0]['task-container-id'],
+          value['task-summary'][0]['task-proc-inst-id'])
+          .subscribe(proces => {
+            this.caseService.getCaseInstances(proces['container-id'], proces['process-id'])
+              .subscribe( _case =>
+                obs.next(_case));
+          });
+      });
+    });
   }
 
   activateTask(container: string, taskid: string): void {
@@ -76,7 +99,6 @@ export class TaskService {
       status : parentRequest.status,
       'request' : request,
       'settings' : settings,
-      'attachments' : {documents : []},
     };
 
     if ( parentRequest.closureStatus ) {

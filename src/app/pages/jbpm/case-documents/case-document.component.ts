@@ -76,9 +76,12 @@ export class CaseDocumentComponent implements OnInit, AfterViewInit {
 
   loadDocument(): void {
     this.documentService.getDocument(this.case['container-id'], this.case['case-id']).subscribe(res => {
-        if (res['documents']) {
-          this.documentsArray =  res['documents'];
-          const temp: Array<any> =  res['documents'];
+        const attachments =  res['attachments'];
+        console.error('<<<<<<<<<<<<<<< Documents >>>>>>>>>>>>>>> ');
+        console.error(attachments);
+        if (attachments !== undefined &&  attachments['documents']) {
+          this.documentsArray =  attachments['documents'];
+          const temp: Array<any> =  attachments['documents'];
           temp.forEach(value => {
             const doc: Document = value['org.jbpm.document.service.impl.DocumentImpl'] as Document;
             this.uploadedDocs.push(doc);

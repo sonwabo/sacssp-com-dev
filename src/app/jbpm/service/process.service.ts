@@ -2,7 +2,6 @@ import { environment } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {UserDetails} from '../../authentication/model/user.details';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +24,11 @@ export class ProcessService {
 
   getProcessVariable(container: string, processInstanceId: string, varName: string): Observable<any> {
     const url = `${environment.baseUrl}/containers/${container}/processes/instances/${processInstanceId}/variables`;
+    return this.http.get<any[]>(url, { headers: this.getHeaders()});
+  }
+
+  getProcessInformation(containerid: string, processInstanceId: string): Observable<any> {
+    const url = `${environment.baseUrl}/containers/${containerid}/processes/instances/${processInstanceId}`;
     return this.http.get<any[]>(url, { headers: this.getHeaders()});
   }
 

@@ -4,10 +4,9 @@ import { CaseService } from '../../../jbpm/service/case.service';
 import { ServerDataSource } from 'ng2-smart-table';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { CaseStatusRenderComponent } from '../blocks/case-status-render.component';
-import { SlaComplianceRenderComponent } from '../blocks/sla-compliance-render.component';
-import { EpochDateRenderComponent } from '../blocks/epoch-date-render.component';
-import {UserDetails} from '../../../authentication/model/user.details';
+import { UserDetails } from '../../../authentication/model/user.details';
+import { TaskService } from '../../../jbpm/service/task.service';
+import { case_table_settings, task_table_settings } from './table-settings';
 
 @Component({
   selector: 'ngx-cases-table',
@@ -17,89 +16,33 @@ import {UserDetails} from '../../../authentication/model/user.details';
 export class CasesTableComponent {
 
   static CASES: string = 'Cases';
-
-  settings = {
-    mode: 'external',
-    actions: {
-      add: false,
-      edit: true,
-      delete: false,
-      position: 'right',
-    },
-    add: {
-      addButtonContent: '<i class="nb-plus"></i>',
-      confirmCreate: true,
-    },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-      confirmSave: true,
-    },
-    columns: {
-      'case-id': {
-        title: 'ID',
-      },
-      'case-description': {
-        title: 'Description',
-      },
-      'case-owner': {
-        title: 'Owner',
-      },
-      'case-status': {
-        title: 'Status',
-        type: 'custom',
-        renderComponent: CaseStatusRenderComponent,
-      },
-      'case-sla-compliance': {
-        title: 'SLA',
-        type: 'custom',
-        renderComponent: SlaComplianceRenderComponent,
-      },
-      'case-started-at': {
-        title: 'Created',
-        type: 'custom',
-        renderComponent: EpochDateRenderComponent,
-      },
-      'case-sla-due-date': {
-        title: 'Due',
-        type: 'custom',
-        renderComponent: EpochDateRenderComponent,
-      },
-      'case-completed-at': {
-        title: 'Completed',
-        type: 'custom',
-        renderComponent: EpochDateRenderComponent,
-      },
-    },
-  };
-
   source: ServerDataSource;
+  taskSource: ServerDataSource;
   loading: boolean = true;
+
+  settings = case_table_settings;
+  taskSettings = task_table_settings;
+  reviewer: boolean = (UserDetails.owner === 'operations_sme');
 
   constructor(
     protected service: CaseService,
+    protected taskService: TaskService,
     protected router: Router,
     protected http: HttpClient) {
-      // tslint:disable-next-line:max-line-length
-    this.source = this.loadCases();
+
+    this.loadCases();
   }
 
-  loadCases(allCases: boolean = false): ServerDataSource {
-    let datasource: ServerDataSource  = null;
-
-    if (!allCases) {
-      datasource = new ServerDataSource(this.http,
-        // tslint:disable-next-line:max-line-length
-        { endPoint: `${environment.baseUrl}/queries/cases/instances?owner=${UserDetails.owner}`, dataKey: 'instances' });
-    } else {
-      datasource = new ServerDataSource(this.http,
-        { endPoint: `${environment.baseUrl}/queries/cases/instances`, dataKey: 'instances' });
-    }
-    datasource.getElements().then(value => {
+  loadCases(allCases: boolean = false): void {
+    this.source = new ServerDataSource(this.http,
+       { endPoint: `${environment.baseUrl}/queries/cases/instances?owner=${UserDetails.owner}`,
+          dataKey: 'instances' });
+    this.taskSource = new ServerDataSource(this.http,
+       { endPoint: `${environment.baseUrl}/queries/tasks/instances/pot-owners?user=${UserDetails.owner}`,
+          dataKey: 'task-summary' });
+    this.source.getElements().then(value => {
       this.isLoading(false);
     });
-    return datasource;
   }
 
   onEdit(event): void {
@@ -112,16 +55,13 @@ export class CasesTableComponent {
   onCreateConfirm(event) {
       this.isLoading(true);
       this.service.createCase(environment.containerId, environment.caseDefinition).subscribe(res => {
-        this.source = this.loadCases();
+        this.loadCases();
         this.source.load;
         this.service.getCase(environment.containerId, res).subscribe(_res => {
             this.router.navigate(['pages/jbpm/case-detail'], { state: { data: { case: _res } } });
             this.isLoading(false);
         });
-      }, err => {
-          console.error(' ======== Error ======== ');
-          console.error( err );
-      });
+      }, err => { });
   }
 
   private isLoading(loading: boolean ): void {
