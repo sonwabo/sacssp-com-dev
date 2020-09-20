@@ -19,7 +19,6 @@ export class CaseDetailComponent implements OnInit {
   }
 
   public constructor(private caseService: CaseService) {
-    console.error('=======>>>>>>>>> =====');
     if (history.state.data && history.state.data.case && history.state.data.case['case-id'] !== undefined) {
       this.case = history.state.data.case;
       console.error(this.case );

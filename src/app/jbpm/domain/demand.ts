@@ -34,6 +34,8 @@ export class Demand {
 
 export class Request {
 
+  id: number;
+  mappedVariables: Array<any>;
   origin: string;
   emailFrom: string;
   subject: string;
@@ -54,8 +56,13 @@ export class Request {
   division: string;
   validity: string;
 
+  requestType: string;
+  requestStatus: string;
+  caseId: string;
+
   // tslint:disable-next-line:max-line-length
-  constructor(assignedDate: any,
+  constructor(
+              assignedDate: any,
               receivedDate: any,
               acknowledgementDate: any,
               dueDate: any,
@@ -73,7 +80,13 @@ export class Request {
               completeDate: any,
               validity: string,
               priority: number,
-              division: string) {
+              division: string,
+              requestType?: string,
+              requestStatus?: string,
+              caseId?: string,
+              id?: number,
+              mappedVariables?: Array<any>) {
+
 
     const assignedDateOnDate  = ( assignedDate instanceof Date )
       ? assignedDate.getTime()
@@ -101,20 +114,27 @@ export class Request {
       : completeDate;
     this.completeDate = {'java.util.Date' : _completeDate };
 
-    this.division = division;
-    this.origin = origin;
-    this.subject = subject;
-    this.emailFrom = emailFrom;
-    this.description = description;
+    this.division = division?.trim();
+    this.origin = origin?.trim();
+    this.subject = subject?.trim();
+    this.emailFrom = emailFrom?.trim();
+    this.description = description?.trim();
     this.priority = priority;
-    this.assignedTo = assignedTo;
-    this.assignedHod = assignedHod;
-    this.fmAdministrator = fmAdministrator;
-    this.fmManager = fmManager;
+    this.assignedTo = assignedTo?.trim();
+    this.assignedHod = assignedHod?.trim();
+    this.fmAdministrator = fmAdministrator?.trim();
+    this.fmManager = fmManager?.trim();
     this.spnInvolved = spnInvolved;
     this.tags = tags;
     this.categories = categories;
-    this.validity = validity;
+    this.validity = validity?.trim();
+
+    this.id = id;
+    this.mappedVariables = mappedVariables;
+
+    this.requestType = requestType;
+    this.requestStatus = requestStatus;
+    this.caseId = caseId;
   }
 }
 
@@ -138,13 +158,15 @@ export class CaseRequest {
       Skippable?: string;
       Actorid?: string;
       GroupId?: string;
-      closureStatus: boolean;
+      closeCase: boolean;
+      closureStatus: string;
 
 
   constructor(request: Request,
               settings: Settings,
               status: string,
-              closureStatus: boolean = false,
+              closeCase: boolean = false,
+              closureStatus: string,
               attachments?: any,
               taskName?: string,
               comment?: string,
@@ -155,12 +177,13 @@ export class CaseRequest {
           this.request = request;
           this.settings = settings;
           this.attachments = attachments;
-          this.Comment = comment;
-          this.TaskName = taskName;
-          this.Skippable = skippable;
-          this.Actorid = actorid;
-          this.GroupId = groupid;
-          this.closureStatus = closureStatus;
+          this.Comment = comment?.trim();
+          this.TaskName = taskName?.trim();
+          this.Skippable = skippable?.trim();
+          this.Actorid = actorid?.trim();
+          this.GroupId = groupid?.trim();
+          this.closeCase = closeCase;
+          this.closureStatus = closureStatus?.trim();
       }
 }
 
@@ -178,11 +201,11 @@ export class CaseRequest {
     constructor(demand: Demand, status: string, operations: string, operationsResponse?: string,  attachments?: any, taskName?: string, GroupId?: string) {
       this.demand = demand;
       this.attachments = attachments;
-      this.taskName = taskName;
-      this.GroupId = GroupId;
-      this.status = status;
-      this.operations = operations;
-      this.operationsResponse = operationsResponse;
+      this.taskName = taskName?.trim();
+      this.GroupId = GroupId?.trim();
+      this.status = status?.trim();
+      this.operations = operations?.trim();
+      this.operationsResponse = operationsResponse?.trim();
     }
   }
 

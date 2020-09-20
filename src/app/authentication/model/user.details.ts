@@ -5,6 +5,7 @@ export class UserDetails {
   client_secret: string;
   client_id: string;
   static owner: string;
+  static delegateUser: string;
   static hideMenu: boolean = false;
 
   // tslint:disable-next-line:max-line-length
