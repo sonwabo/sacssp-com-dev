@@ -216,8 +216,8 @@ publishing {
           def snapShotRepo = 'https://jumpco.jfrog.io/jumpco/list/libs-snapshot-local'
           def releaseRepo = 'https://jumpco.jfrog.io/jumpco/list/libs-release-local'
           credentials {
-            username jumpCoMavenUser
-            password jumpCoMavenPassword
+            username findProperty('jumpCoMavenUser') ?: System.env.MAVEN_USER
+            password findProperty('jumpCoMavenPassword') ?: System.env.MAVEN_PASSWORD
           }
           url project.version.endsWith('SNAPSHOT') ? snapShotRepo : releaseRepo
         }
@@ -270,7 +270,7 @@ if(project.findProperty('deployVersion') == 'CURRENT') {
         def metaData = "$repoBaseUrl/${project.group.replace('.','/')}/${project.name}/maven-metadata.xml"
         gradle.ext.repoBaseUrl = repoBaseUrl
         logger.lifecycle "reading:$metaData"
-        logger.info "mavenUser=$jumpCoMavenUser"
+        logger.info "mavenUser=${findProperty('jumpCoMavenUser')?:System.env.MAVEN_USER}"
         def url = new URL(metaData)
         def urlConnection = url.openConnection()
         urlConnection.setRequestProperty('X-JFrog-Art-Api', jumpCoMavenPassword)
