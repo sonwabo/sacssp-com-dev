@@ -4,8 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { LocalDataSource } from 'ng2-smart-table';
 import { TaskService } from '../../../jbpm/service/task.service';
 import { EpochDateRenderComponent } from '../blocks/epoch-date-render.component';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {TaskInputs} from "../../../jbpm/domain/demand";
+import {FormControl, FormGroup} from '@angular/forms';
 
 
 @Component({

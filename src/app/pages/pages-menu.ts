@@ -1,15 +1,18 @@
 import { NbMenuItem } from '@nebular/theme';
+import {UserDetails} from '../authentication/model/user.details';
 
 export const MENU_ITEMS: NbMenuItem[] = [
+  // {
+  //   title: 'Dashboard',
+  //   icon: 'briefcase-outline',
+  //   link: '/pages/dashboard',
+  //   home: false,
+  //   hidden: true,
+  // },
   {
-    title: 'Dashboard',
-    icon: 'briefcase-outline',
-    link: '/pages/dashboard',
-    home: true,
-  },
-  {
-    title: 'My Cases',
+    title: 'My Tasks',
     link: '/pages/jbpm/cases-table',
+    home: true,
   },
   {
     title: 'Cases',
@@ -35,21 +38,27 @@ export const MENU_ITEMS: NbMenuItem[] = [
         title: 'SLA',
         link: '/pages/tables/smart-table',
       },
-    ]
-  },
-  {
-    title: 'Scheme Officials',
-    link: '/pages/tables/smart-table',
+    ],
   },
 
   {
+    title: 'User Management',
+    link: '/pages/jbpm/user-management',
+  },
+  {
+    title: 'Scheme Officials',
+    link: '/pages/jbpm/scheme-officials',
+  },
+  {
     title: 'Divisions',
-    link: '/pages/tables/smart-table',
+    link: '/pages/jbpm/divisions',
+  },
+  {
+    title: 'Schemes',
+    link: '/pages/jbpm/schemes',
   },
   {
     title: 'Categories',
     link: '/pages/tables/smart-table',
   },
-
-
 ];
