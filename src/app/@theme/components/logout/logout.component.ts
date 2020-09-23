@@ -34,7 +34,7 @@ export class NbLogoutComponent implements OnInit {
       const redirect = result.getRedirect();
       if (redirect) {
         setTimeout(() => {
-          UserDetails.hideMenu = false;
+          UserDetails.empty();
           return this.router.navigateByUrl(redirect);
         }, this.redirectDelay);
       }

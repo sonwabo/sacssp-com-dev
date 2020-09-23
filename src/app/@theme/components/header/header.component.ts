@@ -60,8 +60,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.currentTheme = this.themeService.currentTheme;
-    //this.user = (UserDetails.name === 'operations_sme' ) ? users.nick : users.eva;
-    
+
     const { xl } = this.breakpointService.getBreakpointsMap();
     this.themeService.onMediaQueryChange()
       .pipe(
@@ -86,7 +85,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   logout(strategy: string): void {
     this.service.logout(strategy).subscribe((result: NbAuthResult) => {
-        UserDetails.owner = null;
+        UserDetails.empty();
       setTimeout(() => {
         return this.router.navigate(['verify/login'], {replaceUrl: true});
       }, 1000);

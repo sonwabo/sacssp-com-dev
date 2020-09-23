@@ -24,7 +24,7 @@ export class TaskService {
 
   attachComment(containerId: string, taskInstanceId: string, comments: string): Observable<any> {
     const  comment = {  'comment-id' : 'null',
-                        'comment-added-by': UserDetails.owner,
+                        'comment-added-by': UserDetails.getUserName(),
                         'comment': comments};
     const url = `${environment.baseUrl}/containers/${containerId}/tasks/${taskInstanceId}/comments`;
     return this.http.post<any[]>(url, comment);
@@ -66,7 +66,7 @@ export class TaskService {
   activateTask(container: string, taskid: string, user?: string): void {
     const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/activated`;
     const params = new HttpParams();
-    params.set('user', UserDetails.owner);
+    params.set('user', UserDetails.getUserName());
 
     if ( user && user !== undefined) {
       params.set('user', user);
@@ -79,7 +79,7 @@ export class TaskService {
   claimTask(container: string, taskid: string, user?: string): void {
     const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/claimed`;
     const params = new HttpParams();
-    params.set('user', UserDetails.owner);
+    params.set('user', UserDetails.getUserName());
 
     if ( user && user !== undefined) {
       params.set('user', user);
@@ -92,14 +92,14 @@ export class TaskService {
   startClaimedTask(container: string, taskid: string): void {
     const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/started`;
     const params = new HttpParams();
-    params.set('user', UserDetails.owner);
+    params.set('user', UserDetails.getUserName());
     this.http.put<any[]>(url, { headers: this.getHeaders(), params })
       .subscribe(res => { console.error('Start Claimed Task', res); });
   }
 
   completeClaimedTask(container: string, taskid: string, parentRequest: CaseRequest): Observable<any> {
 
-    const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/completed?auto-progress=true&user=${UserDetails.owner}`;
+    const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/completed?auto-progress=true&user=${UserDetails.getUserName()}`;
     const request = {'io.jumpco.metropolitan.tracker.demand.Request' : parentRequest.request };
     const settings = {'io.jumpco.metropolitan.tracker.demand.Settings' : parentRequest.settings};
     const documents = {};
@@ -140,7 +140,7 @@ export class TaskService {
   }
 
   delegate(containerId, taskid: string, user?: string): void {
-    const url = `${environment.baseUrl}/containers/${containerId}/tasks/${taskid}/states/delegated?user=${UserDetails.owner}&targetUser=${UserDetails.delegateUser}`;
+    const url = `${environment.baseUrl}/containers/${containerId}/tasks/${taskid}/states/delegated?user=${UserDetails.getUserName()}&targetUser=${UserDetails.delegateUser}`;
     this.http.put<any[]>(url, { headers: this.getHeaders() })
       .subscribe(res => { console.error('Task Delegated ' , res ); });
   }
@@ -148,7 +148,7 @@ export class TaskService {
   releaseTask(container: string, taskid: string):  Observable<any> {
     const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/released`;
     const params = new HttpParams();
-    params.set('user', UserDetails.owner);
+    params.set('user', UserDetails.getUserName());
     return this.http.put<any[]>(url, { headers: this.getHeaders(), params });
   }
 

@@ -1,12 +1,11 @@
 <nb-card>
   <nb-card-body>
     <nb-tabset>
-      <nb-tab tabTitle="Case Details" tabIcon="clipboard">
-<!--        <ngx-fund-management-update-request [taskSummary]='currentTaskSummary' [case]='case' *ngIf="currentTaskSummary && 'Fund Management Update Task' === currentTaskSummary['task-name']"></ngx-fund-management-update-request>-->
-<!--        <ngx-case-file *ngIf="currentTaskSummary | async" [case]='case' [taskName]='taskName' [taskSummary]='currentTaskSummary'></ngx-case-file>-->
-        <ngx-case-file *ngIf="currentTaskSummary | async" [case]='case'  [taskSummary]='currentTaskSummary'></ngx-case-file>
 
+      <nb-tab tabTitle="Case Details" tabIcon="clipboard">
+        <ngx-case-file *ngIf="currentTaskSummary | async" [case]='case'  [taskSummary]='currentTaskSummary'></ngx-case-file>
       </nb-tab>
+
       <nb-tab tabTitle="Tasks" tabIcon="list">
         <nb-accordion>
           <nb-accordion-item *ngFor="let taskSummary of taskSummaries; let i = index">

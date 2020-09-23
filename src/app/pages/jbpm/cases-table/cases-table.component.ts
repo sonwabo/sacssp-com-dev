@@ -7,6 +7,8 @@ import { HttpClient } from '@angular/common/http';
 import { UserDetails } from '../../../authentication/model/user.details';
 import { TaskService } from '../../../jbpm/service/task.service';
 import { case_table_settings, task_table_settings } from './table-settings';
+import {JWTTokenService} from '../../../jbpm/service/JWTTokenService';
+import {UserRoles} from "../../../authentication/model/user-roles";
 
 @Component({
   selector: 'ngx-cases-table',
@@ -22,9 +24,10 @@ export class CasesTableComponent {
 
   settings = case_table_settings;
   taskSettings = task_table_settings;
-  reviewer: boolean = (UserDetails.owner === 'operations_sme');
+  reviewer: boolean = (UserDetails.getRoles().includes(UserRoles.OPS_USER_ROLE));
 
   constructor(
+    private jwtService: JWTTokenService,
     protected service: CaseService,
     protected taskService: TaskService,
     protected router: Router,
@@ -35,10 +38,10 @@ export class CasesTableComponent {
 
   loadCases(allCases: boolean = false): void {
     this.source = new ServerDataSource(this.http,
-       { endPoint: `${environment.baseUrl}/queries/cases/instances?owner=${UserDetails.owner}`,
+       { endPoint: `${environment.baseUrl}/queries/cases/instances?dataItemValue=${environment.caseDefinition}&owner=${UserDetails.getUserName()}`,
           dataKey: 'instances' });
     this.taskSource = new ServerDataSource(this.http,
-       { endPoint: `${environment.baseUrl}/queries/tasks/instances/pot-owners?user=${UserDetails.owner}`,
+       { endPoint: `${environment.baseUrl}/queries/tasks/instances/pot-owners?user=${UserDetails.getUserName()}`,
           dataKey: 'task-summary' });
     this.source.getElements().then(value => {
       this.isLoading(false);
@@ -72,4 +75,24 @@ export class CasesTableComponent {
      this.loadCases((_event.tabTitle === CasesTableComponent.CASES) );
   }
 
+  onSearch(query: string = '') {
+    this.source.setFilter([
+      // fields we want to include in the search
+      {
+        field: 'Status',
+        search: query,
+      },
+      {
+        field: 'Owner',
+        search: query,
+      },
+      {
+        field: 'Description',
+        search: query,
+      },
+
+    ], false);
+  }
+
 }
+

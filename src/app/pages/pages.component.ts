@@ -1,10 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import { MENU_ITEMS } from './pages-menu';
 import {UserDetails} from '../authentication/model/user.details';
 import {NbAuthService} from '@nebular/auth';
-import {tap} from 'rxjs/operators';
-import {NbMenuItem} from '@nebular/theme';
+import { NbMenuService} from '@nebular/theme';
+import {JWTTokenService} from '../jbpm/service/JWTTokenService';
+import { Router} from '@angular/router';
+import {UserRoles} from '../authentication/model/user-roles';
 
 @Component({
   selector: 'ngx-pages',
@@ -16,22 +18,31 @@ import {NbMenuItem} from '@nebular/theme';
     </ngx-one-column-layout>
   `,
 })
-export class PagesComponent implements OnInit {
+export class PagesComponent implements OnInit, OnDestroy {
 
-  menu = MENU_ITEMS;
-  constructor(private authService: NbAuthService) {
-    this.authService.isAuthenticated()
-      .pipe(
-        tap(authenticated => {
-          if (!authenticated) {
-            this.menu = new Array();
-          } else {
-            for ( const item of this.menu ) {
-              (item as NbMenuItem).hidden = (UserDetails.owner === 'operations_sme');
-            }
-          }
-        }),
-      );
+  menu: any;
+
+  constructor(private authService: NbAuthService,
+              private nbMenService: NbMenuService,
+              private router: Router,
+              private jwtTokenService: JWTTokenService) {
+      UserDetails.tokenObject = this.jwtTokenService
+                                .refreshToken()
+                                .getDecodedToken();
   }
-  ngOnInit() { console.error( '<<<< Menu Items >>>>' + this.menu ); }
+  ngOnInit() {
+    const _tempMenu = [...MENU_ITEMS ];
+    _tempMenu.forEach(value => {
+      const opsUser =  (UserDetails.getRoles().includes(UserRoles.FUND_ADMIN_OR_COORDINATOR_ROLE));
+      if (!opsUser) {
+        if (value.title.trim() !== 'My Tasks') {
+          value.hidden = true;
+        }
+      } else {  value.hidden = false; }
+    });
+    this.menu = _tempMenu;  }
+
+  ngOnDestroy(): void {
+    this.menu = null;
+  }
 }

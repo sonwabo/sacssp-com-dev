@@ -46,6 +46,7 @@ export class Request {
   assignedDate: any;
   dueDate: any;
   assignedTo: string;
+  operationsDepartment: string;
   assignedHod: string;
   fmAdministrator: string;
   fmManager: string;
@@ -71,6 +72,7 @@ export class Request {
               subject: string,
               description: string,
               assignedTo: string,
+              operationsDepartment: string,
               assignedHod: string,
               fmAdministrator: string,
               fmManager: string,
@@ -121,6 +123,7 @@ export class Request {
     this.description = description?.trim();
     this.priority = priority;
     this.assignedTo = assignedTo?.trim();
+    this.operationsDepartment = operationsDepartment?.trim();
     this.assignedHod = assignedHod?.trim();
     this.fmAdministrator = fmAdministrator?.trim();
     this.fmManager = fmManager?.trim();

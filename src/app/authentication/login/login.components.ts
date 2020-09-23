@@ -7,10 +7,9 @@ import {UserDetails} from '../model/user.details';
   templateUrl: './login.component.html',
 })
 export class NgxLoginComponent extends NbLoginComponent {
+
   login() {
-    UserDetails.owner = this.user.email;
-    this.user.name = UserDetails.owner;
-    UserDetails.hideMenu = (this.user.email === 'operations_sme');
+    this.user.name = this.user.email;
     super.login();
   }
 }

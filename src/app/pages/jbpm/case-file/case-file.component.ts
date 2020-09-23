@@ -12,6 +12,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { CaseService } from '../../../jbpm/service/case.service';
 import {NbToastrService} from '@nebular/theme';
 import {UserDetails} from '../../../authentication/model/user.details';
+import {UserRoles} from '../../../authentication/model/user-roles';
 
 @Component({
   selector: 'ngx-case-file',
@@ -38,7 +39,6 @@ export class CaseFileComponent implements OnInit {
 
   readonly origins: string[] = ['Engagement', 'Telecon', 'Email'];
   readonly caseValidityList: string[] = ['Valid', 'Invalid'];
-  readonly serviceProviderNetworks: any[] = [{ value: 'GEMS', description: 'Government Employee Medical Scheme' }];
   readonly divisions: any[] = [{ value: 'MHRS', description: 'Medscheme Health Risk Solutions' },
                                { value: 'DENIS', description: 'Dental Management Services' }];
   readonly priorities: any[] = [
@@ -46,7 +46,14 @@ export class CaseFileComponent implements OnInit {
     {value: 1, description: 'Medium'},
     {value: 3, description: 'Low'}];
 
-  operationsResponse: boolean = false;
+  readonly operationDepartmentList: Array<string> = ['Claims Back Office1',
+    'Claims Back Office2',
+    'Claims Back Office3'];
+
+  readonly serviceProviderNetworks: any[] = ['Scheme Claim Dept', 'Scheme Fund Admin'];
+
+  readonly schemeList: any[] = [{ value: 'GEMS', description: 'Government Employee Medical Scheme' }];
+
   taskCompleted: boolean = true;
   taskName: string = '';
   caseId: string = '';
@@ -55,6 +62,7 @@ export class CaseFileComponent implements OnInit {
   enableTracking: boolean;
   showClosureStatus: boolean = false;
   enableClassification: boolean = true;
+
 
   constructor(
     protected caseService: CaseService,
@@ -90,6 +98,9 @@ export class CaseFileComponent implements OnInit {
           res['task-container-id'],
           res['task-proc-inst-id'])
           .subscribe(proces => this.caseId = proces['correlation-key'] );
+
+        // Disable button for non ops-users
+         this.taskCompleted =  UserDetails.getRoles().includes(UserRoles.OPS_USER_ROLE);
       }
 
       if ( res['task-status'] === Status.COMPLETED) {
@@ -130,7 +141,7 @@ export class CaseFileComponent implements OnInit {
     this.caseForm.controls['origin'].setValue(request['origin']);
 
     if ( request['spnInvolved']) {
-      this.caseForm.controls['serviceProviderNetwork'].setValue(request['spnInvolved'][0]);
+      this.caseForm.controls['schemesDepartment'].setValue(request['spnInvolved'][0]);
     }
     this.caseForm.controls['division'].setValue(request['division']);
     this.caseForm.controls['priority'].setValue(request['priority']);
@@ -198,11 +209,12 @@ export class CaseFileComponent implements OnInit {
       submissionDate: new FormControl('', Validators.required),
       fmAllocated: new FormControl('', Validators.required),
       operations: new FormControl('', Validators.required),
-      operationsResponse: new FormControl('', Validators.required),
       caseValidity: new FormControl('', Validators.required),
       tag: new FormControl('', Validators.required),
       closeCase: new FormControl('', Validators.required),
       closureStatus: new FormControl('', Validators.required),
+      operationsDepartment: new FormControl('', Validators.required),
+      schemesDepartment: new FormControl('', Validators.required),
 
     });
   }
@@ -279,10 +291,11 @@ export class CaseFileComponent implements OnInit {
       formdata.subject,
       formdata.description,
       formdata.operationsUser,
+      formdata.operationsDepartment,
       formdata.operationsHod,
       formdata.fundAdministrator,
       formdata.manager,
-      [formdata.serviceProviderNetwork],
+      [formdata.schemesDepartment],
       [formdata.tag],
       null,
       formdata.submissionDate,
