@@ -9,15 +9,15 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false,
+  production: true,
   baseAuthUrl: '/auth/realms/JBPM/protocol/openid-connect',
   baseUrl: '/kie-server/services/rest/server',
   baseBackEnd: '/demandtracker',
   containerId: 'DemandTracker_1.0.0-SNAPSHOT',
   caseDefinition: 'SchemeDemandTracker.DemandTracker',
-  clientSecrete: 'c90badbb-442c-41f0-8719-e9fbc894cd21',
+  clientSecrete: '97b17df1-7122-47db-ad9c-b7b2678d9993',
   client_id: 'kie-execution-server',
   administrator: 'fund_administrator',
   reviewer: 'operations_sme',
-  process_date_type: 'java.sql.Timestamp',
+  process_date_type: 'java.sql.Timestamp'
 };

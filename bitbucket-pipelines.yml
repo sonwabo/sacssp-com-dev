@@ -1,0 +1,68 @@
+image: openjdk:11
+
+definitions:
+  caches:
+    gradlewrapper: ~/.gradle/wrapper
+
+pipelines:
+  default:
+    - step:
+        caches:
+          - gradle
+          - gradlewrapper
+          - node
+        script:
+          - bash ./gradlew --build-cache publish -PtestBuild -PbuildVersion=CI
+  custom:
+    perform-release:
+      - step:
+          caches:
+            - gradle
+            - gradlewrapper
+            - node
+          script:
+            - bash ./scripts/check-release.sh
+            - git checkout master
+            - git config --global user.email "$email"
+            - git config --global user.name "$SCM_USERNAME"
+            - git remote set-url origin https://bitbucket.org/tsctech/ethics1st-web-content.git
+            - bash ./gradlew -S clean currentVersion -Prelease.pushTagsOnly -PprodBuild -PbuildVersion=CI
+            - git tag
+            - bash ./gradlew -S -i release -Prelease.pushTagsOnly -Prelease.disableChecks -Prelease.attachRemote=$SCM_URL -PprodBuild -PbuildVersion=CI
+            - bash ./gradlew -S -i publish -Prelease.pushTagsOnly -PbuildVersion=CI
+            - git tag
+            - bash ./gradlew -S currentVersion  -Prelease.forceSnapshot -PbuildVersion=CI -PprodBuild
+            - git tag
+    deploy-release-test:
+      - step:
+          deployment: test
+          caches:
+            - gradle
+            - gradlewrapper
+          script:
+            - bash ./gradlew -i -S testDeploy -PdeployVersion=RELEASE -PbuildVersion=CI
+    deploy-latest-test:
+      - step:
+          deployment: test
+          caches:
+            - gradle
+            - gradlewrapper
+          script:
+            - bash ./gradlew -i -S testDeploy -PdeployVersion=LATEST -PbuildVersion=CI
+    deploy-current-test:
+      - step:
+          deployment: test
+          caches:
+            - gradle
+            - gradlewrapper
+            - node
+          script:
+            - bash ./gradlew -i -S testDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
+#    deploy-release-prod:
+#      - step:
+#          deployment: production
+#          caches:
+#            - gradle
+#            - gradlewrapper
+#          script:
+#            - bash ./gradlew -i -S productionDeploy -PdeployVersion=RELEASE -PbuildVersion=CI

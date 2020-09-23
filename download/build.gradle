@@ -1,0 +1,47 @@
+plugins {
+  id 'java'
+}
+def repoBaseUrl = latestVersion.contains('SNAPSHOT') ?
+                            'https://jumpco.jfrog.io/jumpco/libs-snapshot-local' :
+                            'https://jumpco.jfrog.io/jumpco/libs-release-local'
+repositories {
+  jcenter()
+  maven {
+      credentials {
+          username jumpCoMavenUser
+          password jumpCoMavenPassword
+      }
+      url gradle.ext.repoBaseUrl
+  }
+}
+
+configurations {
+  content
+}
+
+dependencies {
+  content group: 'za.co.metropolitan', name: 'request-tracker-ui', version: latestVersion, classifier: 'test', ext: 'zip'
+  content group: 'za.co.metropolitan', name: 'request-tracker-ui', version: latestVersion, classifier: 'prod', ext: 'zip'
+}
+
+def deployDir = new File(project.getProperty('deployDir'))
+
+def testContentDir = new File(project.getProperty('testContent'))
+def prodContentDir = new File(project.getProperty('prodContent'))
+
+task copyDeployment(dependsOn: configurations.content) {
+  doFirst {
+    logger.lifecycle("copyDeployment:downloading")
+    configurations.content.resolvedConfiguration.resolvedArtifacts.forEach { artifact ->
+      def targetDir = artifact.classifier == 'test' ? testContentDir : prodContentDir
+      logger.lifecycle("expand:${artifact.file.name}:to:$targetDir")
+      copy {
+        from zipTree(artifact.file)
+        into targetDir
+      }
+    }
+  }
+  doLast {
+    logger.lifecycle("copyDeployment:expanded")
+  }
+}

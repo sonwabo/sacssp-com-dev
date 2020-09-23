@@ -29,7 +29,7 @@ idea {
 }
 
 group = 'za.co.metropolitan'
-description = 'Ethics 1st UI'
+description = 'Request Tracker UI'
 
 scmVersion {
     tag {
@@ -131,7 +131,7 @@ def distZipFile = "${project.name}-${project.version}.zip"
 def jsonSlurper = new JsonSlurper()
 def angular = jsonSlurper.parseText(file('angular.json').text)
 logger.info("angular=$angular")
-def distFolder = angular.projects['ethics1st-ui'].architect.build.options.outputPath ?: 'dist'
+def distFolder = angular.projects[project.name].architect.build.options.outputPath ?: 'dist'
 logger.lifecycle("distFolder=$distFolder")
 
 task distZip(type: Zip, dependsOn: angularBuild) {
@@ -144,7 +144,7 @@ task distZip(type: Zip, dependsOn: angularBuild) {
   }
 }
 
-def distProdFolder = angular.projects['ethics1st-ui'].architect.build.configurations.production.outputPath ?: 'dist-prod'
+def distProdFolder = angular.projects[project.name].architect.build.configurations.production.outputPath ?: 'dist-prod'
 logger.lifecycle("distProdFolder=$distProdFolder")
 
 task distZipProd(type: Zip, dependsOn: angularBuildProd) {
@@ -155,7 +155,7 @@ task distZipProd(type: Zip, dependsOn: angularBuildProd) {
   from file("$project.projectDir/$distProdFolder")
 }
 
-def distTestFolder = angular.projects['ethics1st-ui'].architect.build.configurations.test.outputPath ?: 'dist-test'
+def distTestFolder = angular.projects[project.name].architect.build.configurations.test.outputPath ?: 'dist-test'
 logger.lifecycle("distTestFolder=$distTestFolder")
 
 task distZipTest(type: Zip, dependsOn: angularBuildTest) {
@@ -205,7 +205,7 @@ defaultTasks 'publishToMavenLocal'
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = 'org.cipe.ethics1st'
+            groupId = project.group
             artifactId = project.name
             artifact source: distZipTest, extension: 'zip', classifier: 'test'
             artifact source: distZipProd, extension: 'zip', classifier: 'prod'
@@ -213,11 +213,13 @@ publishing {
     }
     repositories {
         maven {
-            url = 's3://repository.ethics1st.cipe.org/repository'
-            credentials(AwsCredentials) {
-                accessKey = System.env.AWS_ACCESS_KEY_ID ?: findProperty('aws_access_key_id')
-                secretKey = System.env.AWS_SECRET_ACCESS_KEY ?: findProperty('aws_secret_access_key')
-            }
+          def snapShotRepo = 'https://jumpco.jfrog.io/jumpco/list/libs-snapshot-local'
+          def releaseRepo = 'https://jumpco.jfrog.io/jumpco/list/libs-release-local'
+          credentials {
+            username jumpCoMavenUser
+            password jumpCoMavenPassword
+          }
+          url project.version.endsWith('SNAPSHOT') ? snapShotRepo : releaseRepo
         }
     }
 }
@@ -225,54 +227,55 @@ publishing {
 
 import groovy.json.JsonSlurper
 
-s3 {
-  region = 'us-east-1'
-  awsAccessKeyId = System.env.AWS_ACCESS_KEY_ID ?: findProperty('aws_access_key_id')
-  awsSecretAccessKey = System.env.AWS_SECRET_ACCESS_KEY ?: findProperty('aws_secret_access_key')
-}
-
 def manifestDir = new File(project.buildDir, 'manifest')
 def versionManifest = new File(manifestDir, 'maven-metadata.xml')
 def deployDir = new File(project.buildDir, 'deploy')
 
-task versionDownload(type: io.jumpco.open.gradle.s3.S3Download) {
-    bucket = 'repository.ethics1st.cipe.org'
-    key = 'repository/org/cipe/ethics1st/ethics1st-ui/maven-metadata.xml'
-    file = versionManifest
-}
-
 def testContentDir = new File(project.buildDir, 'test-content')
 def prodContentDir = new File(project.buildDir, 'prod-content')
+def destDir = '/var/www/html/request-tracker-ui'
 
-task testDeploy(type: io.jumpco.open.gradle.s3.S3Upload) {
-  bucket = 'web.test.ethics1st.cipe.org'
-  sourceDir = testContentDir.path
-  keyPrefix = ""
-  overwrite = true
+task testDeploy(type: Exec) {
+  group = 'deploy'
+  executable 'rsync'
+  args testContentDir, "$deployUser@$deployHost:$destDir"
 }
-task productionDeploy(type: io.jumpco.open.gradle.s3.S3Upload) {
-  bucket = 'web.ethics1st.cipe.org'
-  sourceDir = prodContentDir.path
-  keyPrefix = ""
-  overwrite = true
+
+task productionDeploy(type:Exec) {
+  group = 'deploy'
+  executable 'rsync'
+  args prodContentDir, "$deployUser@$deployHost:$destDir"
 }
 
 if(project.findProperty('deployVersion') == 'CURRENT') {
   task extractTestBuild(type: Copy, dependsOn: angularBuildTest) {
+      group = 'deploy'
       from distTestFolder
       into testContentDir
   }
   task extractProdBuild(type: Copy, dependsOn: angularBuildProd) {
+        group = 'deploy'
         from distProdFolder
         into prodContentDir
   }
   testDeploy.dependsOn extractTestBuild
   productionDeploy.dependsOn extractProdBuild
 } else {
-  task artifactDownloadTask(dependsOn: versionDownload) {
+  task artifactDownloadTask() {
+    group = 'deploy'
     doFirst {
-      def doc = new XmlSlurper().parse(versionManifest)
-      gradle.ext.latestVersion = project.findProperty('deployVersion') == 'RELEASE' ?
+        def repoBaseUrl = project.findProperty('deployVersion') == 'RELEASE' ?
+          'https://jumpco.jfrog.io/jumpco/libs-release-local' :
+          'https://jumpco.jfrog.io/jumpco/libs-snapshot-local'
+        def metaData = "$repoBaseUrl/${project.group.replace('.','/')}/${project.name}/maven-metadata.xml"
+        gradle.ext.repoBaseUrl = repoBaseUrl
+        logger.lifecycle "reading:$metaData"
+        logger.info "mavenUser=$jumpCoMavenUser"
+        def url = new URL(metaData)
+        def urlConnection = url.openConnection()
+        urlConnection.setRequestProperty('X-JFrog-Art-Api', jumpCoMavenPassword)
+        def doc = new XmlSlurper().parse(urlConnection.getInputStream())
+        gradle.ext.latestVersion = project.findProperty('deployVersion') == 'RELEASE' ?
                                   doc.versioning.release.text() : project.findProperty('deployVersion') == 'LATEST' ?
                                   doc.versioning.latest.text() : project.findProperty('deployVersion')
       logger.lifecycle "determineVersion:${deployVersion}=${gradle.ext.latestVersion}"
@@ -289,7 +292,7 @@ if(project.findProperty('deployVersion') == 'CURRENT') {
     }
     inputs.file versionManifest
   }
+
   testDeploy.dependsOn artifactDownloadTask
   productionDeploy.dependsOn artifactDownloadTask
 }
-

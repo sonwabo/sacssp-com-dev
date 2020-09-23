@@ -1,0 +1,34 @@
+<project name="download-artefacts" default="copyDeployment">
+  <property environment="env"/>
+  <target name="checkOS">
+    <condition property="isWindows">
+      <os family="windows"/>
+    </condition>
+  </target>
+  <target name="copyDeploymentNonWindows" unless="isWindows" depends="checkOS">
+    <exec executable="/bin/sh">
+      <arg value="./gradlew"/>
+      <arg value="-p"/>
+      <arg value="download"/>
+      <arg value="copyDeployment"/>
+      <arg value="-PdeployDir=${deployDir}"/>
+      <arg value="-PlatestVersion=${latestVersion}"/>
+      <arg value="-PtestContent=${testContent}"/>
+      <arg value="-PprodContent=${prodContent}"/>
+    </exec>
+  </target>
+  <target name="copyDeploymentWindows" if="isWindows" depends="checkOS">
+    <exec executable="${env.ComSpec}">
+      <arg value="/c"/>
+      <arg value="gradlew.bat"/>
+      <arg value="-p"/>
+      <arg value="download"/>
+      <arg value="copyDeployment"/>
+      <arg value="-PlatestVersion=${latestVersion}"/>
+      <arg value="-PdeployDir=${deployDir}"/>
+      <arg value="-PtestContent=${testContent}"/>
+      <arg value="-PprodContent=${prodContent}"/>
+    </exec>
+  </target>
+  <target name="copyDeployment" depends="copyDeploymentWindows,copyDeploymentNonWindows"></target>
+</project>
