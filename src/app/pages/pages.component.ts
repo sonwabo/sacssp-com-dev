@@ -2,10 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import {MENU_ITEMS} from './pages-menu';
 import {UserDetails} from '../authentication/model/user.details';
-import {NbAuthService} from '@nebular/auth';
-import {NbMenuService} from '@nebular/theme';
 import {JWTTokenService} from '../jbpm/service/JWTTokenService';
-import {Router} from '@angular/router';
 import {UserRoles} from '../authentication/model/user-roles';
 
 @Component({

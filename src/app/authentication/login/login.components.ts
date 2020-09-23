@@ -1,6 +1,5 @@
-import {ChangeDetectorRef, Component} from '@angular/core';
-import { NbLoginComponent } from '@nebular/auth';
-import {UserDetails} from '../model/user.details';
+import {Component} from '@angular/core';
+import {NbLoginComponent} from '@nebular/auth';
 
 @Component({
   selector: 'ngx-login',

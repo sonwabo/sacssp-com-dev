@@ -30,10 +30,8 @@ export class SlaComplianceRenderComponent implements ViewCell, OnInit {
                 this.status = 'Aborted';
                 break;
             default:
-                this.status = 'Unknown'
+                this.status = 'Unknown';
                 break;
-        };
-
+        }
     }
-
 }

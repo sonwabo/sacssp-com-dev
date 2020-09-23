@@ -102,7 +102,7 @@ export class TaskService {
     const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/completed?auto-progress=true&user=${UserDetails.getUserName()}`;
     const request = {'io.jumpco.metropolitan.tracker.demand.Request' : parentRequest.request };
     const settings = {'io.jumpco.metropolitan.tracker.demand.Settings' : parentRequest.settings};
-    const documents = {};
+    // const documents = {};
 
     let  body = {
       status : parentRequest.status,

@@ -1,14 +1,13 @@
-import {environment} from 'app/../environments/environment';
+import {environment} from '../../../../environments/environment';
 import {Component} from '@angular/core';
-import {CaseService} from 'app/jbpm/service/case.service';
+import {CaseService} from '../../../jbpm/service/case.service';
 import {ServerDataSource} from 'ng2-smart-table';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
-import {UserDetails} from 'app/authentication/model/user.details';
-import {TaskService} from 'app/jbpm/service/task.service';
+import {UserDetails} from '../../../authentication/model/user.details';
+import {TaskService} from '../../../jbpm/service/task.service';
 import {case_table_settings, task_table_settings} from './table-settings';
-import {JWTTokenService} from 'app/jbpm/service/JWTTokenService';
-import {UserRoles} from 'app/authentication/model/user-roles';
+import {UserRoles} from '../../../authentication/model/user-roles';
 
 @Component({
   selector: 'ngx-cases-table',
@@ -27,7 +26,7 @@ export class CasesTableComponent {
   reviewer: boolean = (UserDetails.getRoles().includes(UserRoles.OPS_USER_ROLE));
 
   constructor(
-    private jwtService: JWTTokenService,
+    // private jwtService: JWTTokenService,
     protected service: CaseService,
     protected taskService: TaskService,
     protected router: Router,
@@ -40,12 +39,12 @@ export class CasesTableComponent {
     this.source = new ServerDataSource(this.http,
       {
         endPoint: `${environment.baseUrl}/queries/cases/instances?dataItemValue=${environment.caseDefinition}&owner=${UserDetails.getUserName()}`,
-        dataKey: 'instances'
+        dataKey: 'instances',
       });
     this.taskSource = new ServerDataSource(this.http,
       {
         endPoint: `${environment.baseUrl}/queries/tasks/instances/pot-owners?user=${UserDetails.getUserName()}`,
-        dataKey: 'task-summary'
+        dataKey: 'task-summary',
       });
     this.source.getElements().then(value => {
       this.isLoading(false);

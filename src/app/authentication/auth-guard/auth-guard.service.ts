@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import {NbAuthService, NbOAuth2AuthStrategy} from '@nebular/auth';
+import {Injectable} from '@angular/core';
+import {CanActivate, Router} from '@angular/router';
+import {NbAuthService} from '@nebular/auth';
 import {tap} from 'rxjs/operators';
 
 

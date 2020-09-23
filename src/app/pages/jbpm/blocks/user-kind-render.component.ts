@@ -1,11 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
-import { ViewCell } from 'ng2-smart-table';
-import {CaseService} from '../../../jbpm/service/case.service';
+import {ViewCell} from 'ng2-smart-table';
 
 @Component({
   template: `
-  {{kind}}
+    {{kind}}
   `,
 })
 export class UserKindRenderComponent implements ViewCell, OnInit {
@@ -13,7 +12,7 @@ export class UserKindRenderComponent implements ViewCell, OnInit {
   @Input() value: string;
   @Input() rowData: any;
 
-  constructor(private caseService: CaseService) {
+  constructor(/*private caseService: CaseService*/) {
   }
 
   ngOnInit() {
@@ -37,6 +36,6 @@ export class UserKindRenderComponent implements ViewCell, OnInit {
       default:
         this.kind = 'Unknown';
         break;
-    };
+    }
   }
 }
