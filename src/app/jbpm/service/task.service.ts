@@ -48,7 +48,7 @@ export class TaskService {
 
   // @ts-ignore
   getPotOwnerTasks(): Observable<any> {
-    const url = `${environment.baseUrl}/queries/tasks/instances/pot-owners?user=${UserDetails.owner}`;
+    const url = `${environment.baseUrl}/queries/tasks/instances/pot-owners?user=${UserDetails.getUserName()}`;
     return new Observable<any>(obs => {
       this.http.get<any[]>(url, { headers: this.getHeaders(), params : new HttpParams() }).subscribe(value => {
         this.processService.getProcessInformation(value['task-summary'][0]['task-container-id'],
