@@ -1,8 +1,8 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import {HttpInterceptor, HttpRequest, HttpHandler, HttpEvent} from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import {Injectable, OnDestroy, OnInit} from '@angular/core';
+import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Observable, Subject} from 'rxjs';
 import {NbAuthService} from '@nebular/auth';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
 
 @Injectable()
 export class RequestInterceptor implements HttpInterceptor, OnInit, OnDestroy {

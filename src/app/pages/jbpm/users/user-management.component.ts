@@ -1,10 +1,10 @@
 import {AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import { NbStepperComponent } from '@nebular/theme';
+import {NbStepperComponent} from '@nebular/theme';
 import {UserManagementService} from '../../../jbpm/service/user-management.service';
-import {LocalDataSource, ServerDataSource} from 'ng2-smart-table';
+import {LocalDataSource} from 'ng2-smart-table';
 import {users_management_table_settings} from './user-utils';
 import {HttpClient} from '@angular/common/http';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 @Component({
   selector: 'ngx-user-management',

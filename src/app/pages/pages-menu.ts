@@ -1,5 +1,4 @@
-import { NbMenuItem } from '@nebular/theme';
-import {UserDetails} from '../authentication/model/user.details';
+import {NbMenuItem} from '@nebular/theme';
 
 export const MENU_ITEMS: NbMenuItem[] = [
   // {

@@ -14,5 +14,5 @@ export const environment = {
   client_id: 'kie-execution-server',
   administrator: 'fund_administrator',
   reviewer: 'operations_sme',
-  process_date_type: 'java.sql.Timestamp'
+  process_date_type: 'java.sql.Timestamp',
 };
