@@ -1,12 +1,11 @@
 <nb-card>
   <nb-card-body>
     <nb-tabset>
-      <nb-tab tabTitle="Case Details" tabIcon="clipboard">
-<!--        <ngx-fund-management-update-request [taskSummary]='currentTaskSummary' [case]='case' *ngIf="currentTaskSummary && 'Fund Management Update Task' === currentTaskSummary['task-name']"></ngx-fund-management-update-request>-->
-<!--        <ngx-case-file *ngIf="currentTaskSummary | async" [case]='case' [taskName]='taskName' [taskSummary]='currentTaskSummary'></ngx-case-file>-->
-        <ngx-case-file *ngIf="currentTaskSummary | async" [case]='case'  [taskSummary]='currentTaskSummary'></ngx-case-file>
 
+      <nb-tab tabTitle="Case Details" tabIcon="clipboard">
+        <ngx-case-file *ngIf="currentTaskSummary | async" [case]='case'  [taskSummary]='currentTaskSummary'></ngx-case-file>
       </nb-tab>
+
       <nb-tab tabTitle="Tasks" tabIcon="list">
         <nb-accordion>
           <nb-accordion-item *ngFor="let taskSummary of taskSummaries; let i = index">
@@ -24,7 +23,7 @@
               <nb-accordion-item>
                 <nb-accordion-item-header><nb-icon icon="eye"></nb-icon> Audit Log</nb-accordion-item-header>
                 <nb-accordion-item-body>
-                 Yet to be implemented
+
                 </nb-accordion-item-body>
                </nb-accordion-item>
 
@@ -34,27 +33,17 @@
           </nb-accordion-item>
          </nb-accordion>
     </nb-tab>
+
+
     <nb-tab tabTitle="Documents" tabIcon="file">
-      <nb-accordion>
-        <nb-accordion-item *ngFor="let taskSummary of taskSummaries; let i = index">
-          <nb-accordion-item-header>{{taskSummary['task-name']}}</nb-accordion-item-header>
-          <nb-accordion-item-body>
-
-            <nb-accordion>
-              <nb-accordion-item>
-                <nb-accordion-item-header><nb-icon icon="message-square"></nb-icon>Docs</nb-accordion-item-header>
-                <nb-accordion-item-body>
-                  <ngx-case-documents [taskSummary]='taskSummary' [case]='case'></ngx-case-documents>
-                </nb-accordion-item-body>
-              </nb-accordion-item>
-            </nb-accordion>
-
-          </nb-accordion-item-body>
-        </nb-accordion-item>
-      </nb-accordion>    </nb-tab>
-    <nb-tab tabTitle="Linked Cases" tabIcon="file">
-      Documents go here
+      <ngx-case-documents [case]='case'></ngx-case-documents>
     </nb-tab>
+
+    <nb-tab tabTitle="Linked Cases" tabIcon="file">
+      <ngx-test-search></ngx-test-search>
+    </nb-tab>
+
+
     </nb-tabset>
   </nb-card-body>
 </nb-card>

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 import { ViewCell } from 'ng2-smart-table';
+import {CaseService} from '../../../jbpm/service/case.service';
 
 @Component({
     template: `
@@ -12,8 +13,11 @@ export class CaseStatusRenderComponent implements ViewCell, OnInit {
     @Input() value: number;
     @Input() rowData: any;
 
+    constructor(private caseService: CaseService) {
+    }
 
     ngOnInit() {
+
         switch (this.value) {
             case 1:
                 this.status = 'Open';
@@ -30,8 +34,6 @@ export class CaseStatusRenderComponent implements ViewCell, OnInit {
             default:
                 this.status = 'Unknown';
                 break;
-        };
-
+        }
     }
-
 }

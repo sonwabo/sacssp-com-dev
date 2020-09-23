@@ -1,13 +1,21 @@
 <nb-card>
-  <nb-card-header>
-    Cases
-  </nb-card-header>
-
   <nb-card-body>
-    <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEdit($event)" >
-    </ng2-smart-table>
+    <nb-tabset fullWidth (changeTab)="onSelectedTab($event)">
+
+      <nb-tab id="myCases" *ngIf="!reviewer" tabTitle="My Cases" [nbSpinner]="loading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+        <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEdit($event)" >
+        </ng2-smart-table>
+        <br/><br/>
+        <button nbButton status="info" (click)="onCreateConfirm($event)" >Create Case</button>&nbsp;
+      </nb-tab>
+
+      <nb-tab id="tasks" tabTitle="My Tasks" [nbSpinner]="loading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+        <ng2-smart-table [settings]="taskSettings" [source]="taskSource" (edit)="onEdit($event)" >
+        </ng2-smart-table>
+      </nb-tab>
+
+    </nb-tabset>
   </nb-card-body>
   <nb-card-footer>
-    <button nbButton status="info" (click)="onCreateConfirm($event)" >Create Case</button>&nbsp;
   </nb-card-footer>
 </nb-card>

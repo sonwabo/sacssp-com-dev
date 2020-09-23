@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import {
   NbCardModule, NbIconModule, NbInputModule,
-  NbTreeGridModule, NbTabsetModule, NbStepperModule,
+  NbTreeGridModule, NbTabsetModule,
   NbTooltipModule, NbDatepickerModule, NbSelectModule,
-  NbAccordionModule, NbButtonModule, NbDialogModule, NbCheckboxModule
+  NbAccordionModule, NbButtonModule, NbDialogModule, NbCheckboxModule, NbSpinnerModule, NbToastrModule,
 } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
@@ -14,9 +14,7 @@ import { SlaComplianceRenderComponent } from './blocks/sla-compliance-render.com
 import { EpochDateRenderComponent } from './blocks/epoch-date-render.component';
 import { FundManagementUpdateRequestComponent } from './fm-update-request/fund-management-update-request.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TaskCommentsComponent } from './task-comments/task-comments.component';
-import { CaseFileComponent } from './case-file/case-file.component';
-import {CaseDocumentComponent} from "./case-documents/case-document.component";
+import {UserKindRenderComponent} from './blocks/user-kind-render.component';
 
 
 
@@ -39,21 +37,21 @@ import {CaseDocumentComponent} from "./case-documents/case-document.component";
     NbButtonModule,
     NbDialogModule,
     NbCheckboxModule,
+    NbSpinnerModule,
+    NbToastrModule.forRoot(),
   ],
   declarations: [
     ...routedComponents,
     CaseStatusRenderComponent,
     SlaComplianceRenderComponent,
     EpochDateRenderComponent,
-    CaseFileComponent,
     FundManagementUpdateRequestComponent,
-    TaskCommentsComponent,
-    CaseDocumentComponent,
+    UserKindRenderComponent,
   ],
   entryComponents: [
     CaseStatusRenderComponent,
     SlaComplianceRenderComponent,
     EpochDateRenderComponent,
-  ]
+  ],
 })
 export class JbpmModule { }

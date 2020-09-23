@@ -1,0 +1,34 @@
+<div class="row">
+
+  <div class="col-lg-6">
+
+    <nb-card>
+      <nb-card-header>Schemes</nb-card-header>
+      <nb-card-body>
+        <ng2-smart-table [settings]="settingsScheme" [source]="sourceScheme" (edit)="onEdit($event)">
+        </ng2-smart-table>
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+
+  <div class="col-lg-6">
+
+    <nb-card>
+      <nb-card-header>Manage Scheme</nb-card-header>
+      <nb-card-body>
+        <form [formGroup]="schemeForm" (ngSubmit)="schemeformSubmit(schemeForm)">
+          <input type="text" formControlName="name" nbInput fullWidth placeholder="Scheme Name">
+          <br/><br/>
+          <input type="text" formControlName="description" nbInput fullWidth placeholder="Description">
+          <br/><br/>
+          <button nbButton type="submit" color="blue" (click)="schemeformSubmit(schemeForm)">Manage</button> &nbsp;&nbsp;
+          <button  nbButton type="button" color="blue"  (click)="onReset()">Clear</button>
+        </form>
+      </nb-card-body>
+    </nb-card>
+
+  </div>
+
+
+</div>
