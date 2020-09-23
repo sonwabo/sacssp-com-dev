@@ -237,13 +237,13 @@ def destDir = '/var/www/html/request-tracker-ui'
 
 task testDeploy(type: Exec) {
   group = 'deploy'
-  executable 'rsync'
+  executable 'scp'
   args testContentDir, "$deployUser@$deployHost:$destDir"
 }
 
 task productionDeploy(type:Exec) {
   group = 'deploy'
-  executable 'rsync'
+  executable 'scp'
   args prodContentDir, "$deployUser@$deployHost:$destDir"
 }
 
