@@ -1,0 +1,295 @@
+import groovy.json.JsonSlurper
+buildscript {
+  repositories {
+    mavenLocal()
+    jcenter()
+  }
+  dependencies {
+    classpath group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.5.8'
+  }
+}
+plugins {
+  id 'com.github.node-gradle.node' version '1.5.1'
+  id 'idea'
+  id 'maven-publish'
+  id 'pl.allegro.tech.build.axion-release' version '1.9.3'
+  id 'io.jumpco.open.gradle.s3' version '1.1.1'
+}
+
+repositories {
+  mavenLocal()
+  jcenter()
+  mavenCentral()
+}
+
+idea {
+  module {
+    excludeDirs += files('node_modules')
+  }
+}
+
+group = 'za.co.metropolitan'
+description = 'Ethics 1st UI'
+
+scmVersion {
+    tag {
+        prefix = rootProject.name
+    }
+    nextVersion {
+        suffix = 'SNAPSHOT'
+        separator = '-'
+    }
+    checks {
+        uncommittedChanges = false
+        aheadOfRemote = false
+        snapshotDependencies = false
+    }
+    repository {
+        customUsername = findProperty('release.customUsername') ?: System.env.SCM_USERNAME
+        customPassword = findProperty('release.customPassword') ?: System.env.SCM_PASSWORD
+    }
+}
+
+if (project.findProperty('buildVersion') == 'LOCAL-SNAPSHOT') {
+    project.version = 'LOCAL-SNAPSHOT'
+} else {
+    project.version = scmVersion.version
+}
+
+
+def buildDate = new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm').format(new Date())
+
+task cleanResources(type: Delete) {
+  delete 'build/resources'
+}
+
+node {
+  version = "${node_version}"
+  npmVersion = "${npm_version}"
+  download = true
+}
+
+task angularBuild(type: NodeTask) {
+  group = 'angular'
+  dependsOn npm_install
+  script = file("$rootProject.projectDir/node_modules/@angular/cli/bin/ng")
+  args = ['run', 'request-tracker-ui:build', '--optimization=false', '--build-optimizer=false']
+  if (logger.isEnabled(LogLevel.INFO)) {
+    args << '--verbose'
+  }
+}
+
+task angularBuildProd(type: NodeTask) {
+  group = 'angular'
+  dependsOn npm_install
+  script = file("$rootProject.projectDir/node_modules/@angular/cli/bin/ng")
+  args = ['run', 'request-tracker-ui:build:production', '--optimization=false', '--aot=false', '--build-optimizer=false']
+  if (logger.isEnabled(LogLevel.INFO)) {
+    args << '--verbose'
+  }
+  inputs.dir file('node_modules')
+  inputs.file file('angular.json')
+  outputs.dir file('dist-prod')
+}
+
+task angularBuildTest(type: NodeTask) {
+  group = 'angular'
+  dependsOn npm_install
+  script = file("$rootProject.projectDir/node_modules/@angular/cli/bin/ng")
+  args = ['run', 'request-tracker-ui:build:test', '--optimization=false', '--aot=false', '--build-optimizer=false']
+  if (logger.isEnabled(LogLevel.INFO)) {
+    args << '--verbose'
+  }
+  inputs.dir file('node_modules')
+  inputs.file file('angular.json')
+  outputs.dir file('dist-test')
+}
+
+task angularServe(type: NodeTask) {
+  group = 'angular'
+  dependsOn npm_install
+  script = file("$rootProject.projectDir/node_modules/@angular/cli/bin/ng")
+  args = ['run', 'request-tracker-ui:serve', '--host=0.0.0.0', '--port=8100']
+  if (logger.isEnabled(LogLevel.INFO)) {
+    args << '--verbose'
+  }
+}
+
+task ngTest(type: NodeTask, dependsOn: angularBuild) {
+  group 'angular'
+  dependsOn npm_install
+  script = file("$rootProject.projectDir/node_modules/@angular/cli/bin/ng")
+  args = ['test', "--watch=false"]
+  if (logger.isEnabled(LogLevel.INFO)) {
+    args += ['--verbose']
+  }
+}
+
+def distZipPath = buildDir
+def distZipFile = "${project.name}-${project.version}.zip"
+
+def jsonSlurper = new JsonSlurper()
+def angular = jsonSlurper.parseText(file('angular.json').text)
+logger.info("angular=$angular")
+def distFolder = angular.projects['ethics1st-ui'].architect.build.options.outputPath ?: 'dist'
+logger.lifecycle("distFolder=$distFolder")
+
+task distZip(type: Zip, dependsOn: angularBuild) {
+  group 'build'
+  archiveFileName = distZipFile
+  destinationDirectory = file(distZipPath)
+  from file("$project.projectDir/$distFolder")
+  doFirst {
+    logger.warn('DON\'T DEPLOY THIS BUILD TO A REMOTE SERVER')
+  }
+}
+
+def distProdFolder = angular.projects['ethics1st-ui'].architect.build.configurations.production.outputPath ?: 'dist-prod'
+logger.lifecycle("distProdFolder=$distProdFolder")
+
+task distZipProd(type: Zip, dependsOn: angularBuildProd) {
+  group 'build'
+  archiveFileName = distZipFile
+  archiveClassifier = 'prod'
+  destinationDirectory = file(distZipPath)
+  from file("$project.projectDir/$distProdFolder")
+}
+
+def distTestFolder = angular.projects['ethics1st-ui'].architect.build.configurations.test.outputPath ?: 'dist-test'
+logger.lifecycle("distTestFolder=$distTestFolder")
+
+task distZipTest(type: Zip, dependsOn: angularBuildTest) {
+  group 'build'
+  archiveFileName = distZipFile
+  archiveClassifier = 'test'
+  destinationDirectory = file(distZipPath)
+  from file("$project.projectDir/$distTestFolder")
+}
+
+task cleanDist(type: Delete) {
+  group 'build'
+  delete file("$project.projectDir/$distFolder")
+}
+
+task cleanDistTest(type: Delete) {
+  group 'build'
+  delete file("$project.projectDir/$distTestFolder")
+}
+
+task cleanDistProd(type: Delete) {
+  group 'build'
+  delete file("$project.projectDir/$distProdFolder")
+}
+
+if(project.getTasksByName('clean', false).empty) {
+  task clean {
+    group 'build'
+  }
+}
+
+clean.dependsOn cleanDistProd
+clean.dependsOn cleanDistTest
+clean.dependsOn cleanDist
+
+if(project.getTasksByName('assemble', false).empty) {
+  task assemble {
+    group 'build'
+  }
+}
+
+assemble.dependsOn angularBuildProd
+assemble.dependsOn angularBuildTest
+
+defaultTasks 'publishToMavenLocal'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'org.cipe.ethics1st'
+            artifactId = project.name
+            artifact source: distZipTest, extension: 'zip', classifier: 'test'
+            artifact source: distZipProd, extension: 'zip', classifier: 'prod'
+        }
+    }
+    repositories {
+        maven {
+            url = 's3://repository.ethics1st.cipe.org/repository'
+            credentials(AwsCredentials) {
+                accessKey = System.env.AWS_ACCESS_KEY_ID ?: findProperty('aws_access_key_id')
+                secretKey = System.env.AWS_SECRET_ACCESS_KEY ?: findProperty('aws_secret_access_key')
+            }
+        }
+    }
+}
+
+
+import groovy.json.JsonSlurper
+
+s3 {
+  region = 'us-east-1'
+  awsAccessKeyId = System.env.AWS_ACCESS_KEY_ID ?: findProperty('aws_access_key_id')
+  awsSecretAccessKey = System.env.AWS_SECRET_ACCESS_KEY ?: findProperty('aws_secret_access_key')
+}
+
+def manifestDir = new File(project.buildDir, 'manifest')
+def versionManifest = new File(manifestDir, 'maven-metadata.xml')
+def deployDir = new File(project.buildDir, 'deploy')
+
+task versionDownload(type: io.jumpco.open.gradle.s3.S3Download) {
+    bucket = 'repository.ethics1st.cipe.org'
+    key = 'repository/org/cipe/ethics1st/ethics1st-ui/maven-metadata.xml'
+    file = versionManifest
+}
+
+def testContentDir = new File(project.buildDir, 'test-content')
+def prodContentDir = new File(project.buildDir, 'prod-content')
+
+task testDeploy(type: io.jumpco.open.gradle.s3.S3Upload) {
+  bucket = 'web.test.ethics1st.cipe.org'
+  sourceDir = testContentDir.path
+  keyPrefix = ""
+  overwrite = true
+}
+task productionDeploy(type: io.jumpco.open.gradle.s3.S3Upload) {
+  bucket = 'web.ethics1st.cipe.org'
+  sourceDir = prodContentDir.path
+  keyPrefix = ""
+  overwrite = true
+}
+
+if(project.findProperty('deployVersion') == 'CURRENT') {
+  task extractTestBuild(type: Copy, dependsOn: angularBuildTest) {
+      from distTestFolder
+      into testContentDir
+  }
+  task extractProdBuild(type: Copy, dependsOn: angularBuildProd) {
+        from distProdFolder
+        into prodContentDir
+  }
+  testDeploy.dependsOn extractTestBuild
+  productionDeploy.dependsOn extractProdBuild
+} else {
+  task artifactDownloadTask(dependsOn: versionDownload) {
+    doFirst {
+      def doc = new XmlSlurper().parse(versionManifest)
+      gradle.ext.latestVersion = project.findProperty('deployVersion') == 'RELEASE' ?
+                                  doc.versioning.release.text() : project.findProperty('deployVersion') == 'LATEST' ?
+                                  doc.versioning.latest.text() : project.findProperty('deployVersion')
+      logger.lifecycle "determineVersion:${deployVersion}=${gradle.ext.latestVersion}"
+      deployDir.mkdirs()
+    }
+    doLast {
+      logger.lifecycle("artifactDownloadTask:${gradle.ext.latestVersion}")
+      ant.ant(antfile:'build.xml', dir: project.projectDir) {
+        property(name:'latestVersion', value:gradle.ext.latestVersion)
+        property(name:'deployDir', value:deployDir.path)
+        property(name:'prodContent', value:prodContentDir.path)
+        property(name:'testContent', value:testContentDir.path)
+      }
+    }
+    inputs.file versionManifest
+  }
+  testDeploy.dependsOn artifactDownloadTask
+  productionDeploy.dependsOn artifactDownloadTask
+}
+
