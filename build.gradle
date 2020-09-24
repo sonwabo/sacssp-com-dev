@@ -236,16 +236,21 @@ def testContentDir = new File(project.buildDir, 'test-content')
 def prodContentDir = new File(project.buildDir, 'prod-content')
 def destDir = '/var/www/html/request-tracker-ui'
 
-task testDeploy(type: Exec) {
-  group = 'deploy'
-  executable 'scp'
-  args testContentDir, "$deployUser@$deployHost:$destDir"
+task prepareTestDeploy {
 }
 
-task productionDeploy(type:Exec) {
+task prepareProdDeploy {
+}
+task testDeploy(type: Exec, dependsOn: prepareTestDeploy) {
   group = 'deploy'
   executable 'scp'
-  args prodContentDir, "$deployUser@$deployHost:$destDir"
+  args '-r', '-C', "$testContentDir/*", "$deployUser@$deployHost:$destDir/"
+}
+
+task productionDeploy(type:Exec, dependsOn: prepareProdDeploy) {
+  group = 'deploy'
+  executable 'scp'
+  args '-r', '-C', "$prodContentDir/*", "$deployUser@$deployHost:$destDir/"
 }
 
 if(project.findProperty('deployVersion') == 'CURRENT') {
@@ -259,8 +264,8 @@ if(project.findProperty('deployVersion') == 'CURRENT') {
         from distProdFolder
         into prodContentDir
   }
-  testDeploy.dependsOn extractTestBuild
-  productionDeploy.dependsOn extractProdBuild
+  prepareTestDeploy.dependsOn extractTestBuild
+  prepareProdDeploy.dependsOn extractProdBuild
 } else {
   task artifactDownloadTask() {
     group = 'deploy'
@@ -294,6 +299,6 @@ if(project.findProperty('deployVersion') == 'CURRENT') {
     inputs.file versionManifest
   }
 
-  testDeploy.dependsOn artifactDownloadTask
-  productionDeploy.dependsOn artifactDownloadTask
+  prepareTestDeploy.dependsOn artifactDownloadTask
+  prepareProdDeploy.dependsOn artifactDownloadTask
 }

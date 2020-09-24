@@ -6,7 +6,8 @@
     "paths": {
       "@app/*": ["app/*"],
       "@core/*": ["app/@core/*"],
-      "@theme/*": ["app/@theme/*"]
+      "@theme/*": ["app/@theme/*"],
+      "@environments/*": ["environments/*"]
     }
   },
   "exclude": [

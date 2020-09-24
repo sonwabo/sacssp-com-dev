@@ -1,13 +1,13 @@
-import {environment} from '../../../../environments/environment';
+import {environment} from '@environments/environment';
 import {Component} from '@angular/core';
-import {CaseService} from '../../../jbpm/service/case.service';
+import {CaseService} from '@app/jbpm/service/case.service';
 import {ServerDataSource} from 'ng2-smart-table';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
-import {UserDetails} from '../../../authentication/model/user.details';
-import {TaskService} from '../../../jbpm/service/task.service';
+import {UserDetails} from '@app/authentication/model/user.details';
+import {TaskService} from '@app/jbpm/service/task.service';
 import {case_table_settings, task_table_settings} from './table-settings';
-import {UserRoles} from '../../../authentication/model/user-roles';
+import {UserRoles} from '@app/authentication/model/user-roles';
 
 @Component({
   selector: 'ngx-cases-table',

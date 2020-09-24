@@ -10,6 +10,7 @@
 
 export const environment = {
   production: true,
+  baseHref: '/request-tracker-ui',
   baseAuthUrl: '/auth/realms/JBPM/protocol/openid-connect',
   baseUrl: '/kie-server/services/rest/server',
   baseBackEnd: '/demandtracker',

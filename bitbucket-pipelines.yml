@@ -12,7 +12,7 @@ pipelines:
           - gradlewrapper
           - node
         script:
-          - bash ./gradlew --build-cache --no-daemon -i -S testDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
+          - bash ./gradlew --build-cache --no-daemon -i -S prepareTestDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
 #          - bash ./gradlew --build-cache publish -PtestBuild -PbuildVersion=CI
   custom:
     perform-release:
@@ -41,7 +41,8 @@ pipelines:
             - gradle
             - gradlewrapper
           script:
-            - bash ./gradlew -i -S testDeploy -PdeployVersion=RELEASE -PbuildVersion=CI
+            - bash ./gradlew -i -S prepareTestDeploy -PdeployVersion=RELEASE -PbuildVersion=CI
+            - scp ./build/test-content/* ec2-user@test.standalone.mgh.jumpco.io:/var/www/html/request-tracker-ui/
     deploy-latest-test:
       - step:
           deployment: test
@@ -49,7 +50,8 @@ pipelines:
             - gradle
             - gradlewrapper
           script:
-            - bash ./gradlew -i -S testDeploy -PdeployVersion=LATEST -PbuildVersion=CI
+            - bash ./gradlew -i -S prepareTestDeploy -PdeployVersion=LATEST -PbuildVersion=CI
+            - scp ./build/test-content/* ec2-user@test.standalone.mgh.jumpco.io:/var/www/html/request-tracker-ui/
     deploy-current-test:
       - step:
           deployment: test
@@ -59,6 +61,7 @@ pipelines:
             - node
           script:
             - bash ./gradlew -i -S testDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
+            - scp ./build/test-content/* ec2-user@test.standalone.mgh.jumpco.io:/var/www/html/request-tracker-ui/
 #    deploy-release-prod:
 #      - step:
 #          deployment: production

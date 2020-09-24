@@ -7,8 +7,8 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgModule} from '@angular/core';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import {CoreModule} from './@core/core.module';
-import {ThemeModule} from './@theme/theme.module';
+import {CoreModule} from '@core/core.module';
+import {ThemeModule} from '@theme/theme.module';
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
 
@@ -23,6 +23,8 @@ import {
 } from '@nebular/theme';
 import {RequestInterceptor} from './pages/jbpm/request.interceptor';
 import {AuthGuard} from './authentication/auth-guard/auth-guard.service';
+import {environment} from "@environments/environment";
+import {APP_BASE_HREF} from "@angular/common";
 
 @NgModule({
   declarations: [AppComponent],
@@ -48,6 +50,7 @@ import {AuthGuard} from './authentication/auth-guard/auth-guard.service';
   providers: [
     AuthGuard,
     {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
+    {provide: APP_BASE_HREF, useValue: environment.baseHref}
   ],
 })
 export class AppModule {
