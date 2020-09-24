@@ -241,17 +241,7 @@ task prepareTestDeploy {
 
 task prepareProdDeploy {
 }
-task testDeploy(type: Exec, dependsOn: prepareTestDeploy) {
-  group = 'deploy'
-  executable 'scp'
-  args testContentDir, "$deployUser@$deployHost:$destDir"
-}
 
-task productionDeploy(type:Exec, dependsOn: prepareProdDeploy) {
-  group = 'deploy'
-  executable 'scp'
-  args prodContentDir, "$deployUser@$deployHost:$destDir"
-}
 
 if(project.findProperty('deployVersion') == 'CURRENT') {
   task extractTestBuild(type: Copy, dependsOn: angularBuildTest) {
@@ -264,8 +254,8 @@ if(project.findProperty('deployVersion') == 'CURRENT') {
         from distProdFolder
         into prodContentDir
   }
-  testDeploy.dependsOn extractTestBuild
-  productionDeploy.dependsOn extractProdBuild
+  prepareTestDeploy.dependsOn extractTestBuild
+  prepareProdDeploy.dependsOn extractProdBuild
 } else {
   task artifactDownloadTask() {
     group = 'deploy'
@@ -299,6 +289,19 @@ if(project.findProperty('deployVersion') == 'CURRENT') {
     inputs.file versionManifest
   }
 
-  testDeploy.dependsOn artifactDownloadTask
-  productionDeploy.dependsOn artifactDownloadTask
+  prepareTestDeploy.dependsOn artifactDownloadTask
+  prepareProdDeploy.dependsOn artifactDownloadTask
+}
+
+
+task testDeploy(type: Exec, dependsOn: prepareTestDeploy) {
+  group = 'deploy'
+  executable 'scp'
+  args testContentDir, "$deployUser@$deployHost:$destDir"
+}
+
+task productionDeploy(type:Exec, dependsOn: prepareProdDeploy) {
+  group = 'deploy'
+  executable 'scp'
+  args prodContentDir, "$deployUser@$deployHost:$destDir"
 }
