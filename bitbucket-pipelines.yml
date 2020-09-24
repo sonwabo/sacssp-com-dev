@@ -12,7 +12,8 @@ pipelines:
           - gradlewrapper
           - node
         script:
-          - bash ./gradlew --build-cache publish -PtestBuild -PbuildVersion=CI
+          - base ./gradlew -i -S testDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
+#          - bash ./gradlew --build-cache publish -PtestBuild -PbuildVersion=CI
   custom:
     perform-release:
       - step:
