@@ -26,7 +26,7 @@ export class DocumentRenderComponent implements ViewCell, OnInit,  AfterViewInit
   }
 
   downloadDocuments(): void {
-    const doc = this.rowData as Document;
+    // const doc = this.rowData as Document;
     // FileSaver.saveAs(`data:application/pdf;base64,${this.value}`, doc.name);
   }
 
