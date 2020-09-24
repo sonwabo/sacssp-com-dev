@@ -55,7 +55,7 @@ import { StatsProgressBarService } from './mock/stats-progress-bar.service';
 import { VisitorsAnalyticsService } from './mock/visitors-analytics.service';
 import { SecurityCamerasService } from './mock/security-cameras.service';
 import { MockDataModule } from './mock/mock-data.module';
-import {environment} from '../../environments/environment';
+import {environment} from '@app/../environments/environment';
 
 const socialLinks = [
   {

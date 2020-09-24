@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { takeWhile } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 
-import { Contacts, RecentUsers, UserData } from '../../../@core/data/users';
+import { Contacts, RecentUsers, UserData } from '@core/data/users';
 
 @Component({
   selector: 'ngx-contacts',

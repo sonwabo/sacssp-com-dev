@@ -43,3 +43,4 @@ Thumbs.db
 !/gradle/wrapper/gradle-wrapper.*
 /dist-prod/
 /dist-test/
+/.gradle/

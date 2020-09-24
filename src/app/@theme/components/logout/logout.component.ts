@@ -6,7 +6,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbAuthService, NB_AUTH_OPTIONS, NbAuthResult, getDeepFromObject } from '@nebular/auth';
-import {UserDetails} from '../../../authentication/model/user.details';
+import {UserDetails} from '@app/authentication/model/user.details';
 
 @Component({
   selector: 'ngx-logout',
