@@ -5,6 +5,7 @@
  */
 export const environment = {
   production: true,
+  baseHref: './',
   baseAuthUrl: '/auth/realms/JBPM/protocol/openid-connect',
   baseUrl: '/kie-server/services/rest/server',
   baseBackEnd: '/demandtracker',

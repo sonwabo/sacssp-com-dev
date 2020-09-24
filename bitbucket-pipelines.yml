@@ -7,13 +7,21 @@ definitions:
 pipelines:
   default:
     - step:
+        name: Build
         caches:
           - gradle
           - gradlewrapper
           - node
+        artifacts:
+          - 'build/test-content/**'
         script:
-          - bash ./gradlew --build-cache --no-daemon -i -S prepareTestDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
-#          - bash ./gradlew --build-cache publish -PtestBuild -PbuildVersion=CI
+          - bash ./gradlew --build-cache --no-daemon -i -S publish prepareTestDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
+    - step:
+        name: Deploy to Test
+        deployment: test
+        trigger: manual
+        script:
+          - scp ./build/test-content/* ec2-user@test.standalone.mgh.jumpco.io:/var/www/html/request-tracker-ui/
   custom:
     perform-release:
       - step:
