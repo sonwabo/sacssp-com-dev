@@ -112,9 +112,9 @@ export const NB_CORE_PROVIDERS = [
     strategies: [
         NbOAuth2AuthStrategy.setup({
         name: 'email',
-        baseEndpoint: `${environment.baseAuthUrl}`,
-        clientId: `${environment.client_id}`,
-        clientSecret: `${environment.clientSecrete}`,
+        baseEndpoint: environment.baseAuthUrl,
+        clientId: environment.client_id,
+        clientSecret: environment.clientSecrete,
         clientAuthMethod: NbOAuth2ClientAuthMethod.REQUEST_BODY,
         redirect: {
           success: '/pages/jbpm/cases-table',

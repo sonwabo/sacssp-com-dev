@@ -10,10 +10,9 @@
 
 export const environment = {
   production: false,
-  baseHref: '/request-tracker-ui',
-  baseAuthUrl: '/auth/realms/JBPM/protocol/openid-connect',
-  baseUrl: '/kie-server/services/rest/server',
-  baseBackEnd: '/demandtracker',
+  baseAuthUrl: 'https://test.standalone.mgh.jumpco.io/auth/realms/JBPM/protocol/openid-connect',
+  baseUrl: 'https://test.standalone.mgh.jumpco.io/kie-server/services/rest/server',
+  baseBackEnd: 'https://test.standalone.mgh.jumpco.io/demandtracker',
   containerId: 'DemandTracker_1.0.0-SNAPSHOT',
   caseDefinition: 'SchemeDemandTracker.DemandTracker',
   clientSecrete: '97b17df1-7122-47db-ad9c-b7b2678d9993',
