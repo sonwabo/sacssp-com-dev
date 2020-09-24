@@ -44,3 +44,4 @@ Thumbs.db
 /dist-prod/
 /dist-test/
 /.gradle/
+/build/
