@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { of as observableOf, Observable } from 'rxjs';
-import { Camera, SecurityCamerasData } from '../data/security-cameras';
+import { Camera, SecurityCamerasData } from '@core/data/security-cameras';
 
 @Injectable()
 export class SecurityCamerasService extends SecurityCamerasData {

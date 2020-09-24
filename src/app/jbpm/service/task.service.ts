@@ -1,9 +1,9 @@
 import { CaseRequest} from './../domain/demand';
-import { environment } from './../../../environments/environment';
+import { environment } from '@app/../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserDetails } from '../../authentication/model/user.details';
+import { UserDetails } from '@app/authentication/model/user.details';
 import { ProcessService } from './process.service';
 import { CaseService } from './case.service';
 

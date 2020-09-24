@@ -1,4 +1,4 @@
-import {Case} from '../domain/case';
+import {Case} from '@app/jbpm/domain/case';
 
 export const CASES: Case[] = [
   {id: 11, name: 'Mr. Nice'},

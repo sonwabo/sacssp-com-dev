@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 
 import { ViewCell } from 'ng2-smart-table';
-import {Document} from '../../../jbpm/domain/document';
+import {Document} from '@app/jbpm/domain/document';
 
 // declare var require: any;
 // const FileSaver = require('file-saver');

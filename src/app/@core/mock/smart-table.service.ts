@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SmartTableData } from '../data/smart-table';
+import { SmartTableData } from '@core/data/smart-table';
 
 @Injectable()
 export class SmartTableService extends SmartTableData {

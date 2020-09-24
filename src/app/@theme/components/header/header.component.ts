@@ -1,11 +1,11 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService} from '@nebular/theme';
-import {LayoutService} from '../../../@core/utils';
+import {LayoutService} from '@app/@core/utils';
 import {map, takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 import {getDeepFromObject, NB_AUTH_OPTIONS, NbAuthResult, NbAuthService} from '@nebular/auth';
 import {Router} from '@angular/router';
-import {UserDetails} from '../../../authentication/model/user.details';
+import {UserDetails} from '@app/authentication/model/user.details';
 
 @Component({
   selector: 'ngx-header',
