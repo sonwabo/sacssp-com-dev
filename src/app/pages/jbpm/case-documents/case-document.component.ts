@@ -5,7 +5,8 @@ import {LocalDataSource} from 'ng2-smart-table';
 import {DocumentService} from 'app/jbpm/service/document.service';
 import {Observable} from 'rxjs';
 import {Document} from 'app/jbpm/domain/document';
-import {DocumentRenderComponent} from 'app/jbpm/blocks/document-render.component';
+import {DocumentRenderComponent} from '../blocks/document-render.component';
+
 
 // declare var require: any;
 
