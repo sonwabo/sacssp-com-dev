@@ -23,7 +23,7 @@ import {
 } from '@nebular/theme';
 import {RequestInterceptor} from './pages/jbpm/request.interceptor';
 import {AuthGuard} from './authentication/auth-guard/auth-guard.service';
-import {environment} from "@environments/environment";
+import {environment} from '@environments/environment';
 import {APP_BASE_HREF} from "@angular/common";
 
 @NgModule({
