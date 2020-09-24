@@ -77,7 +77,7 @@ pipelines:
             - gradlewrapper
             - node
           script:
-            - bash ./gradlew --build-cache -i -S testDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
+            - bash ./gradlew --build-cache -i -S prepareTestDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
             - scp ./build/test-content/* ec2-user@test.standalone.mgh.jumpco.io:/var/www/html/request-tracker-ui/
 #    deploy-release-prod:
 #      - step:
