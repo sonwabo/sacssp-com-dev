@@ -13,19 +13,15 @@ pipelines:
           - gradle
           - gradlewrapper
           - node
+        artifacts:
+          - 'build/test-content/**'
         script:
-          - bash ./gradlew --build-cache --no-daemon -i -S publish -PbuildVersion=CI
+          - bash ./gradlew --build-cache --no-daemon -i -S publish prepareTestDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
     - step:
         name: Deploy to Test
         deployment: test
         trigger: manual
-        size: 2x
-        caches:
-          - gradle
-          - gradlewrapper
-          - node
         script:
-          - bash ./gradlew --build-cache --no-daemon -i -S prepareTestDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
           - scp ./build/test-content/* ec2-user@test.standalone.mgh.jumpco.io:/var/www/html/request-tracker-ui/
   custom:
     perform-release:
@@ -44,10 +40,10 @@ pipelines:
             - git remote set-url origin https://bitbucket.org/tsctech/ethics1st-web-content.git
             - bash ./gradlew -S clean currentVersion -Prelease.pushTagsOnly -PprodBuild -PbuildVersion=CI
             - git tag
-            - bash ./gradlew -S -i release -Prelease.pushTagsOnly -Prelease.disableChecks -Prelease.attachRemote=$SCM_URL -PprodBuild -PbuildVersion=CI
-            - bash ./gradlew -S -i publish -Prelease.pushTagsOnly -PbuildVersion=CI
+            - bash ./gradlew --build-cache -S -i release -Prelease.pushTagsOnly -Prelease.disableChecks -Prelease.attachRemote=$SCM_URL -PprodBuild -PbuildVersion=CI
+            - bash ./gradlew --build-cache -S -i publish -Prelease.pushTagsOnly -PbuildVersion=CI
             - git tag
-            - bash ./gradlew -S currentVersion  -Prelease.forceSnapshot -PbuildVersion=CI -PprodBuild
+            - bash ./gradlew --build-cache -S currentVersion  -Prelease.forceSnapshot -PbuildVersion=CI -PprodBuild
             - git tag
     deploy-release-test:
       - step:
@@ -58,7 +54,7 @@ pipelines:
             - gradle
             - gradlewrapper
           script:
-            - bash ./gradlew -i -S prepareTestDeploy -PdeployVersion=RELEASE -PbuildVersion=CI
+            - bash ./gradlew --build-cache -i -S prepareTestDeploy -PdeployVersion=RELEASE -PbuildVersion=CI
             - scp ./build/test-content/* ec2-user@test.standalone.mgh.jumpco.io:/var/www/html/request-tracker-ui/
     deploy-latest-test:
       - step:
@@ -69,7 +65,7 @@ pipelines:
             - gradle
             - gradlewrapper
           script:
-            - bash ./gradlew -i -S prepareTestDeploy -PdeployVersion=LATEST -PbuildVersion=CI
+            - bash ./gradlew --build-cache -i -S prepareTestDeploy -PdeployVersion=LATEST -PbuildVersion=CI
             - scp ./build/test-content/* ec2-user@test.standalone.mgh.jumpco.io:/var/www/html/request-tracker-ui/
     deploy-current-test:
       - step:
@@ -81,7 +77,7 @@ pipelines:
             - gradlewrapper
             - node
           script:
-            - bash ./gradlew -i -S testDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
+            - bash ./gradlew --build-cache -i -S testDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
             - scp ./build/test-content/* ec2-user@test.standalone.mgh.jumpco.io:/var/www/html/request-tracker-ui/
 #    deploy-release-prod:
 #      - step:
