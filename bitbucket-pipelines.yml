@@ -8,23 +8,30 @@ pipelines:
   default:
     - step:
         name: Build
+        size: 2x
         caches:
           - gradle
           - gradlewrapper
           - node
-        artifacts:
-          - 'build/test-content/**'
         script:
-          - bash ./gradlew --build-cache --no-daemon -i -S publish prepareTestDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
+          - bash ./gradlew --build-cache --no-daemon -i -S publish -PbuildVersion=CI
     - step:
         name: Deploy to Test
         deployment: test
         trigger: manual
+        size: 2x
+        caches:
+          - gradle
+          - gradlewrapper
+          - node
         script:
+          - bash ./gradlew --build-cache --no-daemon -i -S prepareTestDeploy -PdeployVersion=CURRENT -PbuildVersion=CI
           - scp ./build/test-content/* ec2-user@test.standalone.mgh.jumpco.io:/var/www/html/request-tracker-ui/
   custom:
     perform-release:
       - step:
+          name: Perform Release
+          size: 2x
           caches:
             - gradle
             - gradlewrapper
@@ -44,7 +51,9 @@ pipelines:
             - git tag
     deploy-release-test:
       - step:
+          name: Deploy Last Release to Test
           deployment: test
+          size: 2x
           caches:
             - gradle
             - gradlewrapper
@@ -53,7 +62,9 @@ pipelines:
             - scp ./build/test-content/* ec2-user@test.standalone.mgh.jumpco.io:/var/www/html/request-tracker-ui/
     deploy-latest-test:
       - step:
+          name: Deploy Latest Snapshot to Test
           deployment: test
+          size: 2x
           caches:
             - gradle
             - gradlewrapper
@@ -62,7 +73,9 @@ pipelines:
             - scp ./build/test-content/* ec2-user@test.standalone.mgh.jumpco.io:/var/www/html/request-tracker-ui/
     deploy-current-test:
       - step:
+          name: Deploy Current Build to Test
           deployment: test
+          size: 2x
           caches:
             - gradle
             - gradlewrapper
