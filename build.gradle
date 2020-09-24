@@ -58,6 +58,18 @@ if (project.findProperty('buildVersion') == 'LOCAL-SNAPSHOT') {
 
 
 def buildDate = new java.text.SimpleDateFormat('yyyy-MM-dd HH:mm').format(new Date())
+def distZipPath = buildDir
+def distZipFile = "${project.name}-${project.version}.zip"
+
+def jsonSlurper = new JsonSlurper()
+def angular = jsonSlurper.parseText(file('angular.json').text)
+logger.info("angular=$angular")
+def distFolder = angular.projects[project.name].architect.build.options.outputPath ?: 'dist'
+logger.lifecycle("distFolder=$distFolder")
+def distProdFolder = angular.projects[project.name].architect.build.configurations.production.outputPath ?: 'dist-prod'
+logger.lifecycle("distProdFolder=$distProdFolder")
+def distTestFolder = angular.projects[project.name].architect.build.configurations.test.outputPath ?: 'dist-test'
+logger.lifecycle("distTestFolder=$distTestFolder")
 
 task cleanResources(type: Delete) {
   delete 'build/resources'
@@ -89,7 +101,7 @@ task angularBuildProd(type: NodeTask) {
   }
   inputs.dir file('node_modules')
   inputs.file file('angular.json')
-  outputs.dir file('dist-prod')
+  outputs.dir distProdFolder
 }
 
 task angularBuildTest(type: NodeTask) {
@@ -102,7 +114,7 @@ task angularBuildTest(type: NodeTask) {
   }
   inputs.dir file('node_modules')
   inputs.file file('angular.json')
-  outputs.dir file('dist-test')
+  outputs.dir distTestFolder
 }
 
 task angularServe(type: NodeTask) {
@@ -125,14 +137,6 @@ task ngTest(type: NodeTask, dependsOn: angularBuild) {
   }
 }
 
-def distZipPath = buildDir
-def distZipFile = "${project.name}-${project.version}.zip"
-
-def jsonSlurper = new JsonSlurper()
-def angular = jsonSlurper.parseText(file('angular.json').text)
-logger.info("angular=$angular")
-def distFolder = angular.projects[project.name].architect.build.options.outputPath ?: 'dist'
-logger.lifecycle("distFolder=$distFolder")
 
 task distZip(type: Zip, dependsOn: angularBuild) {
   group 'build'
@@ -144,8 +148,8 @@ task distZip(type: Zip, dependsOn: angularBuild) {
   }
 }
 
-def distProdFolder = angular.projects[project.name].architect.build.configurations.production.outputPath ?: 'dist-prod'
-logger.lifecycle("distProdFolder=$distProdFolder")
+
+
 
 task distZipProd(type: Zip, dependsOn: angularBuildProd) {
   group 'build'
@@ -154,9 +158,6 @@ task distZipProd(type: Zip, dependsOn: angularBuildProd) {
   destinationDirectory = file(distZipPath)
   from file("$project.projectDir/$distProdFolder")
 }
-
-def distTestFolder = angular.projects[project.name].architect.build.configurations.test.outputPath ?: 'dist-test'
-logger.lifecycle("distTestFolder=$distTestFolder")
 
 task distZipTest(type: Zip, dependsOn: angularBuildTest) {
   group 'build'

@@ -75,7 +75,8 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
-              ]
+              ],
+              "outputPath": "dist-prod/request-tracker-ui"
             },
             "test": {
               "budgets": [
@@ -98,7 +99,8 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.test.ts"
                 }
-              ]
+              ],
+              "outputPath": "dist-test/request-tracker-ui"
             }
           }
         },
