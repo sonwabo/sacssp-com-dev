@@ -50,7 +50,7 @@ import {APP_BASE_HREF} from '@angular/common';
   providers: [
     AuthGuard,
     {provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
-    {provide: APP_BASE_HREF, useValue: environment.baseHref}
+    {provide: APP_BASE_HREF, useValue: environment.baseHref},
   ],
 })
 export class AppModule {
