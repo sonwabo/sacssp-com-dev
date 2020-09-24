@@ -5,12 +5,7 @@ import {LocalDataSource} from 'ng2-smart-table';
 import {DocumentService} from 'app/jbpm/service/document.service';
 import {Observable} from 'rxjs';
 import {Document} from 'app/jbpm/domain/document';
-import {DocumentRenderComponent} from '../blocks/document-render.component';
-
-
-// declare var require: any;
-
-// const FileSaver = require('file-saver');
+import {DocumentRenderComponent} from 'app/pages/jbpm/blocks/document-render.component';
 
 @Component({
   selector: 'ngx-case-documents',
