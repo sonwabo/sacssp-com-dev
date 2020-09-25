@@ -12,5 +12,5 @@ export enum APP_ROUTES {
   SCHEME_OFFICIALS = 'scheme-officials',
   DIVISIONS = 'divisions',
   SCHEMES = 'schemes',
-
+  SERVICE_PROVIDER_NETWORKS = 'service-provider-networks',
 }

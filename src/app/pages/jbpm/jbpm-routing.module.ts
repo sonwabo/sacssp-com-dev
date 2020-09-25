@@ -14,6 +14,7 @@ import {SchemeOfficialsComponent} from './scheme-officials/scheme-officials.comp
 import { APP_ROUTES } from './utils/routes-list-enum';
 import {DivisionComponent} from './divisions/division.component';
 import {SchemeComponent} from './schemes/scheme.component';
+import {ServiceProviderNetworksComponent} from './service-provider-networks/service-provider-networks.component';
 
 const routes: Routes = [{
   path: '',
@@ -43,6 +44,11 @@ const routes: Routes = [{
       path: APP_ROUTES.SCHEMES,
       component: SchemeComponent,
     },
+
+    {
+      path: APP_ROUTES.SERVICE_PROVIDER_NETWORKS,
+      component: ServiceProviderNetworksComponent,
+    },
   ],
 }];
 
@@ -65,4 +71,5 @@ export const routedComponents = [
   SchemeOfficialsComponent,
   DivisionComponent,
   SchemeComponent,
+  ServiceProviderNetworksComponent,
 ];

@@ -55,7 +55,7 @@ import { StatsProgressBarService } from './mock/stats-progress-bar.service';
 import { VisitorsAnalyticsService } from './mock/visitors-analytics.service';
 import { SecurityCamerasService } from './mock/security-cameras.service';
 import { MockDataModule } from './mock/mock-data.module';
-import {environment} from '@environments/environment';
+import {environment} from '@app/../environments/environment';
 
 const socialLinks = [
   {
@@ -123,6 +123,10 @@ export const NB_CORE_PROVIDERS = [
           endpoint: '/token',
           grantType: NbOAuth2GrantType.PASSWORD,
           class: NbAuthOAuth2JWTToken,
+        },
+        refresh: {
+          endpoint: '/token',
+          grantType: NbOAuth2GrantType.REFRESH_TOKEN,
         },
       }),
     ],

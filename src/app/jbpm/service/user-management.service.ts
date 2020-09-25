@@ -31,7 +31,6 @@ export class UserManagementService {
     return this.http.get<any[]>(url, {headers: this.getHeaders()});
   }
 
-
   getSchemeOfficials(): Observable<any> {
     const url = `${environment.baseBackEnd}/schemeOfficials`;
     return this.http.get<any[]>(url, {headers: this.getHeaders()});

@@ -3,10 +3,6 @@ import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import { ViewCell } from 'ng2-smart-table';
 import {Document} from '@app/jbpm/domain/document';
 
-// declare var require: any;
-// const FileSaver = require('file-saver');
-
-
 @Component({
   template: `
     <span>
@@ -25,12 +21,6 @@ export class DocumentRenderComponent implements ViewCell, OnInit,  AfterViewInit
   ngOnInit() {
   }
 
-  downloadDocuments(): void {
-    // const doc = this.rowData as Document;
-    // FileSaver.saveAs(`data:application/pdf;base64,${this.value}`, doc.name);
-  }
-
-
   downloadDocument(): void {
     const doc = this.rowData as Document;
 
@@ -42,7 +32,6 @@ export class DocumentRenderComponent implements ViewCell, OnInit,  AfterViewInit
     downloadLink.download = fileName;
     downloadLink.click();
 
-    // FileSaver.saveAs(`data:application/pdf;base64,${this.value}`, doc.name);
   }
   ngAfterViewInit() {
   }

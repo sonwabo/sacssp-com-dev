@@ -18,7 +18,7 @@ export class UserKindRenderComponent implements ViewCell, OnInit {
   ngOnInit() {
 
     switch (this.value) {
-      case 'SCHEMEOFFICIAL' :
+      case 'SCHEME_OFFICIAL' :
         this.kind = 'Scheme Official';
         break;
       case 'OPERATIONS':

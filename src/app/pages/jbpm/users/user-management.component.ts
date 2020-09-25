@@ -25,13 +25,14 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   divisions: Array<any> = new Array<any>();
 
   isfundAdministrators: boolean = false;
+  isOperationsUser: boolean = false;
   isUpdate: boolean = false;
 
 
   submitted = false;
 
   userTypes: any[] = [
-      { value: 'SCHEMEOFFICIAL', description: 'Scheme Official' }
+      { value: 'SCHEME_OFFICIAL', description: 'Scheme Official' }
     , { value: 'OPERATIONS', description: 'Operations User' }
     , { value: 'OPERATIONS_HOD', description: 'Operations HOD' }
     , { value: 'FUND_ADMINISTRATOR', description: 'Fund Administrator' }
@@ -115,8 +116,19 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // SCHEME_OFFICIAL,
+  // OPERATIONS,
+  // OPERATIONS_HOD,
+  // FUND_ADMINISTRATOR,
+  // FUND_CO_ORDINATOR,
+  // FUND_MANAGER
+
   selectedValue(event: any): void {
-    this.isfundAdministrators = ('SCHEMEOFFICIAL' === event.value);
+    this.userForm.reset();
+    console.error( event.value);
+    this.isfundAdministrators = ('SCHEME_OFFICIAL' === event.value);
+    this.isOperationsUser =  ('OPERATIONS' === event.value);
+
     console.error(this.fundAdministrators);
   }
 

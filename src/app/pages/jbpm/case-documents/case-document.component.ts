@@ -6,6 +6,7 @@ import {DocumentService} from 'app/jbpm/service/document.service';
 import {Observable} from 'rxjs';
 import {Document} from 'app/jbpm/domain/document';
 import {DocumentRenderComponent} from 'app/pages/jbpm/blocks/document-render.component';
+import {ProcessService} from '@app/jbpm/service/process.service';
 
 @Component({
   selector: 'ngx-case-documents',
@@ -16,6 +17,8 @@ import {DocumentRenderComponent} from 'app/pages/jbpm/blocks/document-render.com
 export class CaseDocumentComponent implements OnInit, AfterViewInit {
   @Input() case: any = {};
   @ViewChild('uploaddoc', {static: true}) uploaddoc: ElementRef;
+
+  @Input() taskSummary?: Promise<any>;
   cardFlipped = false;
 
   selectedFiles: FileList;
@@ -26,6 +29,9 @@ export class CaseDocumentComponent implements OnInit, AfterViewInit {
 
   uploadedDocs: Array<Document> = [];
   document: Document;
+
+  caseId: string;
+  containerId: string;
 
   source: LocalDataSource;
   settings = {
@@ -60,6 +66,7 @@ export class CaseDocumentComponent implements OnInit, AfterViewInit {
 
   constructor(
     protected documentService: DocumentService,
+    private processService: ProcessService,
     protected router: Router,
     protected http: HttpClient) {
 
@@ -67,6 +74,23 @@ export class CaseDocumentComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.source = new LocalDataSource(this.uploadedDocs);
+
+    this.containerId = this.case['container-id'];
+    this.caseId = this.case['case-id'];
+
+    if ( Object.keys(this.case).length === 0 ) {
+      this.taskSummary.then(res => {
+        this.containerId =  res['task-container-id'];
+        this.processService.getProcessInformation(
+          res['task-container-id'],
+          res['task-proc-inst-id'])
+          .subscribe(proces => {
+            this.caseId = proces['correlation-key'];
+            this.loadDocument();
+
+          });
+      });
+    }
   }
 
   ngAfterViewInit() {
@@ -74,10 +98,8 @@ export class CaseDocumentComponent implements OnInit, AfterViewInit {
   }
 
   loadDocument(): void {
-    this.documentService.getDocument(this.case['container-id'], this.case['case-id']).subscribe(res => {
+    this.documentService.getDocument(this.containerId, this.caseId).subscribe(res => {
       const attachments = res['attachments'];
-      console.error('<<<<<<<<<<<<<<< Documents >>>>>>>>>>>>>>> ');
-      console.error(attachments);
       if (attachments !== undefined && attachments['documents']) {
         this.documentsArray = attachments['documents'];
         const temp: Array<any> = attachments['documents'];

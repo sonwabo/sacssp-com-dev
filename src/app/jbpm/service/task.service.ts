@@ -98,51 +98,82 @@ export class TaskService {
   }
 
   completeClaimedTask(container: string, taskid: string, parentRequest: CaseRequest): Observable<any> {
-
     const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/completed?auto-progress=true&user=${UserDetails.getUserName()}`;
     const request = {'io.jumpco.metropolitan.tracker.demand.Request' : parentRequest.request };
     const settings = {'io.jumpco.metropolitan.tracker.demand.Settings' : parentRequest.settings};
-    // const documents = {};
 
-    let  body = {
-      status : parentRequest.status,
-      'request' : request,
-      'settings' : settings,
-    };
+    return new Observable<any>(obs => {
+      this.caseService.getCaseFile(container, parentRequest.request.caseId ).subscribe( cfile => {
+         let attachments = null;
+         if (cfile['attachments']) {
+           attachments = cfile['attachments'];
+         }
 
-    if ( parentRequest.closeCase ) {
-      request['io.jumpco.metropolitan.tracker.demand.Request'].requestStatus = 'Closed';
-      // @ts-ignore
-      body = {'closeCase': parentRequest.closeCase,
-              'closureStatus' : parentRequest.closureStatus,
-              'request': request,
-             };
-    }
-    return this.http.put<any[]>(url, body);
+         let  body = {
+          status : parentRequest.status,
+          'request' : request,
+          'settings' : settings,
+          'attachments' : attachments,
+         };
+
+        if ( parentRequest.closeCase ) {
+          request['io.jumpco.metropolitan.tracker.demand.Request'].requestStatus = 'Closed';
+          // @ts-ignore
+          body = {'closeCase': parentRequest.closeCase,
+            'closureStatus' : parentRequest.closureStatus,
+            'request': request,
+            'attachments' : attachments,
+          };
+        }
+        this.caseService.assignRole(container,
+          parentRequest.request.caseId,
+          'reviewer',
+          parentRequest.request.assignedTo, 'reviewergroup' ).subscribe( res => {
+          this.http.put<any[]>(url, body).subscribe(_res => obs.next(_res));
+        });
+      });
+    });
   }
 
   saveCaseData(container: string, caseid: string, parentRequest: CaseRequest): Observable<any> {
     const url = `${environment.baseUrl}/containers/${container}/cases/instances/${caseid}/caseFile`;
-
-    const request = {'io.jumpco.metropolitan.tracker.demand.Request' : parentRequest.request };
-    const settings = {'io.jumpco.metropolitan.tracker.demand.Settings' : parentRequest.settings};
-
-    const  body = {
-      status : parentRequest.status,
-      'request' : request,
-      'settings' : settings,
-    };
-    return this.http.post<any[]>(url, body, { headers: this.getHeaders()});
+    return new Observable<any>(obs => {
+      const request = {'io.jumpco.metropolitan.tracker.demand.Request' : parentRequest.request };
+      const settings = {'io.jumpco.metropolitan.tracker.demand.Settings' : parentRequest.settings};
+      this.caseService.getCaseFile(container, caseid ).subscribe( cfile => {
+        let attachments = null;
+        if (cfile['attachments']) {
+           attachments =  cfile['attachments'];
+        }
+        const  body: {[ k: string]: any} = {
+          status : parentRequest.status,
+          'request' : request,
+          'settings' : settings,
+        };
+        if (attachments && attachments !== null) {
+          body.attachments = attachments;
+        }
+        this.http.post<any[]>(url, body, { headers: this.getHeaders()}).subscribe(results => obs.next(results));
+      });
+    });
   }
+
   getAvailableTasksForProcess(processid: string): Observable<any> {
     const url = `${environment.baseUrl}/queries/tasks/instances/process/${processid} `;
     return this.http.get<any[]>(url, { headers: this.getHeaders() });
   }
 
-  delegate(containerId, taskid: string, user?: string): void {
+  delegate(containerId, taskid: string, caseid: string): void {
     const url = `${environment.baseUrl}/containers/${containerId}/tasks/${taskid}/states/delegated?user=${UserDetails.getUserName()}&targetUser=${UserDetails.delegateUser}`;
-    this.http.put<any[]>(url, { headers: this.getHeaders() })
-      .subscribe(res => { console.error('Task Delegated ' , res ); });
+    new Observable(obs => {
+        this.caseService.assignRole(containerId,
+           caseid,
+        'reviewer',
+           UserDetails.delegateUser, 'reviewergroup' ).subscribe(value => {
+          this.http.put<any[]>(url, { headers: this.getHeaders() }).subscribe(res => obs.next(res));
+        });
+    }).subscribe(res => { console.error('Task Delegated ' , res ); });
+
   }
 
   releaseTask(container: string, taskid: string):  Observable<any> {

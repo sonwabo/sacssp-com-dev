@@ -4,15 +4,15 @@ import {LocalDataSource} from 'ng2-smart-table';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
 import { DivisionManagementService } from '../../../jbpm/service/division-management.service';
-import {division_management_table_settings} from './divisions-utils';
+import {spn_management_table_settings} from './spn-utils';
 
 @Component({
-  selector: 'ngx-division',
-  templateUrl: './division.component.html',
-  styleUrls: ['./division.component.scss'],
+  selector: 'ngx-spn',
+  templateUrl: './service-provider-networks.component.html',
+  styleUrls: ['./service-provider-networks.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class DivisionComponent implements OnInit {
+export class ServiceProviderNetworksComponent implements OnInit {
 
   @ViewChild('stepper') stepper: NbStepperComponent;
 
@@ -20,15 +20,17 @@ export class DivisionComponent implements OnInit {
 
   dataArray: Array<any> = new Array<any>();
 
-  settings = division_management_table_settings;
+  readonly settings = spn_management_table_settings;
 
-  divisionForm: FormGroup;
+  spnForm: FormGroup;
+
+  label: string = 'Add';
 
 
   constructor(private formBuilder: FormBuilder,
               protected http: HttpClient, private service: DivisionManagementService) {
-    this.service.getDivisions().subscribe(value => {
-      for (const index of value['_embedded']['divisions']) { this.dataArray.push(index); }
+    this.service.getServiceProviderNetworks().subscribe(value => {
+      for (const index of value['_embedded']['serviceProviderNetworks']) { this.dataArray.push(index); }
       this.source.load(this.dataArray);
     });
 
@@ -38,19 +40,22 @@ export class DivisionComponent implements OnInit {
   }
 
   private initialiseForms(): void {
-    this.divisionForm = this.formBuilder.group({
+    this.spnForm = this.formBuilder.group({
       name: ['', Validators.required],
       description: ['', Validators.required] });
   }
  // service-provider-networks
   onEdit(event: any): void {
     console.error(event);
+    if(event?.data) {
+        this.label = 'Edit';
+    }
     this.populateFields(event.data );
   }
 
   private populateFields(data: any): void {
-      this.divisionForm.controls['name'].setValue(data['name']);
-      this.divisionForm.controls['description'].setValue(data['description']);
+      this.spnForm.controls['name'].setValue(data['name']);
+      this.spnForm.controls['description'].setValue(data['description']);
   }
 
   formSubmit(form: FormGroup): void {
@@ -61,7 +66,8 @@ export class DivisionComponent implements OnInit {
 
   }
   onReset() {
-      this.divisionForm.reset();
+      this.label = 'Add';
+      this.spnForm.reset();
   }
 
 }

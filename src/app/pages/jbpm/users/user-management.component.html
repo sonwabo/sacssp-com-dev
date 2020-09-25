@@ -50,6 +50,19 @@
           <br/><br/>
         </div>
 
+          <div *ngIf="isOperationsUser">
+
+            <nb-select formControlName="operatioinsDepartment" fullWidth placeholder="Operations Departments">
+              <nb-option [value]="result._links.scheme.href" *ngFor="let result of schemes">{{result.description}}</nb-option>
+            </nb-select>
+            <br/><br/>
+
+            <nb-select formControlName="operationsHOD" fullWidth placeholder="Operation HOD">
+              <nb-option [value]="result._links.fundAdministrator.href" *ngFor="let result of fundAdministrators">{{result.name}} {{result.surname}}</nb-option>
+            </nb-select>
+            <br/><br/>
+          </div>
+
         <button  nbButton type="submit" color="blue"  (click)="formSubmit(userForm)">Manage</button> &nbsp;&nbsp;&nbsp;
         <button  nbButton type="button" color="blue"  (click)="onReset()">Clear</button>
         </form>

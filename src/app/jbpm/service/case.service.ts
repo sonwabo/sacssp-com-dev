@@ -48,6 +48,10 @@ export class CaseService {
     return this.http.get<any[]>(`${environment.baseUrl}/containers/${containerId}/cases/instances/${caseId}/caseFile/request`);
   }
 
+  getCaseFile(containerId: string, caseId: string): Observable<any> {
+    return this.http.get<any[]>(`${environment.baseUrl}/containers/${containerId}/cases/instances/${caseId}/caseFile`);
+  }
+
   getCaseInstances(containerId: string, caseDefId: string): Observable<any> {
     const headers = new HttpHeaders();
     const params = new HttpParams();
@@ -73,8 +77,7 @@ export class CaseService {
   }
 
   createCase(containerId: string, caseDefinition: string, administrator?: string, manager?: string): Observable<any> {
-    //  const case_ass = {'administrator' : UserDetails.owner, 'reviewer': UserDetails.owner};
-    const case_ass = {'administrator': environment.administrator, 'reviewer': environment.reviewer};
+    const case_ass = {'administrator': environment.administrator}; //  , 'reviewer': environment.reviewer};
     const data = {};
     const group = {};
     const restrictions = {};
@@ -86,6 +89,12 @@ export class CaseService {
       'case-group-assignments': group,
       'case-data-restrictions': restrictions,
     });
+  }
+
+  assignRole(containerid: string, caseid: string, roleName: string, user: string, group: string): Observable<any> {
+    const headers = new HttpHeaders();
+    const url = `${environment.baseUrl}/containers/${containerid}/cases/instances/${caseid}/roles/${roleName}?user=${user}&group=${group}`;
+    return this.http.put<any[]>(url, {headers: headers});
   }
 
   closeCase(containerId: string, caseId: string): Observable<any> {
@@ -110,13 +119,4 @@ export class CaseService {
     }
     return null;
   }
-
-  // private getHeaders(): HttpHeaders {
-  //   let headers = new HttpHeaders({
-  //     Accept: 'application/json',
-  //   });
-  //   headers = headers.append('Content-Type', 'application/json');
-  //   return headers;
-  // }
-
 }

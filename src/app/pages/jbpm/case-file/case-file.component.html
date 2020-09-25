@@ -8,7 +8,7 @@
           <label class="label"><h5>{{taskName}} ({{caseId}}) (Status : {{requestStatus}})</h5></label>
         </div>
 
-        <label class="label" for="input-email">Received From
+        <label class="label" for="input-email">Received From/Scheme Official
           <nb-icon icon="question-mark-circle" nbTooltip="The person who made the request" nbTooltipStatus="primary"
                    status="info"></nb-icon>
         </label> <input nbInput fullWidth type="text" formControlName="receivedFrom" id="input-email">
@@ -33,7 +33,7 @@
     </div>
     <nb-tabset>
 
-      <nb-tab tabTitle="Administration" tabIcon="list">
+      <nb-tab tabTitle="Case Details" tabIcon="list">
         <div class="row">
 
           <div class="col">
@@ -58,8 +58,8 @@
                        nbTooltipStatus="primary" status="info"></nb-icon>
             </label>
             <nb-select placeholder="Select Division" formControlName="division" id="input-division">
-              <nb-option [value]="division.value"
-                         *ngFor="let division of divisions">{{division.description}}</nb-option>
+              <nb-option [value]="division"
+                         *ngFor="let division of divisions">{{division}}</nb-option>
             </nb-select>
             <br/>
 
@@ -73,7 +73,7 @@
             </nb-select>
             <br/>
 
-            <label class="label" for="input-fundAdministrator">Fund Administrator
+            <label class="label" for="input-fundAdministrator">Fund Administrator/Co-Ordinators
               <nb-icon icon="question-mark-circle"
                        nbTooltip="Find the person from the drop down who is supposed to action the request"
                        nbTooltipStatus="primary" status="info"></nb-icon>
@@ -182,7 +182,7 @@
         </div>
       </nb-tab>
 
-      <nb-tab tabTitle="Application Dates" tabIcon="list">
+      <nb-tab tabTitle="Case Dates" tabIcon="list">
         <div class="row">
 
           <div class="col">

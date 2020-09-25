@@ -57,6 +57,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
     link: '/pages/jbpm/schemes',
   },
   {
+    title: 'Service Provider Networks',
+    link: '/pages/jbpm/service-provider-networks',
+  },
+  {
     title: 'Categories',
     link: '/pages/tables/smart-table',
   },

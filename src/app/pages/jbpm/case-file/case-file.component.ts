@@ -39,16 +39,33 @@ export class CaseFileComponent implements OnInit {
 
   readonly origins: string[] = ['Engagement', 'Telecon', 'Email'];
   readonly caseValidityList: string[] = ['Valid', 'Invalid'];
-  readonly divisions: any[] = [{ value: 'MHRS', description: 'Medscheme Health Risk Solutions' },
-                               { value: 'DENIS', description: 'Dental Management Services' }];
+
+  readonly divisions: any[] = ['ATS',
+    'HM',
+    'Legal',
+    'MSE',
+    'ICT',
+    'Finance',
+    'Risk and Compliance',
+    'OPO',
+    'PMO'];
+
   readonly priorities: any[] = [
     {value: 0, description: 'High'},
     {value: 1, description: 'Medium'},
     {value: 3, description: 'Low'}];
 
-  readonly operationDepartmentList: Array<string> = ['Claims Back Office1',
-    'Claims Back Office2',
-    'Claims Back Office3'];
+  readonly operationDepartmentList: Array<string> = [
+    'Cliet Services',
+    'Provider Relations',
+    'Membership',
+    'Client Experience',
+    'Claims',
+    'Client Interface',
+    'Communications',
+    'Client Reporting',
+    'Correspondence',
+    'Contracting'];
 
   readonly serviceProviderNetworks: any[] = ['Scheme Claim Dept', 'Scheme Fund Admin'];
 
@@ -57,6 +74,7 @@ export class CaseFileComponent implements OnInit {
   taskCompleted: boolean = true;
   taskName: string = '';
   caseId: string = '';
+  container: string;
 
   taskSummaryValue: any;
   enableTracking: boolean;
@@ -82,7 +100,9 @@ export class CaseFileComponent implements OnInit {
     this.taskSummary.then(res => {
       this.taskSummaryValue = res;
       this.taskName = res['task-name'];
+
       this.caseId = this.case['case-id'];
+      this.container = res['task-container-id'];
 
       if (this.taskName === TaskNames.TRACKING) {
         this.enableTracking = true;
@@ -151,6 +171,9 @@ export class CaseFileComponent implements OnInit {
     this.caseForm.controls['operationsUser'].setValue(request['assignedTo']);
     this.caseForm.controls['operationsHod'].setValue(request['assignedHod']);
     this.caseForm.controls['caseValidity'].setValue(request['validity']);
+    this.caseForm.controls['operationsDepartment'].setValue(request['operationsDepartment']);
+
+
     if ( request['tags']) {
       this.caseForm.controls['tag'].setValue(request['tags'][0]);
     }
@@ -245,7 +268,7 @@ export class CaseFileComponent implements OnInit {
             taskRes['task-status'], formdata.closureStatus);
 
         if (!caseRequest?.closeCase && taskRes['task-name'] === TaskNames.TRACKING) {
-          this.taskService.delegate(containerId, taskRes['task-id']);
+          this.taskService.delegate(containerId, taskRes['task-id'], this.caseId);
           this.showToast('Task has been released successfully');
         } else {
 
@@ -254,7 +277,7 @@ export class CaseFileComponent implements OnInit {
             this.taskService.getAvailableTasksForProcess(processInstanceId).subscribe(taskres  => {
                    if ( taskres['task-summary'][0]['task-name'] === TaskNames.TRACKING) {
                       this.taskService.delegate(containerId,
-                        taskres['task-summary'][0]['task-id']);
+                        taskres['task-summary'][0]['task-id'], this.caseId);
                    }
              });
           }, error => {
@@ -272,7 +295,7 @@ export class CaseFileComponent implements OnInit {
 
   saveCaseData(form: FormGroup ): void {
     const caseRequest: CaseRequest = this.mapper(this.formData, false);
-    this.taskService.saveCaseData(this.case['container-id'], this.case['case-id'], caseRequest).subscribe(res => {
+    this.taskService.saveCaseData(this.container, this.caseId, caseRequest).subscribe(res => {
       this.showToast('Saved Data Successfully', false);
     });
   }
