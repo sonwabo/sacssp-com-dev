@@ -1,4 +1,5 @@
 import {UserKindRenderComponent} from '../blocks/user-kind-render.component';
+import {DepartmentRenderComponent} from '@app/pages/jbpm/blocks/department-render.component';
 
 export const users_management_table_settings: any =  {
   mode: 'external',
@@ -35,6 +36,10 @@ export const users_management_table_settings: any =  {
       title: 'UserType',
       type: 'custom',
       renderComponent: UserKindRenderComponent,
+    },
+    division: {
+      title: 'Division',
+      type: 'string',
     },
   },
 };

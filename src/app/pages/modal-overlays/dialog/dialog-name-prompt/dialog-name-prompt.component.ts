@@ -10,6 +10,14 @@ export class DialogNamePromptComponent {
 
   constructor(protected ref: NbDialogRef<DialogNamePromptComponent>) {}
 
+  static  dialogBody: string;
+
+  dialogMessageBody: string = DialogNamePromptComponent.dialogBody;
+
+  set dialogMessageBody_(name: string) {
+    this.dialogMessageBody = name;
+  }
+
   cancel() {
     this.ref.close();
   }

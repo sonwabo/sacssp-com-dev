@@ -3,7 +3,7 @@ import { NbStepperComponent } from '@nebular/theme';
 import {LocalDataSource} from 'ng2-smart-table';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
-import { DivisionManagementService } from '../../../jbpm/service/division-management.service';
+import { DepartmentManagementService } from '../../../jbpm/service/department-management.service';
 import { scheme_management_table_settings } from './scheme-utils';
 
 @Component({
@@ -16,22 +16,31 @@ export class SchemeComponent implements OnInit {
 
   @ViewChild('stepper') stepper: NbStepperComponent;
 
-  sourceScheme: LocalDataSource = new LocalDataSource();
-  dataArraySchemes: Array<any> = new Array<any>();
+  source: LocalDataSource = new LocalDataSource();
+  dataArray: Array<any> = new Array<any>();
   settings = scheme_management_table_settings;
-  settingsScheme = scheme_management_table_settings;
 
   schemeForm: FormGroup;
 
+  readonly api: string  = 'schemes';
+  label: string = 'Add';
+
+
+
   constructor(private formBuilder: FormBuilder,
-              protected http: HttpClient, private service: DivisionManagementService) {
-
-    this.service.getSchemes().subscribe(value => {
-      for (const index of value['_embedded']['schemes']) { this.dataArraySchemes.push(index); }
-      this.sourceScheme.load(this.dataArraySchemes);
-    });
-
+              protected http: HttpClient, private service: DepartmentManagementService) {
+      this.loadData();
   }
+
+
+  loadData(): void {
+    this.service.getDepartments(this.api).subscribe(value => {
+      for (const index of value['_embedded'][`${this.api}`]) { this.dataArray.push(index); }
+      this.source.load(this.dataArray);
+    });
+  }
+
+
   ngOnInit(): void {
      this.initialiseForms();
   }
@@ -40,28 +49,58 @@ export class SchemeComponent implements OnInit {
 
     this.schemeForm = this.formBuilder.group({
       name: ['', Validators.required],
-      description: ['', Validators.required]});
+      description: ['', Validators.required],
+      departmentObject: ['']});
   }
 
   onEdit(event: any): void {
-    console.error(event);
+    if (event?.data) {
+      this.label = 'Update';
+    }
     this.populateFields(event.data );
   }
 
   private populateFields(data: any): void {
       this.schemeForm.controls['name'].setValue(data['name']);
       this.schemeForm.controls['description'].setValue(data['description']);
+      this.schemeForm.controls['departmentObject'].setValue(data);
   }
 
-  formSubmit(form: FormGroup): void {
 
+  departmentformSubmit(form: FormGroup): void {
+
+    const  departmentBody: {[ k: string]: any} = {
+      name  : form.value.name,
+      description : form.value.description,
+    };
+
+    if (form.value?.departmentObject === null || form.value?.departmentObject.length === 0) {
+      this.service.addDepartment(departmentBody, this.api).subscribe( res => {
+        this.source.prepend(res);
+        this.onReset();
+      });
+
+    } else if ( form.value?.departmentObject?._links.self?.href) {
+
+      this.service.updateDepartment(form.value?.departmentObject?._links.self?.href, departmentBody )
+        .subscribe( res => {
+          this.source.remove(form.value?.departmentObject).then(value => this.source.prepend(res));
+          this.onReset();
+        });
+    }
   }
 
-  schemeformSubmit(form: FormGroup): void {
+  deleteDepartment(form: FormGroup): void {
 
+    this.service.deleteDepartment( form.value?.departmentObject?._links.self?.href)
+      .subscribe(value_ => {
+        this.source.remove(form.value?.departmentObject).then(value => console.error(value) );
+        this.onReset();
+      });
   }
+
   onReset() {
-      this.schemeForm.reset();
+    this.label = 'Add';
+    this.schemeForm.reset();
   }
-
 }

@@ -5,7 +5,7 @@
     <nb-card>
       <nb-card-header>Schemes</nb-card-header>
       <nb-card-body>
-        <ng2-smart-table [settings]="settingsScheme" [source]="sourceScheme" (edit)="onEdit($event)">
+        <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEdit($event)">
         </ng2-smart-table>
       </nb-card-body>
     </nb-card>
@@ -17,13 +17,19 @@
     <nb-card>
       <nb-card-header>Manage Scheme</nb-card-header>
       <nb-card-body>
-        <form [formGroup]="schemeForm" (ngSubmit)="schemeformSubmit(schemeForm)">
+        <form [formGroup]="schemeForm">
           <input type="text" formControlName="name" nbInput fullWidth placeholder="Scheme Name">
           <br/><br/>
           <input type="text" formControlName="description" nbInput fullWidth placeholder="Description">
           <br/><br/>
-          <button nbButton type="submit" color="blue" (click)="schemeformSubmit(schemeForm)">Manage</button> &nbsp;&nbsp;
+
+          <input type="hidden" formControlName="departmentObject" nbInput>
+
+          <button nbButton type="button" color="blue"  (click)="departmentformSubmit(schemeForm)">{{label}}</button> &nbsp;
+          <button *ngIf="label === 'Update'" nbButton type="submit" color="blue" (click)="deleteDepartment(schemeForm)">Delete</button>
+          &nbsp;
           <button  nbButton type="button" color="blue"  (click)="onReset()">Clear</button>
+
         </form>
       </nb-card-body>
     </nb-card>

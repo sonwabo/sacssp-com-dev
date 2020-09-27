@@ -57,11 +57,15 @@ export const MENU_ITEMS: NbMenuItem[] = [
     link: '/pages/jbpm/schemes',
   },
   {
-    title: 'Service Provider Networks',
-    link: '/pages/jbpm/service-provider-networks',
+    title: 'Operations Departments',
+    link: '/pages/jbpm/operations-departments',
   },
   {
-    title: 'Categories',
-    link: '/pages/tables/smart-table',
+    title: 'Fund Management Departments',
+    link: '/pages/jbpm/fund-management-departments',
+  },
+  {
+    title: 'Service Provider Networks',
+    link: '/pages/jbpm/service-provider-networks',
   },
 ];

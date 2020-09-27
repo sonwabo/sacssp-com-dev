@@ -1,26 +1,36 @@
 <div class="row">
+
   <div class="col-lg-6">
 
     <nb-card>
-      <nb-card-header>Divisions</nb-card-header>
+      <nb-card-header>Fund Management Departments</nb-card-header>
       <nb-card-body>
         <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEdit($event)">
         </ng2-smart-table>
       </nb-card-body>
     </nb-card>
-
   </div>
+
 
   <div class="col-lg-6">
 
     <nb-card>
-      <nb-card-header>Manage Division</nb-card-header>
+      <nb-card-header>Manage Departments</nb-card-header>
       <nb-card-body>
         <form [formGroup]="departmentForm">
-          <input type="text" formControlName="name" nbInput fullWidth placeholder="Division Name">
+          <input type="text" formControlName="name" nbInput fullWidth placeholder="Department Name">
           <br/><br/>
           <input type="text" formControlName="description" nbInput fullWidth placeholder="Description">
           <br/><br/>
+          <nb-select placeholder="Department Type"
+                     formControlName="department"
+                     fullWidth
+                     id="input-department">
+            <nb-option [value]="kind.trim()"
+                       *ngFor="let kind of listKinds">{{kind.trim()}}</nb-option>
+          </nb-select>
+          <br/><br/>
+
           <input type="hidden" formControlName="departmentObject" nbInput>
 
           <button nbButton type="button" color="blue"  (click)="departmentformSubmit(departmentForm)">{{label}}</button> &nbsp;
@@ -30,6 +40,7 @@
         </form>
       </nb-card-body>
     </nb-card>
+
   </div>
 
 

@@ -33,6 +33,12 @@ export class UserKindRenderComponent implements ViewCell, OnInit {
       case 'FUND_MANAGER':
         this.kind = 'Fund Manager';
         break;
+      case 'FUND_COORDINATOR':
+        this.kind = 'Fund Coordinator';
+        break;
+      case 'FUND_INTERN':
+        this.kind = 'Fund Intern';
+        break;
       default:
         this.kind = 'Unknown';
         break;

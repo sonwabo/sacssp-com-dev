@@ -15,6 +15,8 @@ import { APP_ROUTES } from './utils/routes-list-enum';
 import {DivisionComponent} from './divisions/division.component';
 import {SchemeComponent} from './schemes/scheme.component';
 import {ServiceProviderNetworksComponent} from './service-provider-networks/service-provider-networks.component';
+import {OperationsDepartmentComponent} from './operations-departments/operations-department.component';
+import {FundManagementDepartmentComponent} from './fund-management-departments/fund-management-department.component';
 
 const routes: Routes = [{
   path: '',
@@ -44,7 +46,14 @@ const routes: Routes = [{
       path: APP_ROUTES.SCHEMES,
       component: SchemeComponent,
     },
-
+    {
+      path: APP_ROUTES.OPERATIONS_DEPARTMENT,
+      component: OperationsDepartmentComponent,
+    },
+    {
+      path: APP_ROUTES.FUND_MANAGEMENT_DEPARTMENT,
+      component: FundManagementDepartmentComponent,
+    },
     {
       path: APP_ROUTES.SERVICE_PROVIDER_NETWORKS,
       component: ServiceProviderNetworksComponent,
@@ -72,4 +81,6 @@ export const routedComponents = [
   DivisionComponent,
   SchemeComponent,
   ServiceProviderNetworksComponent,
+  OperationsDepartmentComponent,
+  FundManagementDepartmentComponent,
 ];

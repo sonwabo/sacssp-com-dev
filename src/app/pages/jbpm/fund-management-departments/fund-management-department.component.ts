@@ -1,34 +1,68 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { NbStepperComponent } from '@nebular/theme';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import {LocalDataSource} from 'ng2-smart-table';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {HttpClient} from '@angular/common/http';
-import { DepartmentManagementService } from '../../../jbpm/service/department-management.service';
-import {division_management_table_settings} from './divisions-utils';
+import {DepartmentManagementService} from '@app/jbpm/service/department-management.service';
+
 
 @Component({
-  selector: 'ngx-division',
-  templateUrl: './division.component.html',
-  styleUrls: ['./division.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+  selector: 'ngx-fund-management-department',
+  templateUrl: './fund-management-department.component.html',
+  styleUrls: ['./fund-management-department.component.scss'],
 })
-export class DivisionComponent implements OnInit {
 
-  @ViewChild('stepper') stepper: NbStepperComponent;
+export class FundManagementDepartmentComponent implements OnInit {
+
+
+  readonly department_management_table_settings: any =  {
+    mode: 'external',
+    actions: {
+      add: false,
+      edit: true,
+      delete: false,
+      position: 'right',
+    },
+    add: {
+      addButtonContent: '<i class="nb-plus"></i>',
+      confirmCreate: false,
+    },
+    edit: {
+      editButtonContent: '<i class="nb-edit"></i>',
+      saveButtonContent: '<i class="nb-checkmark"></i>',
+      cancelButtonContent: '<i class="nb-close"></i>',
+      confirmSave: true,
+    },
+    columns: {
+      name: {
+        title: 'Department Name',
+        type: 'string',
+      },
+      description: {
+        title: 'Description',
+        type: 'string',
+      },
+    },
+  };
+
+  label: string = 'Add';
+  readonly root: string = 'fundManagementDepartmentses';
+
+
 
   source: LocalDataSource = new LocalDataSource();
-
   dataArray: Array<any> = new Array<any>();
-
-  settings = division_management_table_settings;
-
+  settings = this.department_management_table_settings;
   departmentForm: FormGroup;
 
-  readonly root: string = 'divisions';
-  label: string = 'Add';
+  listKinds: Array<string> = new Array<any>();
 
-  constructor(private formBuilder: FormBuilder,
-              protected http: HttpClient, private service: DepartmentManagementService) {
+
+  constructor(
+    private formBuilder: FormBuilder,
+    protected router: Router,
+    protected http: HttpClient, private service: DepartmentManagementService) {
+
     this.loadData();
   }
 
@@ -39,16 +73,27 @@ export class DivisionComponent implements OnInit {
       this.source.load(this.dataArray);
     });
 
+    // This is to load the Enum values
+    this.service.getSchema(this.root).subscribe( res => {
+      for (const value of res['alps']['descriptor'][0]['descriptor']) {
+        if (value?.doc?.value) {
+          this.listKinds = (value?.doc?.value.split(',') as Array<string>)
+            .filter(val => (val.trim() === 'CLIENT_INTERFACE' || val.trim() === 'CLIENT_REPORTING' ));
+        }
+      }
+    });
   }
 
+
   ngOnInit(): void {
-     this.initialiseForms();
+    this.initialiseForms();
   }
 
   private initialiseForms(): void {
 
     this.departmentForm = this.formBuilder.group({
       name: ['', Validators.required],
+      department: ['', Validators.required],
       description: ['', Validators.required],
       departmentObject: ['']});
   }
@@ -63,13 +108,16 @@ export class DivisionComponent implements OnInit {
   private populateFields(data: any): void {
     this.departmentForm.controls['name'].setValue(data['name']);
     this.departmentForm.controls['description'].setValue(data['description']);
+    this.departmentForm.controls['department'].setValue(data['kind'].trim());
     this.departmentForm.controls['departmentObject'].setValue(data);
   }
+
 
   departmentformSubmit(form: FormGroup): void {
 
     const  departmentBody: {[ k: string]: any} = {
       name  : form.value.name,
+      kind : form.value.department.trim(),
       description : form.value.description,
     };
 
@@ -90,16 +138,16 @@ export class DivisionComponent implements OnInit {
   }
 
   deleteDepartment(form: FormGroup): void {
+
     this.service.deleteDepartment( form.value?.departmentObject?._links.self?.href)
       .subscribe(value_ => {
         this.source.remove(form.value?.departmentObject).then(value => console.error(value) );
         this.onReset();
-      });
+    });
   }
 
   onReset() {
     this.label = 'Add';
     this.departmentForm.reset();
   }
-
 }

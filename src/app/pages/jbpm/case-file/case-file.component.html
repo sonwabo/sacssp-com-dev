@@ -11,7 +11,17 @@
         <label class="label" for="input-email">Received From/Scheme Official
           <nb-icon icon="question-mark-circle" nbTooltip="The person who made the request" nbTooltipStatus="primary"
                    status="info"></nb-icon>
-        </label> <input nbInput fullWidth type="text" formControlName="receivedFrom" id="input-email">
+        </label>
+<!--        <input nbInput fullWidth type="text" formControlName="receivedFrom" id="input-email">-->
+        <nb-select placeholder="Scheme Official"
+                   fullWidth
+                   formControlName="receivedFrom"
+                   id="input-email">
+          <nb-option [value]="officials.email"
+                     (selectionChange)="selectedSchemeOfficial(officials)"
+                     *ngFor="let officials of schemeOfficialsList">{{officials.email}}</nb-option>
+        </nb-select>
+
         <label class="label" for="input-subject">Subject
           <nb-icon icon="question-mark-circle" nbTooltip="What is the request about" nbTooltipStatus="primary"
                    status="info"></nb-icon>
@@ -47,8 +57,8 @@
                        [disabled]="!(formData.schemesDepartment?.length === 0)"
                        id="input-schemes">
 
-              <nb-option [value]="scheme.value"
-                         *ngFor="let scheme of schemeList">{{scheme.description}}</nb-option>
+              <nb-option [value]="scheme.name"
+                         *ngFor="let scheme of schemeList">{{scheme.name}}</nb-option>
             </nb-select>
             <br/>
 
@@ -58,8 +68,8 @@
                        nbTooltipStatus="primary" status="info"></nb-icon>
             </label>
             <nb-select placeholder="Select Division" formControlName="division" id="input-division">
-              <nb-option [value]="division"
-                         *ngFor="let division of divisions">{{division}}</nb-option>
+              <nb-option [value]="division.name"
+                         *ngFor="let division of divisions">{{division.name}}</nb-option>
             </nb-select>
             <br/>
 
@@ -77,29 +87,51 @@
               <nb-icon icon="question-mark-circle"
                        nbTooltip="Find the person from the drop down who is supposed to action the request"
                        nbTooltipStatus="primary" status="info"></nb-icon>
-            </label><input nbInput fullWidth type="text" formControlName="fundAdministrator"
-                           id="input-fundAdministrator">
+            </label>
+<!--            <input nbInput fullWidth type="text" formControlName="fundAdministrator" id="input-fundAdministrator">-->
+            <nb-select placeholder="Fund Administrator" formControlName="operationsUser" id="input-fundAdministrator">
+              <nb-option [value]="fundAdmin.email"
+                         (selectionChange)="selectedUser(fundAdmin, 'fundManager')"
+                         *ngFor="let fundAdmin of fundAdministratorList">{{fundAdmin.email}}</nb-option>
+            </nb-select>
             <br/>
 
             <label class="label" for="input-manager">Fund Manager
               <nb-icon icon="question-mark-circle"
                        nbTooltip="Find the Head of Department responsible for the division in which the assigned person is reporting to"
                        nbTooltipStatus="primary" status="info"></nb-icon>
-            </label><input nbInput fullWidth type="text" formControlName="manager" id="input-manager">
+            </label><br/><input
+                      nbInput
+                      type="text"
+                      class="sb-text"
+                      readonly
+                      formControlName="fundManager"
+                      id="input-manager">
             <br/>
 
             <label class="label" for="input-operation-user">Operation User
               <nb-icon icon="question-mark-circle"
                        nbTooltip="Find th Operations user"
                        nbTooltipStatus="primary" status="info"></nb-icon>
-            </label><input nbInput fullWidth type="text" formControlName="operationsUser" id="input-operation-user">
+            </label>
+            <nb-select placeholder="Operation User" formControlName="operationsUser" id="input-operation-user">
+              <nb-option [value]="ops.email"
+                         (selectionChange)="selectedUser(ops, 'operationsHod')"
+                         *ngFor="let ops of operationsList">{{ops.email}}</nb-option>
+            </nb-select>
+<!--            <input nbInput fullWidth type="text" formControlName="operationsUser" id="input-operation-user">-->
             <br/>
 
             <label class="label" for="input-operation-head">Head of Department
               <nb-icon icon="question-mark-circle"
                        nbTooltip="Find the Head of Department responsible for operations"
                        nbTooltipStatus="primary" status="info"></nb-icon>
-            </label><input nbInput fullWidth type="text" formControlName="operationsHod" id="input-operation-head">
+            </label><br/><input nbInput
+                           readonly
+                           class="sb-text"
+                           type="text"
+                           formControlName="operationsHod"
+                           id="input-operation-head">
             <br/>
           </div>
 
@@ -112,8 +144,8 @@
             </label>
             <nb-select placeholder="Select Operations Department" formControlName="operationsDepartment"
                        id="input-operations-department">
-              <nb-option [value]="operationDept"
-                         *ngFor="let operationDept of operationDepartmentList">{{operationDept}}</nb-option>
+              <nb-option [value]="operationDept.name"
+                         *ngFor="let operationDept of operationDepartmentList">{{operationDept.name}}</nb-option>
             </nb-select>
             <br/>
 
@@ -128,8 +160,8 @@
                 id="input-serviceProviderNetwork"
                 class="selectpicker"
                 multiple>
-                <nb-option [value]="serviceProviderNetwork"
-                           *ngFor="let serviceProviderNetwork of serviceProviderNetworks">{{serviceProviderNetwork}}</nb-option>
+                <nb-option [value]="serviceProviderNetwork.name"
+                           *ngFor="let serviceProviderNetwork of serviceProviderNetworks">{{serviceProviderNetwork.name}}</nb-option>
               </nb-select>
               <br/>
             </div>
@@ -138,7 +170,13 @@
               <nb-icon icon="question-mark-circle"
                        nbTooltip="Tag case, for later searching"
                        nbTooltipStatus="primary" status="info"></nb-icon>
-            </label><input nbInput fullWidth type="text" formControlName="tag" id="input-tags">
+            </label>
+              <br/>
+              <input nbInput
+                     class="sb-text"
+                     type="text"
+                     formControlName="tag"
+                     id="input-tags">
             <br/>
 
             <div *ngIf="enableClassification">

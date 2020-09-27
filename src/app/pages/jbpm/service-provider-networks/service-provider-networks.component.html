@@ -16,15 +16,17 @@
     <nb-card>
       <nb-card-header>Manage SPN </nb-card-header>
       <nb-card-body>
-        <form [formGroup]="spnForm" (ngSubmit)="formSubmit(spnForm)">
+        <form [formGroup]="spnForm">
           <input type="text" formControlName="name" nbInput fullWidth placeholder="SPN Name">
           <br/><br/>
           <input type="text" formControlName="description" nbInput fullWidth placeholder="Description">
           <br/><br/>
-          <button nbButton type="submit" color="blue" (click)="formSubmit(spnForm)">{{label}}</button>
+          <input type="hidden" formControlName="spnObject" nbInput>
+
+          <button nbButton type="submit" color="blue" (click)="formSubmit(spnForm)">{{label}}</button> &nbsp;
             &nbsp;
-          <button *ngIf="label === 'Edit'" nbButton type="submit" color="blue" (click)="formSubmit(spnForm)">Delete</button>
-          &nbsp;&nbsp;
+          <button *ngIf="label === 'Update'" nbButton type="submit" color="blue" (click)="deleteSpn(spnForm)">Delete</button>
+           &nbsp;&nbsp;
           <button nbButton type="button" color="blue"  (click)="onReset()">Clear</button>
         </form>
       </nb-card-body>

@@ -5,6 +5,8 @@ import {LocalDataSource} from 'ng2-smart-table';
 import {users_management_table_settings} from './user-utils';
 import {HttpClient} from '@angular/common/http';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {DepartmentManagementService} from '@app/jbpm/service/department-management.service';
+
 
 @Component({
   selector: 'ngx-user-management',
@@ -19,46 +21,76 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   dataArray: Array<any> = new Array<any>();
   settings = users_management_table_settings;
   userForm: FormGroup;
+  label: string = 'Add';
 
-  fundAdministrators: Array<any> = new Array<any>();
+
+
   schemes: Array<any> = new Array<any>();
   divisions: Array<any> = new Array<any>();
+  fundManagementDepartmentsArray: Array<any> = new Array<any>();
+  operationsDepartmentsArray: Array<any> = new Array<any>();
 
-  isfundAdministrators: boolean = false;
+  operationsHODArray: Array<any> = new Array<any>();
+  fundManagersArray: Array<any> = new Array<any>();
+
+
+  isfundAdministrator: boolean = false;
   isOperationsUser: boolean = false;
+  isOperationsUserHod: boolean = false;
+  isfundManager: boolean = false;
+
+  // Form Validation properties
   isUpdate: boolean = false;
-
-
   submitted = false;
 
-  userTypes: any[] = [
-      { value: 'SCHEME_OFFICIAL', description: 'Scheme Official' }
-    , { value: 'OPERATIONS', description: 'Operations User' }
-    , { value: 'OPERATIONS_HOD', description: 'Operations HOD' }
-    , { value: 'FUND_ADMINISTRATOR', description: 'Fund Administrator' }
-    , { value: 'FUND_MANAGER', description: 'Fund Manager' },
-  ];
 
-  constructor(private formBuilder: FormBuilder, protected http: HttpClient, private service: UserManagementService) {
+  userTypes: Array<string> = new Array<string>();
+
+  constructor(private formBuilder: FormBuilder,
+              private http: HttpClient,
+              private departmentManagement: DepartmentManagementService,
+              private service: UserManagementService) {
+    this.loadData();
+  }
+
+  loadData(): void {
+
+    this.service.getSchema().subscribe( res => {
+      for (const value of res['alps']['descriptor'][0]['descriptor']) {
+        if (value?.doc?.value) {
+          this.userTypes = (value?.doc?.value.split(',') as Array<string>).filter(val => val.trim() !== 'SCHEME_OFFICIAL');
+        }
+      }
+    });
 
     this.service.getAllUsers().subscribe(value => {
-      for (const index of value['_embedded']['fundManagers']) { this.dataArray.push(index); }
-      for (const index of value['_embedded']['fundAdministrators']) { this.dataArray.push(index); }
-      for (const index of value['_embedded']['operationses']) { this.dataArray.push(index); }
-      for (const index of value['_embedded']['operationsHods']) { this.dataArray.push(index); }
-      for (const index of value['_embedded']['schemeOfficials']) { this.dataArray.push(index); }
+      (value['_embedded']?.fundManagers as Array<any>)?.forEach(value1 => this.setArrayData(value1));
+      (value['_embedded']?.fundAdministrators as Array<any>)?.forEach(value1 => this.setArrayData(value1));
+      (value['_embedded']?.operationses as Array<any>)?.forEach(value1 => this.setArrayData(value1));
+      (value['_embedded']?.operationsHods as Array<any>)?.forEach(value1 => this.setArrayData(value1));
       this.source.load(this.dataArray);
     });
   }
+
+  private setArrayData(data: any ): void {
+     if ( !this.dataArray.includes(data)) { this.dataArray.push(data); }
+  }
+
 
   private initialiseForm(): void {
     this.userForm = this.formBuilder.group({
       name: ['', Validators.required],
       surname: ['', Validators.required],
       kind: ['', Validators.required],
-      fundAdministrator: ['', Validators.required],
-      scheme: ['', Validators.required],
-      email: ['', Validators.required] });
+      email: ['', Validators.required, Validators.email],
+
+      fundAdministrator: [''],
+      fundManagementDepartment: [''],
+      operationsDepartment: [''],
+      operationsHod: [''],
+      fundManager: [''],
+      userObject: [''],
+    });
   }
 
   get form() { return this.userForm.controls; }
@@ -66,75 +98,142 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   ngOnInit(): void { this.initialiseForm(); }
 
   ngAfterViewInit() {
-    this.service.getFundAdministrators().subscribe(res => {
-      for ( const value of res['_embedded']['fundAdministrators'] ) { this.fundAdministrators.push(value); }
+    this.departmentManagement.getDepartments('divisions').subscribe(res => {
+      for (const value of res['_embedded']['divisions']) {
+        this.divisions.push(value);
+      }
     });
-    this.service.getDivisions().subscribe(res => {
-      for (const value of res['_embedded']['divisions']) {this.divisions.push(value); }
+    this.departmentManagement.getDepartments('schemes').subscribe(res => {
+      for (const value of res['_embedded']['schemes']) {
+        this.schemes.push(value);
+      }
     });
-    this.service.getSchemes().subscribe(res => {
-      for (const value of res['_embedded']['schemes']) {this.schemes.push(value); }
+    this.departmentManagement.getDepartments('fundManagementDepartmentses').subscribe(res => {
+      for (const value of res['_embedded']['fundManagementDepartmentses']) {
+        this.fundManagementDepartmentsArray.push(value);
+      }
     });
+
+    this.departmentManagement.getDepartments('operationsDepartments').subscribe(res => {
+      for (const value of res['_embedded']['operationsDepartments']) {
+        this.operationsDepartmentsArray.push(value);
+      }
+    });
+
+   this.loadManagers('OPERATIONS_HOD').loadManagers('FUND_MANAGER');
+
   }
 
-  onEdit(event: any): void {  this.populateFields( event.data ); }
+  loadManagers(kind: string): UserManagementComponent {
+
+    if ('FUND_MANAGER' === kind) {
+      this.service.getUsers('fundManagers').subscribe(res => {
+        this.fundManagersArray = null;
+        this.fundManagersArray = new Array<any>();
+        for (const value of res['_embedded']['fundManagers']) {
+          this.fundManagersArray.push(value);
+        }
+      });
+    } else {
+       this.service.getUsers('operationsHods').subscribe(res => {
+         this.operationsHODArray = null;
+         this.operationsHODArray = new Array<any>();
+         for (const value of res['_embedded']['operationsHods']) {
+           this.operationsHODArray.push(value);
+         }
+       });
+    }
+    return this;
+  }
+
+  onEdit(event: any): void {
+    if (event?.data) {
+      this.label = 'Edit';
+    }
+    this.populateFields(event.data );
+  }
 
   private populateFields(data: any): void {
-    if ( data['_links']) { this.isUpdate = true; }
-    console.error('>>>>>>>>>>>> ::: ');
-    console.error(data['_links']);
-    console.error(data);
+
     this.userForm.controls['name'].setValue(data['name']);
     this.userForm.controls['surname'].setValue(data['surname']);
+    this.userForm.controls['kind'].setValue(data['kind']);
+    this.userForm.controls['userObject'].setValue(data);
     this.userForm.controls['email'].setValue(data['email']);
-    this.userForm.controls['kind'].setValue(this.getValue(data['kind']));
-    // this.userForm.controls['fundAdministrator'].setValue(request['']);
-  }
 
-  getValue(value_: string): string {
-    console.error('<<<<<< kk >>>>>>');
-    console.error(value_);
-    let str = '';
-    for (const v of this.userTypes) {
-       if ( v.value === value_) {
-          str = v.description;
-       }
-    }
-    console.error('<<<<<< ooo >>>>>>');
-    console.error(str);
-    return str;
   }
 
   formSubmit(form: FormGroup): void {
+    console.log('<<<<<<<<< Submit >>>>>>>>>>>');
+    console.log(form.value);
+
+    const user = Object.entries(form.value).reduce((a, [k, v]) => (v ? (a[k] = v , a) : a), {});
     this.submitted = true;
     if (this.userForm.invalid) {
       return;
     }
-    this.service.createSchemeOfficial(form.value).subscribe(value => {
-      this.source.prepend(form.value);
-      this.onReset();
-    });
+
+    if (form.value?.userObject === null || form.value?.userObject.length === 0) {
+      this.service.createUser(user, this.getApi(user['kind'])).subscribe(res  => {
+        this.source.prepend(res);
+        this.onReset();
+        this.loadManagers(user['kind']);
+      });
+
+    } else if ( form.value?.userObject?._links.self?.href) {
+      this.service.updateUser(form.value?.userObject?._links.self?.href, user )
+        .subscribe( res => {
+          this.source.remove(form.value?.userObject).then(value => this.source.prepend(res));
+          this.onReset();
+          this.loadManagers(user['kind']);
+        });
+    }
+
   }
 
-  // SCHEME_OFFICIAL,
-  // OPERATIONS,
-  // OPERATIONS_HOD,
-  // FUND_ADMINISTRATOR,
-  // FUND_CO_ORDINATOR,
-  // FUND_MANAGER
+  deleteteUser(form: FormGroup): void {
+
+    this.service.deleteUser( form.value?.userObject?._links.self?.href)
+      .subscribe(value_ => {
+        this.source.remove(form.value?.userObject).then(value => console.log(value) );
+        this.onReset();
+        this.loadManagers(form.value?.kind);
+      });
+  }
 
   selectedValue(event: any): void {
-    this.userForm.reset();
-    console.error( event.value);
-    this.isfundAdministrators = ('SCHEME_OFFICIAL' === event.value);
-    this.isOperationsUser =  ('OPERATIONS' === event.value);
 
-    console.error(this.fundAdministrators);
+    this.isfundAdministrator = ('FUND_ADMINISTRATOR' === event.value.trim() ||
+      'FUND_COORDINATOR' === event.value.trim()  ||
+      'FUND_INTERN' === event.value.trim()  );
+    this.isOperationsUser =  ('OPERATIONS' === event.value.trim());
+    this.isOperationsUserHod = ('OPERATIONS_HOD' === event.value.trim());
+    this.isfundManager =  ('FUND_MANAGER' === event.value.trim());
+
+  }
+
+  private getApi(kind: string): string {
+    const  apis = new Map<string, string>();
+    apis.set('FUND_MANAGER', 'fundManagers');
+    apis.set('OPERATIONS_HOD', 'operationsHods');
+    apis.set('OPERATIONS', 'operationses');
+    apis.set('FUND_ADMINISTRATOR', 'fundAdministrators');
+    apis.set('FUND_COORDINATOR', 'fundAdministrators');
+    apis.set('FUND_INTERN', 'fundAdministrators');
+    return apis.get(kind);
   }
 
   onReset() {
     this.submitted = false;
     this.userForm.reset();
-    this.isfundAdministrators = false;
+    this.resetFields();
+    this.label = 'Add';
+  }
+
+  resetFields(): void {
+    this.isfundAdministrator = false;
+    this.isOperationsUser = false;
+    this.isOperationsUserHod = false;
+    this.isfundManager = false;
   }
 }

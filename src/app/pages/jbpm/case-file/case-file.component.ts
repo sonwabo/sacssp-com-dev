@@ -1,18 +1,20 @@
 import {Request, CaseRequest, Settings, Status, TaskNames} from './../../../jbpm/domain/demand';
-import { ProcessService } from './../../../jbpm/service/process.service';
-import { TaskService } from './../../../jbpm/service/task.service';
+import {ProcessService} from './../../../jbpm/service/process.service';
+import {TaskService} from './../../../jbpm/service/task.service';
 import {
   Component,
   Input,
   OnInit,
 } from '@angular/core';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { CaseService } from '../../../jbpm/service/case.service';
+import {Router} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {FormGroup, FormControl, Validators} from '@angular/forms';
+import {CaseService} from '../../../jbpm/service/case.service';
 import {NbToastrService} from '@nebular/theme';
 import {UserDetails} from '../../../authentication/model/user.details';
 import {UserRoles} from '../../../authentication/model/user-roles';
+import {DepartmentManagementService} from '@app/jbpm/service/department-management.service';
+import {UserManagementService} from '@app/jbpm/service/user-management.service';
 
 @Component({
   selector: 'ngx-case-file',
@@ -34,42 +36,24 @@ export class CaseFileComponent implements OnInit {
   readonly closeCaseList: any[] = [
     {value: true, description: 'Close'},
     {value: false, description: 'Re-Assign'}];
-
-  readonly closureStatusList: any[] = ['Duplicate', 'Cancelled', 'Complete'];
-
+  readonly closureStatusList: string[] = ['Duplicate', 'Cancelled', 'Complete'];
   readonly origins: string[] = ['Engagement', 'Telecon', 'Email'];
   readonly caseValidityList: string[] = ['Valid', 'Invalid'];
-
-  readonly divisions: any[] = ['ATS',
-    'HM',
-    'Legal',
-    'MSE',
-    'ICT',
-    'Finance',
-    'Risk and Compliance',
-    'OPO',
-    'PMO'];
-
   readonly priorities: any[] = [
     {value: 0, description: 'High'},
     {value: 1, description: 'Medium'},
     {value: 3, description: 'Low'}];
 
-  readonly operationDepartmentList: Array<string> = [
-    'Cliet Services',
-    'Provider Relations',
-    'Membership',
-    'Client Experience',
-    'Claims',
-    'Client Interface',
-    'Communications',
-    'Client Reporting',
-    'Correspondence',
-    'Contracting'];
 
-  readonly serviceProviderNetworks: any[] = ['Scheme Claim Dept', 'Scheme Fund Admin'];
+  readonly divisions: Array<any> = new Array<any>();
+  readonly operationDepartmentList: Array<any> = new Array<any>();
+  readonly serviceProviderNetworks: Array<any> = new Array<any>();
+  readonly schemeList: Array<any> = new Array<any>();
 
-  readonly schemeList: any[] = [{ value: 'GEMS', description: 'Government Employee Medical Scheme' }];
+  fundAdministratorList: Array<any> = new Array<any>();
+  operationsList: Array<any> = new Array<any>();
+  schemeOfficialsList: Array<any> = new Array<any>();
+
 
   taskCompleted: boolean = true;
   taskName: string = '';
@@ -86,12 +70,52 @@ export class CaseFileComponent implements OnInit {
     protected caseService: CaseService,
     protected taskService: TaskService,
     protected processService: ProcessService,
-    private toastrService: NbToastrService,
+    protected departmentManService: DepartmentManagementService,
+    protected usermanagenent: UserManagementService,
+    protected toastrService: NbToastrService,
     protected router: Router,
     protected http: HttpClient) {
+    this.loadUsers();
+    this.loadDepartmentData();
   }
 
-  get formData() { return this.caseForm.value; }
+  loadDepartmentData(): void {
+    this.departmentManService.getDepartments('divisions').subscribe(res => {
+      (res['_embedded']?.divisions as Array<any>)?.forEach(value => this.divisions.push(value));
+    });
+    this.departmentManService.getDepartments('schemes').subscribe(res => {
+      (res['_embedded']?.schemes as Array<any>)?.forEach(value => this.schemeList.push(value));
+    });
+    this.departmentManService.getDepartments('serviceProviderNetworks').subscribe(res => {
+      // tslint:disable-next-line:max-line-length
+      (res['_embedded']?.serviceProviderNetworks as Array<any>)?.forEach(value => this.serviceProviderNetworks.push(value));
+    });
+
+    this.departmentManService.getDepartments('operationsDepartments').subscribe(res => {
+      // tslint:disable-next-line:max-line-length
+      (res['_embedded']?.operationsDepartments as Array<any>)?.forEach(value => this.operationDepartmentList.push(value));
+    });
+  }
+
+  loadUsers(): void {
+
+    this.usermanagenent.getUsers('fundAdministrators').subscribe(res => {
+      // tslint:disable-next-line:max-line-length
+      (res['_embedded']?.fundAdministrators as Array<any>)?.forEach(value => this.fundAdministratorList.push(value));
+    });
+    this.usermanagenent.getUsers('operationses').subscribe(res => {
+      // tslint:disable-next-line:max-line-length
+      (res['_embedded']?.operationses as Array<any>)?.forEach(value => this.operationsList.push(value));
+    });
+    this.usermanagenent.getUsers('schemeOfficials').subscribe(res => {
+      // tslint:disable-next-line:max-line-length
+      (res['_embedded']?.schemeOfficials as Array<any>)?.forEach(value => this.schemeOfficialsList.push(value));
+    });
+  }
+
+  get formData() {
+    return this.caseForm.value;
+  }
 
   ngOnInit(): void {
 
@@ -110,22 +134,22 @@ export class CaseFileComponent implements OnInit {
 
         this.taskService.getTaskInputs(
           res['task-container-id'],
-          res['task-id']).subscribe( inputs => {
+          res['task-id']).subscribe(inputs => {
           this.populateFields(inputs['request']);
         });
 
         this.processService.getProcessInformation(
           res['task-container-id'],
           res['task-proc-inst-id'])
-          .subscribe(proces => this.caseId = proces['correlation-key'] );
+          .subscribe(proces => this.caseId = proces['correlation-key']);
 
         // Disable button for non ops-users
-         this.taskCompleted =  UserDetails.getRoles().includes(UserRoles.OPS_USER_ROLE);
+        this.taskCompleted = UserDetails.getRoles().includes(UserRoles.OPS_USER_ROLE);
       }
 
-      if ( res['task-status'] === Status.COMPLETED) {
-          // this.caseForm.disable({onlySelf: true});
-           this.taskCompleted = false;
+      if (res['task-status'] === Status.COMPLETED) {
+        // this.caseForm.disable({onlySelf: true});
+        this.taskCompleted = false;
       }
     });
 
@@ -133,7 +157,9 @@ export class CaseFileComponent implements OnInit {
   }
 
   private populateFormControls(): void {
-   if (this.case === undefined && this.case['case-id'] === undefined) { return; }
+    if (this.case === undefined && this.case['case-id'] === undefined) {
+      return;
+    }
     this.caseService.getCaseModel(this.case['container-id'], this.case['case-id']).subscribe(
       data => {
         if (data === null || data === undefined) {
@@ -153,6 +179,9 @@ export class CaseFileComponent implements OnInit {
     this.requestCaseId = request?.caseId;
 
 
+    console.log('<<<<<<<<<<<<<<<<<<<< Case data >>>>>>>>>>>>>>>>>>>>>>>>> ');
+    console.log(request);
+
     this.setDatesOnFields(request);
 
     this.caseForm.controls['receivedFrom'].setValue(request['emailFrom']);
@@ -160,21 +189,22 @@ export class CaseFileComponent implements OnInit {
     this.caseForm.controls['description'].setValue(request['description']);
     this.caseForm.controls['origin'].setValue(request['origin']);
 
-    if ( request['spnInvolved']) {
-      this.caseForm.controls['schemesDepartment'].setValue(request['spnInvolved'][0]);
+    if (request['spnInvolved']) {
+       // Ignore for now
+      //  this.caseForm.controls['schemesDepartment'].setValue(request['spnInvolved'][0]);
     }
     this.caseForm.controls['division'].setValue(request['division']);
     this.caseForm.controls['priority'].setValue(request['priority']);
 
     this.caseForm.controls['fundAdministrator'].setValue(request['fmAdministrator']);
-    this.caseForm.controls['manager'].setValue(request['fmManager']);
+    this.caseForm.controls['fundManager'].setValue(request['fmManager']);
     this.caseForm.controls['operationsUser'].setValue(request['assignedTo']);
     this.caseForm.controls['operationsHod'].setValue(request['assignedHod']);
     this.caseForm.controls['caseValidity'].setValue(request['validity']);
     this.caseForm.controls['operationsDepartment'].setValue(request['operationsDepartment']);
 
 
-    if ( request['tags']) {
+    if (request['tags']) {
       this.caseForm.controls['tag'].setValue(request['tags'][0]);
     }
   }
@@ -195,7 +225,7 @@ export class CaseFileComponent implements OnInit {
       this.caseForm.controls['receivedDate'].setValue(this.getDate('receivedDate', request));
     }
     if (this.getDate('assignedDate', request)) {
-      this.caseForm.controls['assignedDate'].setValue(this.  getDate('assignedDate', request));
+      this.caseForm.controls['assignedDate'].setValue(this.getDate('assignedDate', request));
     }
     if (this.getDate('receiptAcknowledgementDate', request)) {
       this.caseForm.controls['receiptAcknowledgementDate']
@@ -217,12 +247,12 @@ export class CaseFileComponent implements OnInit {
       description: new FormControl('', Validators.required),
       priority: new FormControl('', Validators.required),
       receiptAcknowledgementDate: new FormControl('', Validators.required),
-    //  dueDate: new FormControl({value: '', disabled: true}, Validators.required),
+      //  dueDate: new FormControl({value: '', disabled: true}, Validators.required),
 
       dueDate: new FormControl('', Validators.required),
       status: new FormControl('', Validators.required),
       fundAdministrator: new FormControl('', Validators.required),
-      manager: new FormControl('', Validators.required),
+      fundManager: new FormControl('', Validators.required),
       operationsUser: new FormControl('', Validators.required),
       operationsHod: new FormControl('', Validators.required),
 
@@ -251,41 +281,45 @@ export class CaseFileComponent implements OnInit {
     const taskStatus = this.taskSummaryValue['task-status'];
     const processInstanceId = this.taskSummaryValue['task-proc-inst-id'];
 
-    if (taskStatus === undefined) { throw Error('Task Status is missing'); }
+    if (taskStatus === undefined) {
+      throw Error('Task Status is missing');
+    }
 
-    if (  taskStatus === Status.CREATED) {
+    if (taskStatus === Status.CREATED) {
       this.taskService.activateTask(containerId, taskId);
     }
 
-    if (  taskStatus === Status.READY) {
+    if (taskStatus === Status.READY) {
       this.claimAndStart(containerId, taskId);
-    } else if (taskStatus === Status.COMPLETED) { return;  }
+    } else if (taskStatus === Status.COMPLETED) {
+      return;
+    }
 
     this.taskService.getTaskInformation(containerId, taskId).subscribe(taskRes => {
 
-        const caseRequest: CaseRequest = this.mapper(formdata,
-          ( taskRes['task-name'] === TaskNames.TRACKING && formdata.closeCase),
-            taskRes['task-status'], formdata.closureStatus);
+      const caseRequest: CaseRequest = this.mapper(formdata,
+        (taskRes['task-name'] === TaskNames.TRACKING && formdata.closeCase),
+        taskRes['task-status'], formdata.closureStatus);
 
-        if (!caseRequest?.closeCase && taskRes['task-name'] === TaskNames.TRACKING) {
-          this.taskService.delegate(containerId, taskRes['task-id'], this.caseId);
-          this.showToast('Task has been released successfully');
-        } else {
+      if (!caseRequest?.closeCase && taskRes['task-name'] === TaskNames.TRACKING) {
+        this.taskService.delegate(containerId, taskRes['task-id'], this.caseId);
+        this.showToast('Task has been released successfully');
+      } else {
 
-          this.taskService.completeClaimedTask(containerId, taskId, caseRequest).subscribe(res => {
-            this.showToast('Task completed successfully');
-            this.taskService.getAvailableTasksForProcess(processInstanceId).subscribe(taskres  => {
-                   if ( taskres['task-summary'][0]['task-name'] === TaskNames.TRACKING) {
-                      this.taskService.delegate(containerId,
-                        taskres['task-summary'][0]['task-id'], this.caseId);
-                   }
-             });
-          }, error => {
-            console.error('========= Task Complete Error ===========');
-            console.error(error );
+        this.taskService.completeClaimedTask(containerId, taskId, caseRequest).subscribe(res => {
+          this.showToast('Task completed successfully');
+          this.taskService.getAvailableTasksForProcess(processInstanceId).subscribe(taskres => {
+            if (taskres['task-summary'][0]['task-name'] === TaskNames.TRACKING) {
+              this.taskService.delegate(containerId,
+                taskres['task-summary'][0]['task-id'], this.caseId);
+            }
           });
-        }
-   });
+        }, error => {
+          console.error('========= Task Complete Error ===========');
+          console.error(error);
+        });
+      }
+    });
   }
 
   private claimAndStart(containerId, taskId) {
@@ -293,7 +327,7 @@ export class CaseFileComponent implements OnInit {
     this.taskService.startClaimedTask(containerId, taskId);
   }
 
-  saveCaseData(form: FormGroup ): void {
+  saveCaseData(form: FormGroup): void {
     const caseRequest: CaseRequest = this.mapper(this.formData, false);
     this.taskService.saveCaseData(this.container, this.caseId, caseRequest).subscribe(res => {
       this.showToast('Saved Data Successfully', false);
@@ -317,7 +351,7 @@ export class CaseFileComponent implements OnInit {
       formdata.operationsDepartment,
       formdata.operationsHod,
       formdata.fundAdministrator,
-      formdata.manager,
+      formdata.fundManager,
       [formdata.schemesDepartment],
       [formdata.tag],
       null,
@@ -328,19 +362,18 @@ export class CaseFileComponent implements OnInit {
       this.requestType, this.requestStatus, this.requestCaseId,
       this.requestId, this.mappedVariables);
 
-     const caseInputs: CaseRequest = new CaseRequest(requestObj,
-       new Settings(),
-       taskStatus,
-       closeCase,
-       closureStatus,
-       []);
-     return caseInputs;
+    const caseInputs: CaseRequest = new CaseRequest(requestObj,
+      new Settings(),
+      taskStatus,
+      closeCase,
+      closureStatus,
+      []);
+    return caseInputs;
   }
 
-   private navigate(): void {
-     this.router.navigate(['pages/jbpm/cases-table'], {replaceUrl: true});
-   }
-
+  private navigate(): void {
+    this.router.navigate(['pages/jbpm/cases-table'], {replaceUrl: true});
+  }
 
   private showToast(msg: string, navigate: boolean = true): void {
     // @ts-ignore
@@ -359,16 +392,34 @@ export class CaseFileComponent implements OnInit {
         status: 'success',
         toastClass: '',
         // @ts-ignore
-        position: 'top-end'});
+        position: 'top-end',
+      });
 
     setTimeout(() => {
-        if (navigate) {
-          this.navigate();
-        }
+      if (navigate) {
+        this.navigate();
+      }
     }, 3000);
   }
 
   selectedValue(event: any): void {
-    this.showClosureStatus =  event.value.valueOf();
+    this.showClosureStatus = event.value.valueOf();
   }
+
+  selectedSchemeOfficial(official: any): void {
+    console.log(official?._links.fundAdministrator);
+    this.usermanagenent.getUser(official?._links?.fundAdministrator.href).subscribe(res => {
+      this.caseForm.controls['fundAdministrator'].setValue(res?.email);
+      this.usermanagenent.getUser(res?._links?.fundManager.href).subscribe(res_ => {
+        this.caseForm.controls['fundManager'].setValue(res_.email);
+      });
+    });
+  }
+
+  selectedUser(user: any, manager: string ): void {
+    this.usermanagenent.getUser(user?.['_links'][`${manager}`]?.href).subscribe(res => {
+      this.caseForm.controls[`${manager}`].setValue(res?.email);
+    });
+  }
+
 }

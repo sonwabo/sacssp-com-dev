@@ -12,9 +12,10 @@ import { JbpmRoutingModule, routedComponents } from './jbpm-routing.module';
 import { CaseStatusRenderComponent } from './blocks/case-status-render.component';
 import { SlaComplianceRenderComponent } from './blocks/sla-compliance-render.component';
 import { EpochDateRenderComponent } from './blocks/epoch-date-render.component';
-import { FundManagementUpdateRequestComponent } from './fm-update-request/fund-management-update-request.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import {UserKindRenderComponent} from './blocks/user-kind-render.component';
+import {CommonConfigsComponent} from '@app/pages/jbpm/utils/CommonConfigs';
+import {DepartmentRenderComponent} from '@app/pages/jbpm/blocks/department-render.component';
 
 
 
@@ -45,13 +46,15 @@ import {UserKindRenderComponent} from './blocks/user-kind-render.component';
     CaseStatusRenderComponent,
     SlaComplianceRenderComponent,
     EpochDateRenderComponent,
-    FundManagementUpdateRequestComponent,
     UserKindRenderComponent,
+    DepartmentRenderComponent,
+    CommonConfigsComponent,
   ],
   entryComponents: [
     CaseStatusRenderComponent,
     SlaComplianceRenderComponent,
     EpochDateRenderComponent,
+    DepartmentRenderComponent,
   ],
 })
 export class JbpmModule { }

@@ -13,4 +13,6 @@ export enum APP_ROUTES {
   DIVISIONS = 'divisions',
   SCHEMES = 'schemes',
   SERVICE_PROVIDER_NETWORKS = 'service-provider-networks',
+  OPERATIONS_DEPARTMENT = 'operations-departments',
+  FUND_MANAGEMENT_DEPARTMENT = 'fund-management-departments',
 }
