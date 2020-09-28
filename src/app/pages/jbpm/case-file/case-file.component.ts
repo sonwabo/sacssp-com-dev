@@ -184,8 +184,6 @@ export class CaseFileComponent implements OnInit {
     this.requestStatus = request?.caseState;
     this.requestCaseId = request?.caseId;
 
-    console.log('================ Request ================ ');
-    console.log(request);
 
     this.setDatesOnFields(request);
 
