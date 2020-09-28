@@ -47,6 +47,8 @@ export class CaseFileComponent implements OnInit {
 
   readonly divisions: Array<any> = new Array<any>();
   readonly operationDepartmentList: Array<any> = new Array<any>();
+  readonly fundManagementDepartmentList: Array<any> = new Array<any>();
+
   readonly serviceProviderNetworks: Array<any> = new Array<any>();
   readonly schemeList: Array<any> = new Array<any>();
 
@@ -94,6 +96,10 @@ export class CaseFileComponent implements OnInit {
     this.departmentManService.getDepartments('operationsDepartments').subscribe(res => {
       // tslint:disable-next-line:max-line-length
       (res['_embedded']?.operationsDepartments as Array<any>)?.forEach(value => this.operationDepartmentList.push(value));
+    });
+    this.departmentManService.getDepartments('fundManagementDepartmentses').subscribe(res => {
+      // tslint:disable-next-line:max-line-length
+      (res['_embedded']?.fundManagementDepartmentses as Array<any>)?.forEach(value => this.fundManagementDepartmentList.push(value));
     });
   }
 
@@ -175,11 +181,10 @@ export class CaseFileComponent implements OnInit {
     this.mappedVariables = request?.mappedVariables;
 
     this.requestType = request?.requestType;
-    this.requestStatus = request?.requestStatus;
+    this.requestStatus = request?.caseState;
     this.requestCaseId = request?.caseId;
 
-
-    console.log('<<<<<<<<<<<<<<<<<<<< Case data >>>>>>>>>>>>>>>>>>>>>>>>> ');
+    console.log('================ Request ================ ');
     console.log(request);
 
     this.setDatesOnFields(request);
@@ -187,12 +192,9 @@ export class CaseFileComponent implements OnInit {
     this.caseForm.controls['receivedFrom'].setValue(request['emailFrom']);
     this.caseForm.controls['subject'].setValue(request['subject']);
     this.caseForm.controls['description'].setValue(request['description']);
-    this.caseForm.controls['origin'].setValue(request['origin']);
+    this.caseForm.controls['origin'].setValue(((request['origin'] === null) ? request['origin'] : 'Engagement'));
 
-    if (request['spnInvolved']) {
-       // Ignore for now
-      //  this.caseForm.controls['schemesDepartment'].setValue(request['spnInvolved'][0]);
-    }
+    this.caseForm.controls['schemesDepartment'].setValue(request['scheme']);
     this.caseForm.controls['division'].setValue(request['division']);
     this.caseForm.controls['priority'].setValue(request['priority']);
 
@@ -267,6 +269,7 @@ export class CaseFileComponent implements OnInit {
       closeCase: new FormControl('', Validators.required),
       closureStatus: new FormControl('', Validators.required),
       operationsDepartment: new FormControl('', Validators.required),
+      fundManagementDepartment: new FormControl('', Validators.required),
       schemesDepartment: new FormControl('', Validators.required),
 
     });
@@ -349,9 +352,11 @@ export class CaseFileComponent implements OnInit {
       formdata.description,
       formdata.operationsUser,
       formdata.operationsDepartment,
+      formdata.fundManagementDepartment,
       formdata.operationsHod,
       formdata.fundAdministrator,
       formdata.fundManager,
+      formdata.schemesDepartment,
       [formdata.schemesDepartment],
       [formdata.tag],
       null,
@@ -407,18 +412,40 @@ export class CaseFileComponent implements OnInit {
   }
 
   selectedSchemeOfficial(official: any): void {
-    console.log(official?._links.fundAdministrator);
+
+    this.departmentManService.getDepartment(official?._links?.scheme.href).subscribe(res_ => {
+      this.caseForm.controls['schemesDepartment'].setValue(res_.name);
+    });
+    this.departmentManService.getDepartment(official?._links?.division.href).subscribe(res_ => {
+      this.caseForm.controls['division'].setValue(res_.name);
+    });
     this.usermanagenent.getUser(official?._links?.fundAdministrator.href).subscribe(res => {
       this.caseForm.controls['fundAdministrator'].setValue(res?.email);
       this.usermanagenent.getUser(res?._links?.fundManager.href).subscribe(res_ => {
         this.caseForm.controls['fundManager'].setValue(res_.email);
+        this.departmentManService.getDepartment(res_?._links?.[`fundManagementDepartment`].href).subscribe(_res => {
+          this.caseForm.controls[`fundManagementDepartment`].setValue(_res.name);
+        });
+
       });
     });
   }
 
   selectedUser(user: any, manager: string ): void {
+
+    console.log('<<<< ====  >>>>');
+    console.log( user );
+
     this.usermanagenent.getUser(user?.['_links'][`${manager}`]?.href).subscribe(res => {
       this.caseForm.controls[`${manager}`].setValue(res?.email);
+    });
+
+    const department = (manager === 'operationsHod') ? 'operationsDepartment' : 'fundMagementDepartmentses';
+    this.usermanagenent.getUser(user?._links?.[`${manager}`]['href']).subscribe(res_ => {
+      this.departmentManService.getDepartment(res_?._links?.[`${department}`].href).subscribe(_res => {
+        const formField = (department === 'operationsDepartment') ? 'operationsDepartment' : 'fundManagementDepartment';
+        this.caseForm.controls[`${formField}`].setValue(_res.name);
+      });
     });
   }
 

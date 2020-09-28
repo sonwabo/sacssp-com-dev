@@ -47,9 +47,11 @@ export class Request {
   dueDate: any;
   assignedTo: string;
   operationsDepartment: string;
+  fundManagementDepartment: string;
   assignedHod: string;
   fmAdministrator: string;
   fmManager: string;
+  scheme: string;
   spnInvolved: Array<string>;
   tags: Array<string>;
   categories: any;
@@ -73,9 +75,11 @@ export class Request {
               description: string,
               assignedTo: string,
               operationsDepartment: string,
+              fundManagementDepartment: string,
               assignedHod: string,
               fmAdministrator: string,
               fmManager: string,
+              scheme: string,
               spnInvolved: Array<string>,
               tags: Array<string>,
               categories: any,
@@ -124,9 +128,11 @@ export class Request {
     this.priority = priority;
     this.assignedTo = assignedTo?.trim();
     this.operationsDepartment = operationsDepartment?.trim();
+    this.fundManagementDepartment = fundManagementDepartment?.trim();
     this.assignedHod = assignedHod?.trim();
     this.fmAdministrator = fmAdministrator?.trim();
     this.fmManager = fmManager?.trim();
+    this.scheme = scheme;
     this.spnInvolved = spnInvolved;
     this.tags = tags;
     this.categories = categories;
