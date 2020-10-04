@@ -40,6 +40,7 @@ export class CasesTableComponent {
           endPoint: `${environment.baseBackEnd}/getCaseInstancesForUser?owner=${UserDetails.getUserName()}`,
           dataKey: 'instances',
         });
+
     this.taskSource = new ServerDataSource(this.http,
       {
         endPoint: `${environment.baseUrl}/queries/tasks/instances/pot-owners?user=${UserDetails.getUserName()}`,

@@ -1,41 +1,45 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
-import { ViewCell } from 'ng2-smart-table';
+import {ViewCell} from 'ng2-smart-table';
 
 @Component({
-    template: `
-      <span [ngClass]="classToApply">{{status}}</span>
+  template: `
+    <span [ngClass]="classToApply">{{status}}</span>
   `,
-  styles: ['.violation { color: red; }'],
+  styles: [`
+    .violation {
+      color: red;
+    }
+
+    .tobebreached {
+      color: orange;
+    }
+
+    .fine {
+      color: green;
+    }
+  `,
+  ],
 })
 export class SlaComplianceRenderComponent implements ViewCell, OnInit {
-    status: string;
-    @Input() value: number;
-    @Input() rowData: any;
+  status: string;
+  @Input() value: number;
+  @Input() rowData: any;
 
-    classToApply = '';
+  classToApply = '';
 
-    ngOnInit() {
-        switch (this.value) {
-            case 0:
-                this.status = 'NA';
-                break;
-            case 1:
-                this.status = 'Pending';
-                break;
-            case 2:
-                this.status = 'Met';
-                break;
-            case 3:
-                this.status = 'Violated';
-                this.classToApply = 'violation';
-                break;
-            case 4:
-                this.status = 'Aborted';
-                break;
-            default:
-                this.status = 'Unknown';
-                break;
-        }
+  ngOnInit() {
+    if (this.value === 0 || this.value < 0 ) {
+      this.status = 'SLA breached';
+      this.classToApply = 'violation';
+    } else if (this.value <= 2) {
+      this.status = '48hours to SLA breach';
+      this.classToApply = 'tobebreached';
+    } else if (this.value <= 6) {
+      this.status = '48hours+ to SLA breach';
+      this.classToApply = 'fine';
+    } else {
+      this.status = 'Unknown';
     }
+  }
 }
