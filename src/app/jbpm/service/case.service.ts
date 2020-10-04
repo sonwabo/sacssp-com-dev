@@ -92,10 +92,15 @@ export class CaseService {
   }
 
   assignRole(containerid: string, caseid: string, roleName: string, user: string, group: string): Observable<any> {
-    const headers = new HttpHeaders();
     const url = `${environment.baseUrl}/containers/${containerid}/cases/instances/${caseid}/roles/${roleName}?user=${user}&group=${group}`;
-    return this.http.put<any[]>(url, {headers: headers});
+    return this.http.put<any[]>(url, {headers:  new HttpHeaders()});
   }
+
+  deleteRole(containerid: string, caseid: string, roleName: string, user: string, group: string): Observable<any> {
+    const url = `${environment.baseUrl}/containers/${containerid}/cases/instances/${caseid}/roles/${roleName}?user=${user}&group=${group}`;
+    return  this.http.delete(url, {headers:  new HttpHeaders()});
+  }
+
 
   closeCase(containerId: string, caseId: string): Observable<any> {
     const headers = new HttpHeaders();

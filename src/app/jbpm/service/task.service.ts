@@ -166,6 +166,14 @@ export class TaskService {
   delegate(containerId, taskid: string, caseid: string): void {
     const url = `${environment.baseUrl}/containers/${containerId}/tasks/${taskid}/states/delegated?user=${UserDetails.getUserName()}&targetUser=${UserDetails.delegateUser}`;
     new Observable(obs => {
+      const roleName = 'reviewer';
+      const groupName = 'reviewergroup';
+
+      // this.caseService.deleteRole(containerId, caseid, roleName, UserDetails.getUserName(), groupName)
+      //   .subscribe(value => {
+      //       this.caseService.assignRole(containerId, caseid, roleName, UserDetails.delegateUser, groupName)
+      //         .subscribe(value1 => obs.next(value1));
+      //   });
         this.caseService.assignRole(containerId,
            caseid,
         'reviewer',

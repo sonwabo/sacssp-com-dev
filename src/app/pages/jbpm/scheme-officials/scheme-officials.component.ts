@@ -69,11 +69,16 @@ export class SchemeOfficialsComponent implements OnInit, AfterViewInit {
         const obj: { [k: string]: any } = value;
         this.departmentManagement.getDepartment(value?._links?.division?.href).subscribe(res_ => {
           obj.division = res_?.name;
-          this.dataArray.push(obj);
           this.source.refresh();
         });
-      }
+        this.service.getUser(value._links.fundAdministrator.href).subscribe(res_ => {
+            obj.linkedFundAdmin = `${res_.name} ${res_.surname} , ${res_.kind} `;
+          this.source.refresh();
 
+        });
+        this.dataArray.push(obj);
+        this.source.refresh();
+      }
     });
   }
 
@@ -101,14 +106,17 @@ export class SchemeOfficialsComponent implements OnInit, AfterViewInit {
   }
 
   private populateFields(data: any): void {
+
+    console.log('<<<<<<<<<  data >>>>>>>>>>> ');
+console.log(data);
     this.userForm.controls['name'].setValue(data['name']);
     this.userForm.controls['surname'].setValue(data['surname']);
     this.userForm.controls['userObject'].setValue(data);
     this.userForm.controls['email'].setValue(data['email']);
 
-    // this.userForm.controls['fundAdministrator'].setValue(data['kind']);
-    // this.userForm.controls['division'].setValue(data['kind']);
-    // this.userForm.controls['scheme'].setValue(data);
+    this.userForm.controls['fundAdministrator'].setValue(data['linkedFundAdmin']);
+    this.userForm.controls['division'].setValue(data['division']);
+    this.userForm.controls['scheme'].setValue(data);
   }
 
   formSubmit(form: FormGroup): void {

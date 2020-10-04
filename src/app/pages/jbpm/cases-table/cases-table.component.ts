@@ -34,13 +34,12 @@ export class CasesTableComponent {
 
     this.loadCases();
   }
-
   loadCases(allCases: boolean = false): void {
     this.source = new ServerDataSource(this.http,
-      {
-        endPoint: `${environment.baseUrl}/queries/cases/instances?dataItemValue=${environment.caseDefinition}&owner=${UserDetails.getUserName()}`,
-        dataKey: 'instances',
-      });
+        {
+          endPoint: `${environment.baseBackEnd}/getCaseInstancesForUser?owner=${UserDetails.getUserName()}`,
+          dataKey: 'instances',
+        });
     this.taskSource = new ServerDataSource(this.http,
       {
         endPoint: `${environment.baseUrl}/queries/tasks/instances/pot-owners?user=${UserDetails.getUserName()}`,
@@ -54,6 +53,7 @@ export class CasesTableComponent {
   onEdit(event): void {
     this.isLoading(true);
     const _data = event.data;
+    console.log( new Date(_data['case-sla-due-date'] ));
     this.router.navigate(['pages/jbpm/case-detail'], {state: {data: {case: _data}}});
     this.isLoading(false);
   }

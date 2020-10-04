@@ -2,7 +2,7 @@ import {Request, CaseRequest, Settings, Status, TaskNames} from './../../../jbpm
 import {ProcessService} from './../../../jbpm/service/process.service';
 import {TaskService} from './../../../jbpm/service/task.service';
 import {
-  Component,
+  Component, CUSTOM_ELEMENTS_SCHEMA,
   Input,
   OnInit,
 } from '@angular/core';
@@ -160,6 +160,10 @@ export class CaseFileComponent implements OnInit {
     });
 
     this.populateFormControls();
+  }
+
+  dateTime(event: any): void {
+      this.usermanagenent.updateDueDate(this.caseId, new Date(event?.value).getTime());
   }
 
   private populateFormControls(): void {

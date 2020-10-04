@@ -240,33 +240,47 @@
             <label class="label" for="input-assignedDate">Created On
               <nb-icon icon="question-mark-circle" nbTooltip="To date you send the request to the assignee"
                        nbTooltipStatus="primary" status="info"></nb-icon>
-            </label> <input nbInput formControlName="assignedDate" id="input-assignedDate"
-                            [nbDatepicker]="assignedDate">
-            <nb-datepicker #assignedDate></nb-datepicker>
+            </label>
+            <input (dateTimeChange)="dateTime($event)" nbInput [owlDateTime]="assignedDate"
+                   formControlName="receivedDate" id="input-assignedDate" [owlDateTimeTrigger]="assignedDate" placeholder="Created On Date">
+            <owl-date-time #assignedDate></owl-date-time>
             <br/>
 
 
             <label class="label" for="input-receivedDate">Date Received
               <nb-icon icon="question-mark-circle" nbTooltip="Date the request was received from the Scheme"
                        nbTooltipStatus="primary" status="info"></nb-icon>
-            </label> <input nbInput formControlName="receivedDate" id="input-receivedDate"
-                            [nbDatepicker]="receivedDate">
-            <nb-datepicker #receivedDate></nb-datepicker>
+            </label> <input (dateTimeChange)="dateTime($event)" nbInput [owlDateTime]="receivedDate"
+                   formControlName="receivedDate" id="input-receivedDate" [owlDateTimeTrigger]="receivedDate" placeholder="Date Received">
+            <owl-date-time #receivedDate></owl-date-time>
             <br/>
 
             <label class="label" for="input-dueDate">Due Date
               <nb-icon icon="question-mark-circle" nbTooltip="To track when the request is due for delivery"
                        nbTooltipStatus="primary" status="info"></nb-icon>
-            </label> <input nbInput formControlName="dueDate" id="input-dueDate" [nbDatepicker]="dueDate">
-            <nb-datepicker #dueDate></nb-datepicker>
+            </label>
+            <input (dateTimeChange)="dateTime($event)"
+                   nbInput [owlDateTime]="dt1"
+                   formControlName="dueDate"
+                   [owlDateTimeTrigger]="dt1"
+                   id=input-dueDate
+                   placeholder="Due Date">
+            <owl-date-time #dt1></owl-date-time>
+
             <br/>
 
             <label class="label" for="input-receiptAcknowledgementDate">Acknowledged On Date
               <nb-icon icon="question-mark-circle" nbTooltip="To track when we acknowledged request"
                        nbTooltipStatus="primary" status="info"></nb-icon>
-            </label> <input nbInput formControlName="receiptAcknowledgementDate" id="input-receiptAcknowledgementDate"
-                            [nbDatepicker]="receiptAcknowledgementDate">
-            <nb-datepicker #receiptAcknowledgementDate></nb-datepicker>
+            </label>
+            <input (dateTimeChange)="dateTime($event)"
+                   nbInput [owlDateTime]="receiptAcknowledgementDate"
+                   formControlName="receiptAcknowledgementDate"
+                   [owlDateTimeTrigger]="receiptAcknowledgementDate"
+                   id="input-receiptAcknowledgementDate"
+                   placeholder="Acknowledged Date">
+            <owl-date-time #receiptAcknowledgementDate></owl-date-time>
+
             <br/>
 
 
@@ -274,9 +288,21 @@
               <nb-icon icon="question-mark-circle"
                        nbTooltip="Select the date in which the enquiry was completed and send to the requestor"
                        nbTooltipStatus="primary" status="info"></nb-icon>
-            </label> <input nbInput formControlName="submissionDate" id="input-submissionDate"
-                            [nbDatepicker]="submissionDate">
-            <nb-datepicker #submissionDate></nb-datepicker>
+            </label>
+<!--            <input nbInput formControlName="submissionDate" id="input-submissionDate"-->
+<!--                            [nbDatepicker]="submissionDate">-->
+<!--            <nb-datepicker #submissionDate ></nb-datepicker>-->
+
+            <input (dateTimeChange)="dateTime($event)"
+                   nbInput [owlDateTime]="submissionDate"
+                   formControlName="receiptAcknowledgementDate"
+                   [owlDateTimeTrigger]="submissionDate"
+                   id="input-submissionDate"
+                   placeholder="Completed Date">
+            <owl-date-time #submissionDate></owl-date-time>
+
+
+
             <br/>
 
             <!--        <label class="label" for="input-tags">Case Tag-->

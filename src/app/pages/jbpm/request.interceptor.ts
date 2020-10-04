@@ -16,7 +16,7 @@ export class RequestInterceptor implements HttpInterceptor, OnInit, OnDestroy {
   constructor(private authService: NbAuthService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if ( request.url.match(RequestInterceptor.authUrl) || request.url.match(RequestInterceptor.be) ) {
+    if ( request.url.match(RequestInterceptor.authUrl) /* || request.url.match(RequestInterceptor.be) */) {
        return next.handle(request);
     }
     return this.authService.isAuthenticatedOrRefresh()

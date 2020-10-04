@@ -59,7 +59,13 @@ export class UserManagementService {
     return this.http.delete(location, {headers: this.getHeaders()});
   }
 
-
+  updateDueDate(caseid: string, dueDate: number ) {
+    const url = `${environment.baseBackEnd}/updateDueDate?caseid=${caseid}&dueDate=${dueDate}`;
+    return this.http.post<any[]>(url,  { headers: this.getHeaders() }).subscribe(res => {
+        console.log('Update Date');
+        console.log( res );
+    });
+  }
 
   private getHeaders(): HttpHeaders {
     let headers = new HttpHeaders({

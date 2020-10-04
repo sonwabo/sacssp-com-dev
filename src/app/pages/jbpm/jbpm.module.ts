@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {
   NbCardModule, NbIconModule, NbInputModule,
   NbTreeGridModule, NbTabsetModule,
@@ -17,6 +17,11 @@ import {UserKindRenderComponent} from './blocks/user-kind-render.component';
 import {CommonConfigsComponent} from '@app/pages/jbpm/utils/CommonConfigs';
 import {DepartmentRenderComponent} from '@app/pages/jbpm/blocks/department-render.component';
 
+import {
+  OwlDateTimeModule,
+  OwlNativeDateTimeModule,
+} from 'ng-pick-datetime';
+import {CaseDataRenderComponent} from '@app/pages/jbpm/blocks/case-data-render.component';
 
 
 @NgModule({
@@ -40,6 +45,8 @@ import {DepartmentRenderComponent} from '@app/pages/jbpm/blocks/department-rende
     NbCheckboxModule,
     NbSpinnerModule,
     NbToastrModule.forRoot(),
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
   ],
   declarations: [
     ...routedComponents,
@@ -48,13 +55,16 @@ import {DepartmentRenderComponent} from '@app/pages/jbpm/blocks/department-rende
     EpochDateRenderComponent,
     UserKindRenderComponent,
     DepartmentRenderComponent,
+    CaseDataRenderComponent,
     CommonConfigsComponent,
   ],
   entryComponents: [
     CaseStatusRenderComponent,
+    CaseDataRenderComponent,
     SlaComplianceRenderComponent,
     EpochDateRenderComponent,
     DepartmentRenderComponent,
   ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
 })
 export class JbpmModule { }

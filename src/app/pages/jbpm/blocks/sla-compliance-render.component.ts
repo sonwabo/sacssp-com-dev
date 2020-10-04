@@ -4,13 +4,16 @@ import { ViewCell } from 'ng2-smart-table';
 
 @Component({
     template: `
-  {{status}}
+      <span [ngClass]="classToApply">{{status}}</span>
   `,
+  styles: ['.violation { color: red; }'],
 })
 export class SlaComplianceRenderComponent implements ViewCell, OnInit {
     status: string;
     @Input() value: number;
     @Input() rowData: any;
+
+    classToApply = '';
 
     ngOnInit() {
         switch (this.value) {
@@ -25,6 +28,7 @@ export class SlaComplianceRenderComponent implements ViewCell, OnInit {
                 break;
             case 3:
                 this.status = 'Violated';
+                this.classToApply = 'violation';
                 break;
             case 4:
                 this.status = 'Aborted';

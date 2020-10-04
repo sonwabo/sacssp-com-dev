@@ -41,5 +41,9 @@ export const users_management_table_settings: any =  {
       title: 'Division',
       type: 'string',
     },
+    linkedFundAdmin: {
+      title: 'Assigned FMT Member',
+      type: 'string',
+    },
   },
 };

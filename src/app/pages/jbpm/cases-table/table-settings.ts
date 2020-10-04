@@ -23,13 +23,7 @@ export const case_table_settings: any = {
   },
   columns: {
     'case-id': {
-      title: 'ID',
-    },
-    'case-description': {
-      title: 'Description',
-    },
-    'case-owner': {
-      title: 'Owner',
+      title: 'Case ID',
     },
     'case-status': {
       title: 'Status',
@@ -51,13 +45,21 @@ export const case_table_settings: any = {
       type: 'custom',
       renderComponent: EpochDateRenderComponent,
     },
-    'case-completed-at': {
-      title: 'Completed',
-      type: 'custom',
-      renderComponent: EpochDateRenderComponent,
+
+    'received-from': {
+      title: 'Received From',
+    },
+    'email-subject': {
+      title: 'Subject',
+    },
+    'fund-administrator': {
+      title: 'Fund Admin/Coordinator',
+    },
+    'operations-user': {
+      title: 'Operations',
     },
   },
-};
+  };
 
 export const task_table_settings: any =  {
     mode: 'external',
