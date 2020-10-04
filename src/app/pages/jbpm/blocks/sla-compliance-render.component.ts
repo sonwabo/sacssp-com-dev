@@ -32,9 +32,7 @@ export class SlaComplianceRenderComponent implements ViewCell, OnInit {
   classToApply = '';
 
   ngOnInit() {
-    console.log('>>>>>>>>>>>>>>>>>>>> KK ' + this.value);
-    console.log( this.rowData );
-    if ( !this.value) {
+     if ( !this.value) {
      this.status = 'Unknown';
      return;
     }
