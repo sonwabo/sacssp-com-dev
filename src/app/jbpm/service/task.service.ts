@@ -6,13 +6,18 @@ import { Observable } from 'rxjs';
 import { UserDetails } from '@app/authentication/model/user.details';
 import { ProcessService } from './process.service';
 import { CaseService } from './case.service';
+import {UserManagementService} from "@app/jbpm/service/user-management.service";
 
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  constructor(private http: HttpClient, protected processService: ProcessService, private caseService: CaseService) { }
+  constructor(private http: HttpClient,
+              protected processService: ProcessService,
+              private caseService: CaseService,
+              private userManagement: UserManagementService,
+  ) { }
 
   get(): Observable<any[]> {
     return this.http.get<any[]>(`${environment.baseUrl}/queries/tasks/instances`);
@@ -163,26 +168,13 @@ export class TaskService {
     return this.http.get<any[]>(url, { headers: this.getHeaders() });
   }
 
+
   delegate(containerId, taskid: string, caseid: string): void {
     const url = `${environment.baseUrl}/containers/${containerId}/tasks/${taskid}/states/delegated?user=${UserDetails.getUserName()}&targetUser=${UserDetails.delegateUser}`;
-    new Observable(obs => {
-      const roleName = 'reviewer';
-      const groupName = 'reviewergroup';
-
-      // this.caseService.deleteRole(containerId, caseid, roleName, UserDetails.getUserName(), groupName)
-      //   .subscribe(value => {
-      //       this.caseService.assignRole(containerId, caseid, roleName, UserDetails.delegateUser, groupName)
-      //         .subscribe(value1 => obs.next(value1));
-      //   });
-        this.caseService.assignRole(containerId,
-           caseid,
-        'reviewer',
-           UserDetails.delegateUser, 'reviewergroup' ).subscribe(value => {
-          this.http.put<any[]>(url, { headers: this.getHeaders() }).subscribe(res => obs.next(res));
-        });
-    }).subscribe(res => { console.error('Task Delegated ' , res ); });
-
+    this.http.put<any[]>(url, { headers: this.getHeaders() })
+      .subscribe(res => {  this.userManagement.sendNotification(caseid, UserDetails.delegateUser); });
   }
+
 
   releaseTask(container: string, taskid: string):  Observable<any> {
     const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/released`;

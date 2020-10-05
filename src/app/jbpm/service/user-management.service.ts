@@ -67,6 +67,15 @@ export class UserManagementService {
     });
   }
 
+  sendNotification(caseid: string, user: string): void {
+    const url = `${environment.baseBackEnd}/sendNotification`;
+    this.http.post<any[]>(url,  {caseid: caseid, user: user}, { headers: this.getHeaders() })
+      .subscribe(res => {
+      console.log('====== Email Sent =====');
+      console.log( res );
+    });
+  }
+
   private getHeaders(): HttpHeaders {
     let headers = new HttpHeaders({
       Accept: 'application/json',

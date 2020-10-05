@@ -40,7 +40,7 @@ export class SlaComplianceRenderComponent implements ViewCell, OnInit {
       this.status = 'SLA breached';
       this.classToApply = 'violation';
     } else if (this.value <= 2) {
-      this.status = '48hours to SLA breach';
+      this.status = '48hours- to SLA breach';
       this.classToApply = 'tobebreached';
     } else if (this.value <= 6) {
       this.status = '48hours+ to SLA breach';
