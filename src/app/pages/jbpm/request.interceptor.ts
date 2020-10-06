@@ -8,7 +8,6 @@ import {switchMap} from 'rxjs/operators';
 export class RequestInterceptor implements HttpInterceptor, OnInit, OnDestroy {
 
   private static authUrl: string = 'auth/realms';
-  private static be: string = 'demandtracker';
 
 
   private destroy$: Subject<void> = new Subject<void>();
