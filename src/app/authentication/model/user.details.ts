@@ -5,7 +5,7 @@ export class UserDetails {
   client_secret: string;
   client_id: string;
 
-  static delegateUser: string;
+  static delegateUser: string = null;
   static hideMenu: boolean = false;
   static tokenObject: any;
 
@@ -16,7 +16,6 @@ export class UserDetails {
   static getUserName(): string {
     return this.tokenObject?.preferred_username;
   }
-
 
   static empty(): void {
     this.delegateUser = null;
@@ -32,7 +31,6 @@ export class UserDetails {
     this.client_secret = client_secret;
     this.client_id = client_id;
   }
-
 
 }
 

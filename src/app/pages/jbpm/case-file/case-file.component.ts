@@ -10,7 +10,7 @@ import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
 import {CaseService} from '../../../jbpm/service/case.service';
-import {NbToastrService} from '@nebular/theme';
+import {NbComponentStatus, NbToastrService} from '@nebular/theme';
 import {UserDetails} from '../../../authentication/model/user.details';
 import {UserRoles} from '../../../authentication/model/user-roles';
 import {DepartmentManagementService} from '@app/jbpm/service/department-management.service';
@@ -65,6 +65,8 @@ export class CaseFileComponent implements OnInit {
   taskSummaryValue: any;
   enableTracking: boolean;
   showClosureStatus: boolean = false;
+  resassign: string = null;
+
   enableClassification: boolean = true;
 
 
@@ -163,7 +165,7 @@ export class CaseFileComponent implements OnInit {
   }
 
   dateTime(event: any): void {
-      this.usermanagenent.updateDueDate(this.caseId, new Date(event?.value).getTime());
+    this.usermanagenent.updateDueDate(this.caseId, new Date(event?.value).getTime());
   }
 
   private populateFormControls(): void {
@@ -183,9 +185,12 @@ export class CaseFileComponent implements OnInit {
     const request = data['io.jumpco.metropolitan.tracker.demand.Request'];
     this.requestId = request?.id;
     this.mappedVariables = request?.mappedVariables;
-
+    
     this.requestType = request?.requestType;
     this.requestStatus = request?.caseState;
+    if (this.requestStatus === null) {
+      this.requestStatus = request?.requestStatus;
+   }
     this.requestCaseId = request?.caseId;
 
 
@@ -194,7 +199,7 @@ export class CaseFileComponent implements OnInit {
     this.caseForm.controls['receivedFrom'].setValue(request['emailFrom']);
     this.caseForm.controls['subject'].setValue(request['subject']);
     this.caseForm.controls['description'].setValue(request['description']);
-    this.caseForm.controls['origin'].setValue(((request['origin'] === null) ? request['origin'] : 'Engagement'));
+    this.caseForm.controls['origin'].setValue(request['origin']);
 
     this.caseForm.controls['schemesDepartment'].setValue(request['scheme']);
     this.caseForm.controls['division'].setValue(request['division']);
@@ -306,11 +311,15 @@ export class CaseFileComponent implements OnInit {
         (taskRes['task-name'] === TaskNames.TRACKING && formdata.closeCase),
         taskRes['task-status'], formdata.closureStatus);
 
-      if (!caseRequest?.closeCase && taskRes['task-name'] === TaskNames.TRACKING) {
+      if (!caseRequest?.closeCase && this.resassign !== null && taskRes['task-name'] === TaskNames.TRACKING) {
         this.taskService.delegate(containerId, taskRes['task-id'], this.caseId);
         this.showToast('Task has been released successfully');
       } else {
 
+        if (this.requiredData((this.showClosureStatus === false
+          && taskRes['task-name'] === TaskNames.TRACKING), caseRequest)) {
+          return;
+        }
         this.taskService.completeClaimedTask(containerId, taskId, caseRequest).subscribe(res => {
           this.showToast('Task completed successfully');
           this.taskService.getAvailableTasksForProcess(processInstanceId).subscribe(taskres => {
@@ -327,6 +336,22 @@ export class CaseFileComponent implements OnInit {
     });
   }
 
+  private requiredData(isTracking: boolean, caseRequest: CaseRequest): boolean {
+    let res = false;
+
+    if (isTracking) {
+      if (!caseRequest.closeCase && caseRequest.closureStatus.length === 0) {
+        res = true;
+      }
+      if (caseRequest?.request?.receiptAcknowledgementDate['java.util.Date'].length === 0 ||
+        caseRequest?.request?.completeDate['java.util.Date'].length === 0) {
+        res = true;
+      }
+      this.showToast('Please fill in all required data', false, 'warning');
+    }
+    return res;
+  }
+
   private claimAndStart(containerId, taskId) {
     this.taskService.claimTask(containerId, taskId);
     this.taskService.startClaimedTask(containerId, taskId);
@@ -336,6 +361,10 @@ export class CaseFileComponent implements OnInit {
     const caseRequest: CaseRequest = this.mapper(this.formData, false);
     this.taskService.saveCaseData(this.container, this.caseId, caseRequest).subscribe(res => {
       this.showToast('Saved Data Successfully', false);
+    }, error => {
+      // NbComponentStatus = 'basic' | 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'control';
+      this.showToast('Saved Data Successfully', false, 'info');
+      console.error(error);
     });
   }
 
@@ -382,8 +411,10 @@ export class CaseFileComponent implements OnInit {
     this.router.navigate(['pages/jbpm/cases-table'], {replaceUrl: true});
   }
 
-  private showToast(msg: string, navigate: boolean = true): void {
+  private showToast(msg: string, navigate: boolean = true, _staus: NbComponentStatus = 'success'): void {
     // @ts-ignore
+
+
     this.toastrService.show(
       `${msg}`,
       ``,
@@ -396,7 +427,7 @@ export class CaseFileComponent implements OnInit {
         iconPack: '',
         limit: 0,
         preventDuplicates: true,
-        status: 'success',
+        status: _staus,
         toastClass: '',
         // @ts-ignore
         position: 'top-end',
@@ -411,6 +442,7 @@ export class CaseFileComponent implements OnInit {
 
   selectedValue(event: any): void {
     this.showClosureStatus = event.value.valueOf();
+    this.resassign = 'Yes';
   }
 
   selectedSchemeOfficial(official: any): void {
@@ -433,10 +465,7 @@ export class CaseFileComponent implements OnInit {
     });
   }
 
-  selectedUser(user: any, manager: string ): void {
-
-    console.log('<<<< ====  >>>>');
-    console.log( user );
+  selectedUser(user: any, manager: string): void {
 
     this.usermanagenent.getUser(user?.['_links'][`${manager}`]?.href).subscribe(res => {
       this.caseForm.controls[`${manager}`].setValue(res?.email);

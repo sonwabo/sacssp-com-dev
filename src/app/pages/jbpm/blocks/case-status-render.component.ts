@@ -17,10 +17,6 @@ export class CaseStatusRenderComponent implements ViewCell, OnInit {
 
   ngOnInit() {
 
-    console.log(' <<<<<<<<<<<<<<<<<< Theory >>>>>>>>>>>>>>>>> ');
-    console.log(this.rowData);
-
-
     switch (this.value) {
       case 1:
         this.status = 'Open';

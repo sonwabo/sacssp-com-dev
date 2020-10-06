@@ -167,7 +167,7 @@ export class CaseRequest {
       Skippable?: string;
       Actorid?: string;
       GroupId?: string;
-      closeCase: boolean;
+      closeCase: boolean = false;
       closureStatus: string;
 
 
