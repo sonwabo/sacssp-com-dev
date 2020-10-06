@@ -1,11 +1,12 @@
-import {AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {NbStepperComponent} from '@nebular/theme';
-import {UserManagementService} from '../../../jbpm/service/user-management.service';
-import {LocalDataSource} from 'ng2-smart-table';
-import {users_management_table_settings} from './user-utils';
-import {HttpClient} from '@angular/common/http';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {DepartmentManagementService} from '@app/jbpm/service/department-management.service';
+import { AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { NbDialogService, NbGlobalPhysicalPosition, NbStepperComponent, NbToastrService } from '@nebular/theme';
+import { UserManagementService } from '../../../jbpm/service/user-management.service';
+import { LocalDataSource } from 'ng2-smart-table';
+import { users_management_table_settings } from './user-utils';
+import { HttpClient } from '@angular/common/http';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DepartmentManagementService } from '@app/jbpm/service/department-management.service';
+import { ConfirmDialogComponent } from '../../../jbpm/common-component/confirm-dialog/confirm-dialog.component';
 
 
 @Component({
@@ -42,20 +43,23 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
   // Form Validation properties
   isUpdate: boolean = false;
   submitted = false;
+  loading = false;
 
 
   userTypes: Array<string> = new Array<string>();
 
   constructor(private formBuilder: FormBuilder,
-              private http: HttpClient,
-              private departmentManagement: DepartmentManagementService,
-              private service: UserManagementService) {
+    private http: HttpClient,
+    private dialogService: NbDialogService,
+    private toastrService: NbToastrService,
+    private departmentManagement: DepartmentManagementService,
+    private service: UserManagementService) {
     this.loadData();
   }
 
   loadData(): void {
 
-    this.service.getSchema().subscribe( res => {
+    this.service.getSchema().subscribe(res => {
       for (const value of res['alps']['descriptor'][0]['descriptor']) {
         if (value?.doc?.value) {
           this.userTypes = (value?.doc?.value.split(',') as Array<string>).filter(val => val.trim() !== 'SCHEME_OFFICIAL');
@@ -72,17 +76,17 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private setArrayData(data: any ): void {
-     if ( !this.dataArray.includes(data)) { this.dataArray.push(data); }
+  private setArrayData(data: any): void {
+    if (!this.dataArray.includes(data)) { this.dataArray.push(data); }
   }
 
 
   private initialiseForm(): void {
     this.userForm = this.formBuilder.group({
-      name: ['', Validators.required],
-      surname: ['', Validators.required],
-      kind: ['', Validators.required],
-      email: ['', Validators.required, Validators.email],
+      name: ['', [Validators.required]],
+      surname: ['', [Validators.required]],
+      kind: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
 
       fundAdministrator: [''],
       fundManagementDepartment: [''],
@@ -120,7 +124,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
       }
     });
 
-   this.loadManagers('OPERATIONS_HOD').loadManagers('FUND_MANAGER');
+    this.loadManagers('OPERATIONS_HOD').loadManagers('FUND_MANAGER');
 
   }
 
@@ -135,13 +139,13 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
         }
       });
     } else {
-       this.service.getUsers('operationsHods').subscribe(res => {
-         this.operationsHODArray = null;
-         this.operationsHODArray = new Array<any>();
-         for (const value of res['_embedded']['operationsHods']) {
-           this.operationsHODArray.push(value);
-         }
-       });
+      this.service.getUsers('operationsHods').subscribe(res => {
+        this.operationsHODArray = null;
+        this.operationsHODArray = new Array<any>();
+        for (const value of res['_embedded']['operationsHods']) {
+          this.operationsHODArray.push(value);
+        }
+      });
     }
     return this;
   }
@@ -150,7 +154,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
     if (event?.data) {
       this.label = 'Edit';
     }
-    this.populateFields(event.data );
+    this.populateFields(event.data);
   }
 
   private populateFields(data: any): void {
@@ -167,53 +171,88 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
     console.log('<<<<<<<<< Submit >>>>>>>>>>>');
     console.log(form.value);
 
-    const user = Object.entries(form.value).reduce((a, [k, v]) => (v ? (a[k] = v , a) : a), {});
+    const user = Object.entries(form.value).reduce((a, [k, v]) => (v ? (a[k] = v, a) : a), {});
     this.submitted = true;
     if (this.userForm.invalid) {
       return;
     }
+    this.loading=true;
 
     if (form.value?.userObject === null || form.value?.userObject.length === 0) {
-      this.service.createUser(user, this.getApi(user['kind'])).subscribe(res  => {
+      this.service.createUser(user, this.getApi(user['kind'])).subscribe(res => {
+        this.toastrService.show(
+          'User succesfully saved',
+          `User has been succesfully saved`,
+          { 'position': NbGlobalPhysicalPosition.TOP_RIGHT, 'status': 'success' });
+          this.loading=false;
         this.source.prepend(res);
         this.onReset();
         this.loadManagers(user['kind']);
+      }, error => {
+        this.loading = false;
+        this.handleError();
       });
 
-    } else if ( form.value?.userObject?._links.self?.href) {
-      this.service.updateUser(form.value?.userObject?._links.self?.href, user )
-        .subscribe( res => {
+    } else if (form.value?.userObject?._links.self?.href) {
+      this.service.updateUser(form.value?.userObject?._links.self?.href, user)
+        .subscribe(res => {
+          this.toastrService.show(
+            'User succesfully saved',
+            `User has been succesfully saved`,
+            { 'position': NbGlobalPhysicalPosition.TOP_RIGHT, 'status': 'success' });
+            this.loading=false;
           this.source.remove(form.value?.userObject).then(value => this.source.prepend(res));
           this.onReset();
           this.loadManagers(user['kind']);
+        }, error => {
+          this.loading = false;
+          this.handleError();
         });
     }
 
   }
 
-  deleteteUser(form: FormGroup): void {
 
-    this.service.deleteUser( form.value?.userObject?._links.self?.href)
-      .subscribe(value_ => {
-        this.source.remove(form.value?.userObject).then(value => console.log(value) );
-        this.onReset();
-        this.loadManagers(form.value?.kind);
-      });
+  async deleteteUser(form: FormGroup) {
+    let result = await this.dialogService.open(ConfirmDialogComponent, {
+      hasBackdrop: true, context: {
+        title: 'Delete user',
+        message: 'Are you sure you want to delete?',
+        confirmText: 'Yes',
+        cancelText: 'No'
+      }
+    }).onClose.toPromise();
+    if (result) {
+      this.service.deleteUser(form.value?.userObject?._links.self?.href)
+        .subscribe(value_ => {
+          this.toastrService.show(
+            'User delete succesfully saved',
+            `User has been delete succesfully`,
+            { 'position': NbGlobalPhysicalPosition.TOP_RIGHT, 'status': 'success' });
+          this.source.remove(form.value?.userObject).then(value => console.log(value));
+          this.onReset();
+          this.loadManagers(form.value?.kind);
+        }, error => {
+          this.loading = false;
+          this.handleError();
+        });
+    }
+
   }
 
   selectedValue(event: any): void {
 
     this.isfundAdministrator = ('FUND_ADMINISTRATOR' === event.value.trim() ||
-      'FUND_COORDINATOR' === event.value.trim()  ||
-      'FUND_INTERN' === event.value.trim()  );
-    this.isOperationsUser =  ('OPERATIONS' === event.value.trim());
+      'FUND_COORDINATOR' === event.value.trim() ||
+      'FUND_INTERN' === event.value.trim());
+    this.isOperationsUser = ('OPERATIONS' === event.value.trim());
     this.isOperationsUserHod = ('OPERATIONS_HOD' === event.value.trim());
-    this.isfundManager =  ('FUND_MANAGER' === event.value.trim());
+    this.isfundManager = ('FUND_MANAGER' === event.value.trim());
 
   }
 
   private getApi(kind: string): string {
-    const  apis = new Map<string, string>();
+    const apis = new Map<string, string>();
     apis.set('FUND_MANAGER', 'fundManagers');
     apis.set('OPERATIONS_HOD', 'operationsHods');
     apis.set('OPERATIONS', 'operationses');
@@ -235,5 +274,11 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
     this.isOperationsUser = false;
     this.isOperationsUserHod = false;
     this.isfundManager = false;
+  }
+  handleError() {
+    this.toastrService.show(
+      'Error',
+      `Something went wrong`,
+      { 'position': NbGlobalPhysicalPosition.TOP_RIGHT, 'status': 'danger' });
   }
 }

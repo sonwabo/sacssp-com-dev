@@ -16,85 +16,102 @@
       <nb-card-header>Manage User</nb-card-header>
       <nb-card-body>
         <form [formGroup]="userForm">
-
-          <nb-select formControlName="kind" fullWidth placeholder="UserType"
-                     id="input-case-validity">
-            <nb-option (selectionChange)="selectedValue($event)" [value]="result.trim()"
-                       *ngFor="let result of userTypes">{{result}}</nb-option>
-          </nb-select>
-          <br/><br/>
-
-          <div class="full-name-inputs">
-            <input type="text" formControlName="name" nbInput fullWidth placeholder="UserName"
-                   [ngClass]="{ 'is-invalid': submitted && form.name.errors }">
-            <div *ngIf="submitted && form.name.errors" class="invalid-feedback">
-              <div *ngIf="form.name.errors.required">Name is required</div>
-            </div>
-            <input type="text" formControlName="surname" nbInput fullWidth placeholder="Surname"
-                   [ngClass]="{ 'is-invalid': submitted && form.surname.errors }">
-            <div *ngIf="submitted && form.surname.errors" class="invalid-feedback">
-              <div *ngIf="form.surname.errors.required">Surname is required</div>
+          <div class="row">
+            <div class="col">
+              <nb-select formControlName="kind" fullWidth placeholder="UserType" id="input-case-validity">
+                <nb-option (selectionChange)="selectedValue($event)" [value]="result.trim()"
+                  *ngFor="let result of userTypes">{{result}}</nb-option>
+              </nb-select>
+              <div *ngIf="submitted && form.kind.errors" class="invalid-feedback">
+                <div *ngIf="form.kind.errors.required">User type is required</div>
+              </div>
             </div>
           </div>
-          <br/>
-          <input type="email" formControlName="email" nbInput fullWidth placeholder="Email"
-                 [ngClass]="{ 'is-invalid': submitted && form.email.errors }">
-          <div *ngIf="submitted && form.email.errors" class="invalid-feedback">
-            <div *ngIf="form.email.errors.required">Email is required</div>
+          <br />
+          <div class="row">
+            <div class="col">
+              <input type="text" formControlName="name" nbInput fullWidth placeholder="UserName"
+                [ngClass]="{ 'is-invalid': submitted && form.name.errors }">
+              <div *ngIf="submitted && form.name.errors" class="invalid-feedback">
+                <div *ngIf="form.name.errors.required">Name is required</div>
+              </div>
+            </div>
+            <div class="col">
+              <input type="text" formControlName="surname" nbInput fullWidth placeholder="Surname"
+                [ngClass]="{ 'is-invalid': submitted && form.surname.errors }">
+              <div *ngIf="submitted && form.surname.errors" class="invalid-feedback">
+                <div *ngIf="form.surname.errors.required">Surname is required</div>
+              </div>
+            </div>
           </div>
-          <br/><br/>
+          <br />
+          <div class="row">
+            <div class="col">
+              <input type="email" formControlName="email" nbInput fullWidth placeholder="Email"
+                [ngClass]="{ 'is-invalid': submitted && form.email.errors }">
+              <div *ngIf="submitted && form.email.errors" class="invalid-feedback">
+                <div *ngIf="form.email.errors.required">Email is required</div>
+              </div>
+            </div>
+          </div>
+          <br />
 
 
-          <div *ngIf="isfundAdministrator">
-
-            <nb-select formControlName="fundManager" fullWidth placeholder="Fund Managers">
-              <nb-option [value]="result._links.fundManager.href"
-                         *ngFor="let result of fundManagersArray">{{result.name}} {{result.surname}}</nb-option>
-            </nb-select>
-            <br/><br/>
-
+          <div class="row" *ngIf="isfundAdministrator">
+            <div class="col">
+              <nb-select formControlName="fundManager" fullWidth placeholder="Fund Managers">
+                <nb-option [value]="result._links.fundManager.href" *ngFor="let result of fundManagersArray">
+                  {{result.name}} {{result.surname}}</nb-option>
+              </nb-select>
+              <br />
+              <br />
+            </div>
           </div>
 
 
-          <div *ngIf="isOperationsUser">
-
-            <nb-select formControlName="operationsHod" fullWidth placeholder="Operations Hods">
-              <nb-option [value]="result?._links?.operationsHod.href"
-                         *ngFor="let result of operationsHODArray">{{result.name}}</nb-option>
-            </nb-select>
-            <br/><br/>
-
+          <div class="row" *ngIf="isOperationsUser">
+            <div class="col">
+              <nb-select formControlName="operationsHod" fullWidth placeholder="Operations Hods">
+                <nb-option [value]="result?._links?.operationsHod.href" *ngFor="let result of operationsHODArray">
+                  {{result.name}}</nb-option>
+              </nb-select>
+              <br />
+              <br />
+            </div>
           </div>
 
 
-          <div *ngIf="isOperationsUserHod">
-
-            <nb-select formControlName="operationsDepartment" fullWidth placeholder="Operations Departments">
-              <nb-option [value]="result?._links?.operationsDepartment?.href"
-                         *ngFor="let result of operationsDepartmentsArray">{{result.name}}</nb-option>
-            </nb-select>
-            <br/><br/>
-
+          <div class="row" *ngIf="isOperationsUserHod">
+            <div class="col">
+              <nb-select formControlName="operationsDepartment" fullWidth placeholder="Operations Departments">
+                <nb-option [value]="result?._links?.operationsDepartment?.href"
+                  *ngFor="let result of operationsDepartmentsArray">{{result.name}}</nb-option>
+              </nb-select>
+              <br />
+              <br />
+            </div>
           </div>
 
 
-          <div *ngIf="isfundManager">
-
-            <nb-select formControlName="fundManagementDepartment" fullWidth placeholder="Fund Management Department">
-              <nb-option [value]="result?._links?.fundManagementDepartments?.href"
-                         *ngFor="let result of fundManagementDepartmentsArray">{{result.name}}</nb-option>
-            </nb-select>
-            <br/><br/>
-
+          <div class="row" *ngIf="isfundManager">
+            <div class="col">
+              <nb-select formControlName="fundManagementDepartment" fullWidth placeholder="Fund Management Department">
+                <nb-option [value]="result?._links?.fundManagementDepartments?.href"
+                  *ngFor="let result of fundManagementDepartmentsArray">{{result.name}}</nb-option>
+              </nb-select>
+              <br />
+              <br />
+            </div>
           </div>
 
 
           <input type="hidden" formControlName="userObject" nbInput>
 
-          <button nbButton type="button" color="blue"  (click)="formSubmit(userForm)">{{label}}</button> &nbsp;
-          <button *ngIf="label === 'Edit'" nbButton type="submit" color="blue" (click)="deleteteUser(userForm)">Delete</button>
+          <button [nbSpinner]="loading" nbSpinnerStatus="success" nbSpinnerSize="large" nbSpinnerMessage="" nbButton type="button" color="blue" (click)="formSubmit(userForm)">{{label}}</button> &nbsp;
+          <button [nbSpinner]="!submitted && loading" nbSpinnerStatus="success" nbSpinnerSize="large" nbSpinnerMessage="" *ngIf="label === 'Edit'" nbButton type="submit" color="blue"
+            (click)="deleteteUser(userForm)">Delete</button>
           &nbsp;
-          <button  nbButton type="button" color="blue"  (click)="onReset()">Clear</button>
+          <button nbButton type="button" color="blue" (click)="onReset()">Clear</button>
 
 
 

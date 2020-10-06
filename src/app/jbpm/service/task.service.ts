@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { UserDetails } from '@app/authentication/model/user.details';
 import { ProcessService } from './process.service';
 import { CaseService } from './case.service';
-import {UserManagementService} from "@app/jbpm/service/user-management.service";
+import {UserManagementService} from '@app/jbpm/service/user-management.service';
 
 
 @Injectable({

@@ -16,44 +16,86 @@
       <nb-card-header>Manage SchemeOfficial</nb-card-header>
       <nb-card-body>
         <form [formGroup]="userForm">
-          <input type="text" formControlName="name" nbInput fullWidth placeholder="Name">
-          <br/><br/>
-          <input type="text" formControlName="surname" nbInput fullWidth placeholder="Surname">
-          <br/><br/>
-          <input type="text" formControlName="email" nbInput fullWidth placeholder="Email">
-          <br/><br/>
-          <nb-select placeholder="Fund Administrator Name"
-                     formControlName="fundAdministrator"
-                     fullWidth
-                     id="input-fundadministrators">
-            <nb-option  [value]="fundadmin?._links?.fundAdministrator.href"
-                       *ngFor="let fundadmin of fundAdministratorsArray">{{fundadmin.name}} {{fundadmin.surname}} , {{fundadmin.kind}} </nb-option>
-          </nb-select>
-          <br/><br/>
-          <nb-select placeholder="Division Name"
-                     formControlName="division"
-                     fullWidth
-                     id="input-division">
-            <nb-option [value]="division?._links?.division.href"
-                       (selectionChange)="selectedValue(division)"
-                       *ngFor="let division of divisionsArray">{{division.name}}</nb-option>
-          </nb-select>
-          <br/><br/>
-          <nb-select placeholder="Scheme Name"
-                     formControlName="scheme"
-                     fullWidth
-                     id="input-department">
-            <nb-option [value]="scheme?._links?.scheme.href"
-                       *ngFor="let scheme of schemesArray">{{scheme.name}}</nb-option>
-          </nb-select>
-           <br/><br/>
+          <div class="row">
+            <div class="col">
+              <input type="text" formControlName="name" nbInput fullWidth placeholder="Name">
+              <div *ngIf="submitted && form.name.errors" class="invalid-feedback">
+                <div *ngIf="form.name.errors.required">Name is required</div>
+              </div>
+            </div>
+          </div>
+
+          <br />
+          <div class="row">
+            <div class="col">
+              <input type="text" formControlName="surname" nbInput fullWidth placeholder="Surname">
+              <div *ngIf="submitted && form.surname.errors" class="invalid-feedback">
+                <div *ngIf="form.surname.errors.required">Surname is required</div>
+              </div>
+            </div>
+          </div>
+
+          <br />
+          <div class="row">
+            <div class="col">
+              <input type="text" formControlName="email" nbInput fullWidth placeholder="Email">
+              <div *ngIf="submitted && form.email.errors" class="invalid-feedback">
+                <div *ngIf="form.email.errors.required">Email is required</div>
+                <div *ngIf="form.email.errors.email">Email is not correct format</div>
+              </div>
+            </div>
+          </div>
+
+          <br />
+          <div class="row">
+            <div class="col">
+              <nb-select placeholder="Fund Administrator Name" formControlName="fundAdministrator" fullWidth
+                id="input-fundadministrators">
+                <nb-option [value]="fundadmin?._links?.fundAdministrator.href"
+                  *ngFor="let fundadmin of fundAdministratorsArray">{{fundadmin.name}} {{fundadmin.surname}} ,
+                  {{fundadmin.kind}} </nb-option>
+              </nb-select>
+              <div *ngIf="submitted && form.fundAdministrator.errors" class="invalid-feedback">
+                <div *ngIf="form.fundAdministrator.errors.required">Fund Administrator Name is required</div>
+              </div>
+            </div>
+          </div>
+
+          <br />
+          <div class="row">
+            <div class="col">
+              <nb-select placeholder="Division Name" formControlName="division" fullWidth id="input-division">
+                <nb-option [value]="division?._links?.division.href" (selectionChange)="selectedValue(division)"
+                  *ngFor="let division of divisionsArray">{{division.name}}</nb-option>
+              </nb-select>
+              <div *ngIf="submitted && form.division.errors" class="invalid-feedback">
+                <div *ngIf="form.division.errors.required">Division is required</div>
+              </div>
+            </div>
+          </div>
+
+          <br />
+          <div class="row">
+            <div class="col">
+              <nb-select placeholder="Scheme Name" formControlName="scheme" fullWidth id="input-department">
+                <nb-option [value]="scheme?._links?.scheme.href" *ngFor="let scheme of schemesArray">{{scheme.name}}
+                </nb-option>
+              </nb-select>
+              <div *ngIf="submitted && form.scheme.errors" class="invalid-feedback">
+                <div *ngIf="form.scheme.errors.required">Scheme is required</div>
+              </div>
+            </div>
+          </div>
+
+          <br />
 
           <input type="hidden" formControlName="userObject" nbInput>
 
-          <button nbButton type="button" color="blue"  (click)="formSubmit(userForm)">{{label}}</button> &nbsp;
-          <button *ngIf="label === 'Update'" nbButton type="submit" color="blue" (click)="deleteUser(userForm)">Delete</button>
+          <button [nbSpinner]="loading" nbSpinnerStatus="success" nbSpinnerSize="large" nbSpinnerMessage="" nbButton type="button" color="blue" (click)="formSubmit(userForm)">{{label}}</button> &nbsp;
+          <button [nbSpinner]="!submitted && loading" nbSpinnerStatus="success" nbSpinnerSize="large" nbSpinnerMessage="" *ngIf="label === 'Update'" nbButton type="submit" color="blue"
+            (click)="deleteUser(userForm)">Delete</button>
           &nbsp;
-          <button  nbButton type="button" color="blue"  (click)="onReset()">Clear</button>
+          <button  nbButton type="button" color="blue" (click)="onReset()">Clear</button>
         </form>
       </nb-card-body>
     </nb-card>

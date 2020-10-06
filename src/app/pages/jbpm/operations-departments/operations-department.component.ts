@@ -3,7 +3,7 @@ import {LocalDataSource} from 'ng2-smart-table';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
-import {NbDialogRef, NbDialogService} from '@nebular/theme';
+import { NbDialogService} from '@nebular/theme';
 import {DepartmentManagementService} from '@app/jbpm/service/department-management.service';
 
 @Component({
@@ -59,7 +59,6 @@ export class OperationsDepartmentComponent implements OnInit { // extends  Commo
     // protected ref: NbDialogRef<CommonConfigsComponent>,
     protected  dialogService: NbDialogService,
     private formBuilder: FormBuilder,
-    private router: Router,
     private http: HttpClient, private service: DepartmentManagementService) {
    // super(dialogService, ref);
     this.loadData();

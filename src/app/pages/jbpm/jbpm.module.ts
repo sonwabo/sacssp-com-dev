@@ -22,6 +22,7 @@ import {
   OwlNativeDateTimeModule,
 } from 'ng-pick-datetime';
 import {CaseDataRenderComponent} from '@app/pages/jbpm/blocks/case-data-render.component';
+import { ConfirmDialogComponent } from '../../jbpm/common-component/confirm-dialog/confirm-dialog.component';
 
 
 @NgModule({
@@ -41,7 +42,7 @@ import {CaseDataRenderComponent} from '@app/pages/jbpm/blocks/case-data-render.c
     NbAccordionModule,
     NbCardModule,
     NbButtonModule,
-    NbDialogModule,
+    NbDialogModule.forChild(),
     NbCheckboxModule,
     NbSpinnerModule,
     NbToastrModule.forRoot(),
@@ -57,6 +58,7 @@ import {CaseDataRenderComponent} from '@app/pages/jbpm/blocks/case-data-render.c
     DepartmentRenderComponent,
     CaseDataRenderComponent,
     CommonConfigsComponent,
+    ConfirmDialogComponent,
   ],
   entryComponents: [
     CaseStatusRenderComponent,
@@ -64,6 +66,7 @@ import {CaseDataRenderComponent} from '@app/pages/jbpm/blocks/case-data-render.c
     SlaComplianceRenderComponent,
     EpochDateRenderComponent,
     DepartmentRenderComponent,
+    ConfirmDialogComponent,
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
 })

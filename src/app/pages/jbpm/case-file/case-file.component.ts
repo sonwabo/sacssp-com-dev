@@ -2,7 +2,7 @@ import {Request, CaseRequest, Settings, Status, TaskNames} from './../../../jbpm
 import {ProcessService} from './../../../jbpm/service/process.service';
 import {TaskService} from './../../../jbpm/service/task.service';
 import {
-  Component, CUSTOM_ELEMENTS_SCHEMA,
+  Component,
   Input,
   OnInit,
 } from '@angular/core';
