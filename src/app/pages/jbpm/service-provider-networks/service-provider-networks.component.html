@@ -17,17 +17,34 @@
       <nb-card-header>Manage SPN </nb-card-header>
       <nb-card-body>
         <form [formGroup]="spnForm">
-          <input type="text" formControlName="name" nbInput fullWidth placeholder="SPN Name">
-          <br/><br/>
-          <input type="text" formControlName="description" nbInput fullWidth placeholder="Description">
-          <br/><br/>
+          <div class="row">
+            <div class="col">
+              <input type="text" formControlName="name" nbInput fullWidth placeholder="SPN Name">
+              <div *ngIf="submitted && form.name.errors" class="invalid-feedback">
+                <div *ngIf="form.name.errors.required">Name is required</div>
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col">
+              <input type="text" formControlName="description" nbInput fullWidth placeholder="Description">
+              <div *ngIf="submitted && form.description.errors" class="invalid-feedback">
+                <div *ngIf="form.description.errors.required">Description is required</div>
+              </div>
+            </div>
+          </div>
+          <br />
           <input type="hidden" formControlName="spnObject" nbInput>
 
-          <button nbButton type="submit" color="blue" (click)="formSubmit(spnForm)">{{label}}</button> &nbsp;
-            &nbsp;
-          <button *ngIf="label === 'Update'" nbButton type="submit" color="blue" (click)="deleteSpn(spnForm)">Delete</button>
-           &nbsp;&nbsp;
-          <button nbButton type="button" color="blue"  (click)="onReset()">Clear</button>
+          <button [nbSpinner]="submitted && loading" nbSpinnerStatus="success" nbSpinnerSize="large" nbSpinnerMessage="" nbButton
+            type="submit" color="blue" (click)="formSubmit(spnForm)">{{label}}</button> &nbsp;
+          &nbsp;
+          <button [nbSpinner]="!submitted && loading" nbSpinnerStatus="success" nbSpinnerSize="large"
+            nbSpinnerMessage="" *ngIf="label === 'Update'" nbButton type="submit" color="blue"
+            (click)="deleteSpn(spnForm)">Delete</button>
+          &nbsp;&nbsp;
+          <button nbButton type="button" color="blue" (click)="onReset()">Clear</button>
         </form>
       </nb-card-body>
     </nb-card>

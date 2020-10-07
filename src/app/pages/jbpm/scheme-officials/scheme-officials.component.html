@@ -91,7 +91,7 @@
 
           <input type="hidden" formControlName="userObject" nbInput>
 
-          <button [nbSpinner]="loading" nbSpinnerStatus="success" nbSpinnerSize="large" nbSpinnerMessage="" nbButton type="button" color="blue" (click)="formSubmit(userForm)">{{label}}</button> &nbsp;
+          <button [nbSpinner]="submitted && loading" nbSpinnerStatus="success" nbSpinnerSize="large" nbSpinnerMessage="" nbButton type="button" color="blue" (click)="formSubmit(userForm)">{{label}}</button> &nbsp;
           <button [nbSpinner]="!submitted && loading" nbSpinnerStatus="success" nbSpinnerSize="large" nbSpinnerMessage="" *ngIf="label === 'Update'" nbButton type="submit" color="blue"
             (click)="deleteUser(userForm)">Delete</button>
           &nbsp;

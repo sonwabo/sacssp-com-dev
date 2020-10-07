@@ -18,10 +18,26 @@
       <nb-card-header>Manage Department</nb-card-header>
       <nb-card-body>
         <form [formGroup]="departmentForm">
+          <div class="row">
+            <div class="col">
           <input type="text" formControlName="name" nbInput fullWidth placeholder="Department Name">
-          <br/><br/>
+          <div *ngIf="submitted && form.name.errors" class="invalid-feedback">
+            <div *ngIf="form.name.errors.required">Name is required</div>
+          </div>
+        </div>
+      </div>
+          <br/>
+          <div class="row">
+            <div class="col">
           <input type="text" formControlName="description" nbInput fullWidth placeholder="Description">
-          <br/><br/>
+          <div *ngIf="submitted && form.description.errors" class="invalid-feedback">
+            <div *ngIf="form.description.errors.required">Description is required</div>
+          </div>
+        </div>
+      </div>
+          <br/>
+          <div class="row">
+            <div class="col">
           <nb-select placeholder="Department Type"
                      formControlName="department"
                      fullWidth
@@ -29,12 +45,18 @@
             <nb-option [value]="kind.trim()"
                        *ngFor="let kind of listKinds">{{kind.trim()}}</nb-option>
           </nb-select>
-          <br/><br/>
-
+          <div *ngIf="submitted && form.department.errors" class="invalid-feedback">
+            <div *ngIf="form.department.errors.required">Department type is required</div>
+          </div>
+        </div>
+      </div>
+          <br/>
           <input type="hidden" formControlName="departmentObject" nbInput>
 
-          <button nbButton type="button" color="blue"  (click)="departmentformSubmit(departmentForm)">{{label}}</button> &nbsp;
-          <button *ngIf="label === 'Update'" nbButton type="submit" color="blue" (click)="deleteDepartment(departmentForm)">Delete</button>
+          <button [nbSpinner]="submitted && loading" nbSpinnerStatus="success" nbSpinnerSize="large" nbSpinnerMessage="" 
+          nbButton type="button" color="blue"  (click)="departmentformSubmit(departmentForm)">{{label}}</button> &nbsp;
+          <button [nbSpinner]="!submitted && loading" nbSpinnerStatus="success"nbSpinnerSize="large" nbSpinnerMessage="" 
+          *ngIf="label === 'Update'" nbButton type="submit" color="blue" (click)="deleteDepartment(departmentForm)">Delete</button>
            &nbsp;
           <button  nbButton type="button" color="blue"  (click)="onReset()">Clear</button>
         </form>

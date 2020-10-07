@@ -24,4 +24,19 @@ nb-select {
   width: 300%;
 }
 
+.required::after {
+  color: red;
+  content: '*';
+}
+
+nb-icon[icon='question-mark-circle'] {
+  float: right;
+}
+.invalid-feedback{
+  display: block;
+}
+
+
+
+
 
