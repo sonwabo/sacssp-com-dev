@@ -214,6 +214,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
 
 
   async deleteteUser(form: FormGroup) {
+    this.loading = true;
     let result = await this.dialogService.open(ConfirmDialogComponent, {
       hasBackdrop: true, context: {
         title: 'Delete user',

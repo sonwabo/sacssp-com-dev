@@ -53,7 +53,7 @@
           <br/>
           <input type="hidden" formControlName="departmentObject" nbInput>
 
-          <button [nbSpinner]="loading" nbSpinnerStatus="success" nbSpinnerSize="large" nbSpinnerMessage="" 
+          <button [nbSpinner]="submitted && loading" nbSpinnerStatus="success" nbSpinnerSize="large" nbSpinnerMessage="" 
           nbButton type="button" color="blue"  (click)="departmentformSubmit(departmentForm)">{{label}}</button> &nbsp;
           <button [nbSpinner]="!submitted && loading" nbSpinnerStatus="success"nbSpinnerSize="large" nbSpinnerMessage="" 
           *ngIf="label === 'Update'" nbButton type="submit" color="blue" (click)="deleteDepartment(departmentForm)">Delete</button>

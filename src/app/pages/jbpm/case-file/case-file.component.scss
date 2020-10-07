@@ -24,7 +24,7 @@ nb-select {
   width: 300%;
 }
 
-required::after {
+.required::after {
   color: red;
   content: '*';
 }

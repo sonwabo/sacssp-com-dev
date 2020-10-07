@@ -282,7 +282,10 @@ export class CaseFileComponent implements OnInit {
   }
 
   formSubmit(userProfileForm: FormGroup) {
-
+    this.submitted = true;
+    if (this.caseForm.invalid) {
+      return;
+    }
 
     const formdata = userProfileForm.value;
 
@@ -353,12 +356,10 @@ export class CaseFileComponent implements OnInit {
     const caseRequest: CaseRequest = this.mapper(this.formData, false);
     this.taskService.saveCaseData(this.container, this.caseId, caseRequest).subscribe(res => {
       this.toastrService.show(
-        'Task completed successfully',
-        `Task has been succesfully saved`,
+        'Case Saved successfully',
+        `Case has been succesfully saved`,
         { 'position': NbGlobalPhysicalPosition.TOP_RIGHT, 'status': 'success' });
       this.loading = false;
-      this.showToast('Saved Data Successfully', false);
-
     }, error => {
       this.loading = false;
       this.handleError();
