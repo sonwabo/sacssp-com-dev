@@ -195,11 +195,14 @@ export class TaskService {
   }
 
 
-  releaseTask(container: string, taskid: string): Observable<any> {
+  releaseTask(container: string, taskid: string, user: string): void {
     const url = `${environment.baseUrl}/containers/${container}/tasks/${taskid}/states/released`;
     const params = new HttpParams();
-    params.set('user', UserDetails.getUserName());
-    return this.http.put<any[]>(url, {headers: this.getHeaders(), params});
+    // params.set('user', UserDetails.getUserName());
+    params.set('user', user);
+    this.http.put<any[]>(url, {headers: this.getHeaders(), params}).subscribe(res => {
+        console.log('Task Released ');
+    });
   }
 
   private getHeaders(): HttpHeaders {

@@ -71,9 +71,13 @@ export class UserManagementService {
     const url = `${environment.baseBackEnd}/sendNotification`;
     this.http.post<any[]>(url,  {caseid: caseid, user: user}, { headers: this.getHeaders() })
       .subscribe(res => {
-      console.log('====== Email Sent =====');
-      console.log( res );
     });
+  }
+
+  getUserCaseFile(caseid: string): Observable<any> {
+    const url = `${environment.baseBackEnd}/getCaseFile?caseid=${caseid}`;
+    console.log('URL ' + url);
+    return this.http.get<any[]>(url, { headers: this.getHeaders() });
   }
 
   private getHeaders(): HttpHeaders {
