@@ -14,8 +14,8 @@
         <nb-icon icon="question-mark-circle" nbTooltip="The person who made the request" nbTooltipStatus="primary"
           status="info"></nb-icon>
         <!--        <input nbInput fullWidth type="text" formControlName="receivedFrom" id="input-email">-->
-        <nb-select placeholder="Scheme Official" fullWidth formControlName="receivedFrom" id="input-email">
-          <nb-option [value]="officials.email" (selectionChange)="selectedSchemeOfficial(officials)"
+        <nb-select placeholder="Scheme Official"  fullWidth formControlName="receivedFrom" id="input-email">
+          <nb-option [value]="officials.email" [disabled]="isReadOnly" (selectionChange)="selectedSchemeOfficial(officials)"
             *ngFor="let officials of schemeOfficialsList">{{officials.email}}</nb-option>
         </nb-select>
         <div *ngIf="submitted && form.receivedFrom.errors" class="invalid-feedback">
@@ -25,7 +25,7 @@
         <label class="label required" for="input-subject">Subject </label>
         <nb-icon icon="question-mark-circle" nbTooltip="What is the request about" nbTooltipStatus="primary"
           status="info"></nb-icon>
-        <input nbInput fullWidth type="text" formControlName="subject" id="input-subject">
+        <input nbInput fullWidth type="text" [readOnly]="isReadOnly" formControlName="subject" id="input-subject">
         <div *ngIf="submitted && form.subject.errors" class="invalid-feedback">
           <div *ngIf="form.subject.errors.required">Subject is required</div>
         </div>
@@ -34,7 +34,7 @@
         <nb-icon icon="question-mark-circle" nbTooltip="Where the request originated from" nbTooltipStatus="primary"
           status="info"></nb-icon>
         <nb-select fullWidth placeholder="Select origin" formControlName="origin" id="input-origin">
-          <nb-option [value]="origin" *ngFor="let origin of origins">{{origin}}</nb-option>
+          <nb-option  [disabled]="isReadOnly" [value]="origin"  *ngFor="let origin of origins">{{origin}}</nb-option>
         </nb-select>
         <div *ngIf="submitted && form.origin.errors" class="invalid-feedback">
           <div *ngIf="form.origin.errors.required">Origin is required</div>
@@ -46,7 +46,7 @@
         </label>
         <nb-icon icon="question-mark-circle" nbTooltip="Outline what needs to be delivered and provide some background"
           nbTooltipStatus="primary" status="info"></nb-icon>
-        <textarea nbInput fullWidth type="text" formControlName="description" id="input-description"></textarea><br />
+        <textarea nbInput fullWidth type="text" [readOnly]="isReadOnly" formControlName="description" id="input-description"></textarea><br />
         <div *ngIf="submitted && form.description.errors" class="invalid-feedback">
           <div *ngIf="form.description.errors.required">Description is required</div>
         </div>

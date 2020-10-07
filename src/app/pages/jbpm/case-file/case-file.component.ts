@@ -71,7 +71,7 @@ export class CaseFileComponent implements OnInit {
 
   submitted = false;
   loading = false;
-  isReadOnly: false;
+  isReadOnly: boolean = false;
 
   constructor(
     protected caseService: CaseService,
@@ -192,7 +192,7 @@ export class CaseFileComponent implements OnInit {
     // });
   }
 
-  loadData(): void{
+  loadData(): void {
     this.loadUsers();
     this.loadDepartmentData();
   }
@@ -206,14 +206,16 @@ export class CaseFileComponent implements OnInit {
     this.requestStatus = request?.caseState;
     if (this.requestStatus === null) {
       this.requestStatus = request?.requestStatus;
-   }
+    }
+    // Need to fix in JBPM and remove this hack
+    if (this.requestStatus === 'Close') { this.requestStatus = 'Completed'; }
+
     this.requestCaseId = request?.caseId;
-
-
     this.setDatesOnFields(request);
 
     if  (request['origin'] === 'Email') {
-      //this.disableFormElements(['receivedFrom', 'subject', 'description', 'origin']);
+
+       this.disableFormElements(['receivedFrom', 'subject', 'description', 'origin']);
     }
 
     this.caseForm.controls['receivedFrom'].setValue(request['emailFrom']);
@@ -239,8 +241,9 @@ export class CaseFileComponent implements OnInit {
   }
 
   disableFormElements(list: string[]): void {
+    this.isReadOnly = true;
     list.forEach(contrl => {
-      this.caseForm.controls[`${contrl}`].disable({onlySelf: true});
+      // this.caseForm.controls[`${contrl}`].disable({onlySelf: true});
     });
   }
 
@@ -352,7 +355,6 @@ export class CaseFileComponent implements OnInit {
           return;
         }
 
-        console.log('Roles >>>> ' + UserDetails.getRoles().includes(UserRoles.OPS_USER_ROLE)  );
         if (!UserDetails.getRoles().includes(UserRoles.OPS_USER_ROLE) &&  taskRes['task-name'] === TaskNames.TRACKING) {
             this.taskService.releaseTask(containerId, taskId, UserDetails.delegateUser);
         }
@@ -391,7 +393,7 @@ export class CaseFileComponent implements OnInit {
         caseRequest?.request?.completeDate['java.util.Date'].length === 0) {
         res = true;
       }
-      this.showToast('Please fill in all required data', false, 'warning');
+      this.showToast('Please fill required Dates', false, 'warning');
     }
     return res;
   }
@@ -402,6 +404,8 @@ export class CaseFileComponent implements OnInit {
   }
 
   saveCaseData(form: FormGroup): void {
+    console.log('<<<<<<<<<<<< Data >>>>>>>>>>>');
+    console.log(form.value);
     this.submitted = true;
     if (this.caseForm.invalid) {
       return;
@@ -417,8 +421,7 @@ export class CaseFileComponent implements OnInit {
     }, error => {
       this.loading = false;
       this.handleError();
-    }
-    );
+    });
   }
 
   private mapper(formdata: any, closeCase: boolean, taskStatus?: string, closureStatus?: string): CaseRequest {
