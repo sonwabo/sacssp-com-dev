@@ -1,7 +1,7 @@
 import {environment} from '@environments/environment';
 import {Component} from '@angular/core';
 import {CaseService} from '@app/jbpm/service/case.service';
-import {ServerDataSource} from 'ng2-smart-table';
+import {LocalDataSource, ServerDataSource} from 'ng2-smart-table';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {UserDetails} from '@app/authentication/model/user.details';
@@ -17,7 +17,8 @@ import {UserRoles} from '@app/authentication/model/user-roles';
 export class CasesTableComponent {
 
   static CASES: string = 'Cases';
-  source: ServerDataSource;
+  // source: ServerDataSource;
+  source: LocalDataSource = new LocalDataSource();
   taskSource: ServerDataSource;
   loading: boolean = true;
 
@@ -26,7 +27,6 @@ export class CasesTableComponent {
   reviewer: boolean = (UserDetails.getRoles().includes(UserRoles.OPS_USER_ROLE));
 
   constructor(
-    // private jwtService: JWTTokenService,
     protected service: CaseService,
     protected taskService: TaskService,
     protected router: Router,
@@ -35,11 +35,14 @@ export class CasesTableComponent {
     this.loadCases();
   }
   loadCases(allCases: boolean = false): void {
-    this.source = new ServerDataSource(this.http,
-        {
-          endPoint: `${environment.baseBackEnd}/getCaseInstancesForUser?owner=${UserDetails.getUserName()}`,
-          dataKey: 'instances',
-        });
+    // this.source = new ServerDataSource(this.http,
+    //     {
+    //       endPoint: `${environment.baseBackEnd}/getCaseInstancesForUser?owner=${UserDetails.getUserName()}`,
+    //       dataKey: 'instances',
+    //     });
+    this.service.getOpenCasesForUser().subscribe(value => {
+        this.source.load(value?.instances).then(r =>  console.log(r) );
+    });
 
     this.taskSource = new ServerDataSource(this.http,
       {

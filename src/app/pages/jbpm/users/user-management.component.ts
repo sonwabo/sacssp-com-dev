@@ -176,7 +176,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
     if (this.userForm.invalid) {
       return;
     }
-    this.loading=true;
+    this.loading = true;
 
     if (form.value?.userObject === null || form.value?.userObject.length === 0) {
       this.service.createUser(user, this.getApi(user['kind'])).subscribe(res => {
@@ -184,7 +184,7 @@ export class UserManagementComponent implements OnInit, AfterViewInit {
           'User succesfully saved',
           `User has been succesfully saved`,
           { 'position': NbGlobalPhysicalPosition.TOP_RIGHT, 'status': 'success' });
-          this.loading=false;
+          this.loading = false;
         this.source.prepend(res);
         this.onReset();
         this.loadManagers(user['kind']);

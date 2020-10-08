@@ -184,12 +184,6 @@ export class CaseFileComponent implements OnInit {
         }
         this.populateFields(data);
       });
-
-    // this.usermanagenent.getUserCaseFile(this.case['case-id']).subscribe(res__ => {
-    //   console.log('=====================' );
-    //   console.log(res__);
-    //   this.populateFields(res__);
-    // });
   }
 
   loadData(): void {
@@ -404,8 +398,7 @@ export class CaseFileComponent implements OnInit {
   }
 
   saveCaseData(form: FormGroup): void {
-    console.log('<<<<<<<<<<<< Data >>>>>>>>>>>');
-    console.log(form.value);
+
     this.submitted = true;
     if (this.caseForm.invalid) {
       return;

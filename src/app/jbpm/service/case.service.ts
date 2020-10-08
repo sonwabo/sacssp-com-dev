@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {flatMap} from 'rxjs/operators';
+import {UserDetails} from '@app/authentication/model/user.details';
 
 @Injectable({
   providedIn: 'root',
@@ -124,4 +125,11 @@ export class CaseService {
     }
     return null;
   }
+
+  getOpenCasesForUser(): Observable<any> {
+     const url = `${environment.baseBackEnd}/getCaseInstancesForUser?owner=${UserDetails.getUserName()}`;
+     return this.http.get<any[]>(url, {headers: new HttpHeaders()});
+  }
+
+
 }

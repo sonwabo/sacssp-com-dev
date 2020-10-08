@@ -13,7 +13,7 @@ export const case_table_settings: any = {
   },
   add: {
     addButtonContent: '<i class="nb-plus"></i>',
-    confirmCreate: true,
+    confirmCreate: false,
   },
   edit: {
     editButtonContent: '<i class="nb-edit"></i>',
@@ -59,46 +59,46 @@ export const case_table_settings: any = {
       title: 'Operations',
     },
   },
-  };
+};
 
-export const task_table_settings: any =  {
-    mode: 'external',
-    actions: {
-      add: false,
-      edit: true,
-      delete: false,
-      position: 'right',
+export const task_table_settings: any = {
+  mode: 'external',
+  actions: {
+    add: false,
+    edit: true,
+    delete: false,
+    position: 'right',
+  },
+  add: {
+    addButtonContent: '<i class="nb-plus"></i>',
+    confirmCreate: true,
+  },
+  edit: {
+    editButtonContent: '<i class="nb-edit"></i>',
+    saveButtonContent: '<i class="nb-checkmark"></i>',
+    cancelButtonContent: '<i class="nb-close"></i>',
+    confirmSave: true,
+  },
+  columns: {
+    'task-id': {
+      title: 'ID',
     },
-    add: {
-      addButtonContent: '<i class="nb-plus"></i>',
-      confirmCreate: true,
+    'task-name': {
+      title: 'Task Name',
     },
-    edit: {
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-      confirmSave: true,
+    'task-description': {
+      title: 'Description',
     },
-    columns: {
-      'task-id': {
-        title: 'ID',
-      },
-      'task-name': {
-        title: 'Task Name',
-      },
-      'task-description': {
-        title: 'Description',
-      },
-      'task-status': {
-        title: 'Status',
-      },
-      'task-subject': {
-        title: 'Subject',
-      },
-      'task-created-on': {
-        title: 'Created',
-        type: 'custom',
-        renderComponent: EpochDateRenderComponent,
-      },
+    'task-status': {
+      title: 'Status',
     },
-  };
+    'task-subject': {
+      title: 'Subject',
+    },
+    'task-created-on': {
+      title: 'Created',
+      type: 'custom',
+      renderComponent: EpochDateRenderComponent,
+    },
+  },
+};
