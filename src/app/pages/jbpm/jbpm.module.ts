@@ -14,15 +14,24 @@ import { SlaComplianceRenderComponent } from './blocks/sla-compliance-render.com
 import { EpochDateRenderComponent } from './blocks/epoch-date-render.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import {UserKindRenderComponent} from './blocks/user-kind-render.component';
-import {CommonConfigsComponent} from '@app/pages/jbpm/utils/CommonConfigs';
-import {DepartmentRenderComponent} from '@app/pages/jbpm/blocks/department-render.component';
 
 import {
   OwlDateTimeModule,
   OwlNativeDateTimeModule,
 } from 'ng-pick-datetime';
-import {CaseDataRenderComponent} from '@app/pages/jbpm/blocks/case-data-render.component';
 import { ConfirmDialogComponent } from '../../jbpm/common-component/confirm-dialog/confirm-dialog.component';
+import { DepartmentRenderComponent } from './blocks/department-render.component';
+import { CaseDataRenderComponent } from './blocks/case-data-render.component';
+import { CommonConfigsComponent } from './utils/CommonConfigs';
+import { divisionModule } from './divisions/division.module';
+import { schemeModule } from './schemes/scheme.module';
+import { casesTableModule } from './cases-table/cases-table.module';
+import { casesDetailModule } from './case-detail/case-detail.module';
+import { schemeOfficialsModule } from './scheme-officials/scheme-officials.module';
+import { operationsDepartmentModule } from './operations-departments/operations-department..module';
+import { fundManagementDepartmentModule } from './fund-management-departments/fund-management-department.module';
+import { serviceProviderNetworksModule } from './service-provider-networks/service-provider-networks.module';
+import { userManagementModule } from './users/user-management.module';
 
 
 @NgModule({
@@ -48,6 +57,15 @@ import { ConfirmDialogComponent } from '../../jbpm/common-component/confirm-dial
     NbToastrModule.forRoot(),
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
+    divisionModule,
+    schemeModule,
+    casesTableModule,
+    casesDetailModule,
+    userManagementModule,
+    schemeOfficialsModule,
+    operationsDepartmentModule,
+    fundManagementDepartmentModule,
+    serviceProviderNetworksModule,
   ],
   declarations: [
     ...routedComponents,

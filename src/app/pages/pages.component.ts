@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import {MENU_ITEMS} from './pages-menu';
-import {UserDetails} from '@app/authentication/model/user.details';
-import {JWTTokenService} from '@app/jbpm/service/JWTTokenService';
 import {UserRoles} from '../../app/authentication/model/user-roles';
+import { JWTTokenService } from '../jbpm/service/JWTTokenService';
+import { UserDetails } from '../authentication/model/user.details';
 
 @Component({
   selector: 'ngx-pages',

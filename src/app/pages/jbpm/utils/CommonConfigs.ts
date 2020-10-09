@@ -1,9 +1,6 @@
 import {NbDialogRef, NbDialogService} from '@nebular/theme';
 import {Component, OnInit, TemplateRef} from '@angular/core';
-import {ShowcaseDialogComponent} from '@app/pages/modal-overlays/dialog/showcase-dialog/showcase-dialog.component';
 import {Observable} from 'rxjs';
-import {DialogNamePromptComponent} from '@app/pages/modal-overlays/dialog/dialog-name-prompt/dialog-name-prompt.component';
-
 
 @Component({
   selector: 'ngx-dialog-share',
