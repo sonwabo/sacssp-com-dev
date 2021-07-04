@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NbLoginComponent} from '@nebular/auth';
+import {getDeepFromObject, NbAuthResult, NbLoginComponent} from '@nebular/auth';
 
 @Component({
   selector: 'ngx-login',
@@ -8,7 +8,15 @@ import {NbLoginComponent} from '@nebular/auth';
 export class NgxLoginComponent extends NbLoginComponent {
 
   login() {
-    this.user.name = this.user.email;
+
+    console.log('Email', this.user.email );
+    console.log('Password', this.user.password );
     super.login();
   }
+
+
+  getConfigValue(key: string): any {
+    return getDeepFromObject(this.options, key, null);
+  }
 }
+

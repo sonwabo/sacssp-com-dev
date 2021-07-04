@@ -6,6 +6,8 @@ export class UserDetails {
   client_id: string;
 
   static delegateUser: string = null;
+  static userReference: string = null;
+  static userid: string = null;
   static hideMenu: boolean = false;
   static tokenObject: any;
 

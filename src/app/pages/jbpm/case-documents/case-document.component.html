@@ -1,29 +1,126 @@
-<nb-flip-card [showToggleButton]="false" [flipped]="cardFlipped">
-  <nb-card-front>
-    <nb-card>
-      <nb-card-body>
-        <div class="alert alert-light" role="alert">{{ message }}</div>
+<div class="container" xmlns="http://www.w3.org/1999/html">
 
-        <ng2-smart-table [settings]="settings" [source]="source" (create)="flipCard()"></ng2-smart-table>
+  <div class="row">
+    <div class="col-lg-6" *ngIf="iscommunityPractitioner === 'Yes' || iscommunityPractitioner === 'No'">
+      <nb-card *ngIf="iscommunityPractitioner === 'Yes' || iscommunityPractitioner === 'No'">
+        <nb-card-header>Uploaded documents</nb-card-header>
+        <nb-card-body>
+          <ng2-smart-table [settings]="settings" [source]="source" (delete)="onDelete($event)"></ng2-smart-table>
+        </nb-card-body>
+      </nb-card>
+    </div>
 
-      </nb-card-body>
-    </nb-card>
-  </nb-card-front>
-  <nb-card-back>
-    <nb-card>
-      <nb-card-header>Add Your Document</nb-card-header>
-      <nb-card-body>
+    <div *ngIf="iscommunityPractitioner === '' || iscommunityPractitioner === 'Yes'"
+         [ngClass]="iscommunityPractitioner === '' ? 'col-lg-12':'col-lg-6'">
 
-        <label class="btn btn-default">
-            <input nbInput fullWidth type="file" multiple (change)="selectFiles($event)"  #uploaddoc>
-        </label>
+      <nb-card *ngIf="iscommunityPractitioner === '' || iscommunityPractitioner === 'Yes'">
+        <nb-card-header>
+<!--          <div [ngStyle]="iscommunityPractitioner !== ''? {'text-align': 'center'} : {'text-align': 'left'} ">-->
+          <div>
+            Supporting documents to be submitted by practitioners with Community development
+            qualifications
+          </div>
+        </nb-card-header>
+        <nb-card-body>
+          <label>
+            <p>Identity document</p>
+          </label><br/>
+          <label>
+            <input nbInput fullWidth type="file"
+                   [disabled]="iscommunityPractitioner === '' || iscommunityPractitioner === 'No'"
+                   (change)="selectFiles($event, 'Identity document')" #uploaddoc>
+          </label><br/>
 
-      </nb-card-body>
-      <nb-card-footer>
-        <button nbButton status="info"  (click)="addDocuments()" type="submit" id="btn-add-document" >Add Document</button>&nbsp;
-        <button nbButton status="danger" (click)="flipCard()" id="btn-cancel-doc-upload" >Cancel</button>
-      </nb-card-footer>
-    </nb-card>
-  </nb-card-back>
-</nb-flip-card>
+          <label>
+            <p>Degree in community development</p>
+          </label><br/>
+          <label>
+            <input
+              nbInput
+              [disabled]="iscommunityPractitioner === '' || iscommunityPractitioner === 'No'"
+              fullWidth type="file" (change)="selectFiles($event, 'Degree in community development')" #uploaddoc>
+          </label><br/>
 
+          <label>
+            <p>Diploma community development</p>
+          </label><br/>
+          <label>
+            <input
+              [disabled]="iscommunityPractitioner === '' || iscommunityPractitioner === 'No'"
+              nbInput fullWidth type="file" (change)="selectFiles($event, 'Diploma community development')"
+              #uploaddoc>
+          </label><br/>
+
+          <label>
+            <p>Certificate in community development</p>
+          </label><br/>
+          <label>
+            <input
+              [disabled]="iscommunityPractitioner === '' || iscommunityPractitioner === 'No'"
+              nbInput fullWidth type="file" (change)="selectFiles($event, 'Certificate in community development')"
+              #uploaddoc>
+          </label><br/>
+
+
+          <button nbButton status="info"
+                  (click)="addDocuments()"
+                  type="submit"
+                  [disabled]="iscommunityPractitioner === '' || iscommunityPractitioner === 'No'"
+                  [ngStyle]="{
+                              'border':'0px',
+                              'color':'white',
+                              'background-color':'#0a7827'
+                              }">Add documents
+          </button>
+
+        </nb-card-body>
+      </nb-card>
+    </div>
+
+    <div *ngIf="iscommunityPractitioner === '' || iscommunityPractitioner === 'No'"
+         [ngClass]="iscommunityPractitioner === '' ? 'col-lg-12':'col-lg-6'">
+
+      <nb-card *ngIf="iscommunityPractitioner === '' || iscommunityPractitioner === 'No'">
+        <nb-card-header>
+<!--          <div [ngStyle]="iscommunityPractitioner !== ''? {'text-align': 'center'} : {'text-align': 'left'} ">Supporting-->
+          <div>
+          documents to be submitted by practitioners without Community development
+            qualifications
+          </div>
+        </nb-card-header>
+        <nb-card-body>
+          <label>
+            <p>Identity document</p>
+          </label><br/>
+          <label>
+            <input nbInput
+                   [disabled]="iscommunityPractitioner === '' || iscommunityPractitioner === 'Yes'"
+                   fullWidth type="file" multiple (change)="selectFiles($event, 'Identity document')" #uploaddoc>
+          </label><br/>
+
+          <label>
+            <p>Other qualification not relating to community development</p>
+          </label><br/>
+          <label>
+            <input nbInput
+                   [disabled]="iscommunityPractitioner === '' || iscommunityPractitioner === 'Yes'"
+                   fullWidth type="file" multiple
+                   (change)="selectFiles($event, 'Other qualification not relating to community development')"
+                   #uploaddoc>
+          </label><br/>
+
+          <button nbButton status="info"
+                  (click)="addDocuments()"
+                  type="submit"
+                  [ngStyle]="{
+                              'border':'0px',
+                              'color':'white',
+                              'background-color':'#0a7827'
+                              }">Add documents
+          </button>&nbsp;
+        </nb-card-body>
+      </nb-card>
+
+    </div>
+  </div>
+</div>

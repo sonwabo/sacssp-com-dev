@@ -26,11 +26,23 @@
 
 .step-content {
   width: 100%;
+}
+
+nb-card {
+  //background-color:#0a7827 !important;
+  //url-background: url('/src/assets/images/sacssp-logo.png');
 
 }
 
 
+body.default-theme::before {
+  position:fixed;
+  background-size:cover;
+}
 
 
+.sacssp-container-image {
+  opacity: 0.5;
+}
 
 

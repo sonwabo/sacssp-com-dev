@@ -1,9 +1,9 @@
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {
-  NbCardModule, NbIconModule, NbInputModule,
-  NbTreeGridModule, NbTabsetModule,
-  NbTooltipModule, NbDatepickerModule, NbSelectModule,
-  NbAccordionModule, NbButtonModule, NbDialogModule, NbCheckboxModule, NbSpinnerModule, NbToastrModule,
+    NbCardModule, NbIconModule, NbInputModule,
+    NbTreeGridModule, NbTabsetModule,
+    NbTooltipModule, NbDatepickerModule, NbSelectModule,
+    NbAccordionModule, NbButtonModule, NbDialogModule, NbCheckboxModule, NbSpinnerModule, NbToastrModule, NbListModule,
 } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import {
@@ -19,29 +19,30 @@ import { TestSearchComponent } from '../utils/test-search.component';
 import { CaseFileComponent } from '../case-file/case-file.component';
 
 @NgModule({
-  imports: [
-    NbCardModule,
-    NbTreeGridModule,
-    NbIconModule,
-    NbInputModule,
-    ThemeModule,
-    Ng2SmartTableModule,
-    NbTabsetModule,
-    ReactiveFormsModule,
-    NbTooltipModule,
-    NbDatepickerModule,
-    NbSelectModule,
-    NbAccordionModule,
-    NbCardModule,
-    NbButtonModule,
-    NbDialogModule.forChild(),
-    NbCheckboxModule,
-    NbSpinnerModule,
-    NbToastrModule.forRoot(),
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
-    casesDetailRouting,
-  ],
+    imports: [
+        NbCardModule,
+        NbTreeGridModule,
+        NbIconModule,
+        NbInputModule,
+        ThemeModule,
+        Ng2SmartTableModule,
+        NbTabsetModule,
+        ReactiveFormsModule,
+        NbTooltipModule,
+        NbDatepickerModule,
+        NbSelectModule,
+        NbAccordionModule,
+        NbCardModule,
+        NbButtonModule,
+        NbDialogModule.forChild(),
+        NbCheckboxModule,
+        NbSpinnerModule,
+        NbToastrModule.forRoot(),
+        OwlDateTimeModule,
+        OwlNativeDateTimeModule,
+        casesDetailRouting,
+        NbListModule,
+    ],
   declarations: [
     CaseDetailComponent ,
     CaseDocumentComponent,

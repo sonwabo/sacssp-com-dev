@@ -2,7 +2,7 @@ import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {
   NbCardModule, NbIconModule, NbInputModule,
   NbTreeGridModule, NbTabsetModule,
-  NbTooltipModule, NbDatepickerModule, NbSelectModule,
+  NbTooltipModule, NbDatepickerModule, NbSelectModule, NbWindowModule,
   NbAccordionModule, NbButtonModule, NbDialogModule, NbCheckboxModule, NbSpinnerModule, NbToastrModule,
 } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
@@ -12,7 +12,7 @@ import { JbpmRoutingModule, routedComponents } from './jbpm-routing.module';
 import { CaseStatusRenderComponent } from './blocks/case-status-render.component';
 import { SlaComplianceRenderComponent } from './blocks/sla-compliance-render.component';
 import { EpochDateRenderComponent } from './blocks/epoch-date-render.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UserKindRenderComponent} from './blocks/user-kind-render.component';
 
 import {
@@ -20,8 +20,10 @@ import {
   OwlNativeDateTimeModule,
 } from 'ng-pick-datetime';
 import { ConfirmDialogComponent } from '../../jbpm/common-component/confirm-dialog/confirm-dialog.component';
+import { DialogWithBackdropComponent } from '../../jbpm/common-component/dialog/dialog-with-backdrop.component';
 import { DepartmentRenderComponent } from './blocks/department-render.component';
 import { CaseDataRenderComponent } from './blocks/case-data-render.component';
+import { DocTypeComponent } from './blocks/doc-type.component';
 import { CommonConfigsComponent } from './utils/CommonConfigs';
 import { divisionModule } from './divisions/division.module';
 import { schemeModule } from './schemes/scheme.module';
@@ -32,6 +34,8 @@ import { operationsDepartmentModule } from './operations-departments/operations-
 import { fundManagementDepartmentModule } from './fund-management-departments/fund-management-department.module';
 import { serviceProviderNetworksModule } from './service-provider-networks/service-provider-networks.module';
 import { userManagementModule } from './users/user-management.module';
+import {WindowsDialogComponent} from '@app/jbpm/common-component/window-dialog/window-dialog.component';
+import { WindowsGenericComponent } from '@app/jbpm/common-component/window-dialog/window-generic.component';
 
 
 @NgModule({
@@ -52,6 +56,7 @@ import { userManagementModule } from './users/user-management.module';
     NbCardModule,
     NbButtonModule,
     NbDialogModule.forChild(),
+    NbWindowModule.forRoot(),
     NbCheckboxModule,
     NbSpinnerModule,
     NbToastrModule.forRoot(),
@@ -66,6 +71,7 @@ import { userManagementModule } from './users/user-management.module';
     operationsDepartmentModule,
     fundManagementDepartmentModule,
     serviceProviderNetworksModule,
+    FormsModule,
   ],
   declarations: [
     ...routedComponents,
@@ -74,17 +80,25 @@ import { userManagementModule } from './users/user-management.module';
     EpochDateRenderComponent,
     UserKindRenderComponent,
     DepartmentRenderComponent,
+    DocTypeComponent,
     CaseDataRenderComponent,
     CommonConfigsComponent,
     ConfirmDialogComponent,
+    WindowsDialogComponent,
+    WindowsGenericComponent,
+    DialogWithBackdropComponent,
   ],
   entryComponents: [
     CaseStatusRenderComponent,
     CaseDataRenderComponent,
     SlaComplianceRenderComponent,
+    DocTypeComponent,
     EpochDateRenderComponent,
     DepartmentRenderComponent,
     ConfirmDialogComponent,
+    WindowsDialogComponent,
+    WindowsGenericComponent,
+    DialogWithBackdropComponent,
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
 })

@@ -1,50 +1,110 @@
-<div class="row">
-  <div class="col-lg-6">
+<table [ngStyle]="{'margin-left':'auto','margin-right':'auto'}">
+  <tr>
+    <td>
+      <table>
+        <tr>
+          <td>&nbsp;&nbsp;</td>
+          <td [ngStyle]="{'align-content':'center', 'padding': '10px'}">
 
-    <nb-card>
-      <nb-card-header>Divisions</nb-card-header>
-      <nb-card-body>
-        <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEdit($event)">
-        </ng2-smart-table>
-      </nb-card-body>
-    </nb-card>
+            <nb-card  [ngStyle]="{'border':'6px solid transparent', 'background-color':'#e6f7e3', 'margin':'0','padding':'0'}">
+              <nb-card-body>
+                <div [ngStyle]="{'text-align':'center', 'font-weight':'bold', 'color':'#0a7827'}">WELCOME TO THE COMMUNITY DEVELOPMENT PRACTITIONER
+                  VERIFICATION DATABASE
+                </div>
+              </nb-card-body>
+            </nb-card>
 
-  </div>
+          </td>
+        </tr>
+        <tr>
 
-  <div class="col-lg-6">
+          <td [ngStyle]="{'align-content':'center','vertical-align':'top', 'padding': '10px'}">
 
-    <nb-card>
-      <nb-card-header>Manage Division</nb-card-header>
-      <nb-card-body>
-        <form [formGroup]="departmentForm">
-          <div class="row">
-            <div class="col">
-              <input type="text" formControlName="name" nbInput fullWidth placeholder="Division Name">
-              <div *ngIf="submitted && form.name.errors" class="invalid-feedback">
-                <div *ngIf="form.name.errors.required">Name is required</div>
-              </div>
-            </div>
-          </div>
-          <br/>
-          <div class="row">
-            <div class="col">
-              <input type="text" formControlName="description" nbInput fullWidth placeholder="Description">
-              <div *ngIf="submitted && form.description.errors" class="invalid-feedback">
-                <div *ngIf="form.description.errors.required">Description is required</div>
-              </div>
-            </div>
-          </div>
-          <br/>
-          <input type="hidden" formControlName="departmentObject" nbInput>
+            <nb-card [size]="'50px'" [ngStyle]="{'border':'6px solid #a46109', 'margin':'0','padding':'0'}" >
+              <nb-card-body [ngStyle]="{'background-color':'#dfedf2'}"  >
+                <nb-list >
+                  <nb-list-item class="button" (click)="selectedMenuItem(menuItem)" *ngFor="let menuItem of menuItems">
+                    {{ menuItem }}
+                  </nb-list-item>
+                </nb-list>
+              </nb-card-body>
+            </nb-card>
 
-          <button [nbSpinner]="submitted && loading" nbSpinnerStatus="success" nbSpinnerSize="large" nbSpinnerMessage="" nbButton type="button" color="blue"  (click)="departmentformSubmit(departmentForm)">{{label}}</button> &nbsp;
-          <button [nbSpinner]="!submitted && loading" nbSpinnerStatus="success" nbSpinnerSize="large" nbSpinnerMessage="" *ngIf="label === 'Update'" nbButton type="submit" color="blue" (click)="deleteDepartment(departmentForm)">Delete</button>
-          &nbsp;
-          <button  nbButton type="button" color="blue"  (click)="onReset()">Clear</button>
-        </form>
-      </nb-card-body>
-    </nb-card>
-  </div>
+          </td>
 
+          <td [ngStyle]="{'align-content':'center','vertical-align':'top', 'padding': '10px'}">
 
-</div>
+          <nb-card [ngStyle]="{'border':'6px solid #a46109', 'margin':'0','padding':'0'}">
+              <nb-card-body [ngStyle]="{
+                'background-image':'url(assets/images/background-two.png)',
+                'background-size':'cover',
+                'background-repeat':'no-repeat' }" >
+                <br/>
+                <p [ngStyle]="{'font-weight':'bold', 'padding':'0', 'margin':'0' }">All practitioners are requested to
+                  complete the following mandatory fields:</p>
+                <br/>
+                <div class="container ">
+
+                  <div class="row">
+                    <p [ngStyle]="{'font-weight':'normal'}">1. Personal information</p>
+                  </div>
+                  <div class="row">
+                    <p [ngStyle]="{'font-weight':'normal'}">2. Contact information</p>
+                  </div>
+                  <div class="row">
+                    <p [ngStyle]="{'font-weight':'normal'}">3. Demographic information</p>
+                  </div>
+                  <div class="row">
+                    <p [ngStyle]="{'font-weight':'normal'}">4. Academic information</p>
+                  </div>
+                  <div class="row">
+                    <p [ngStyle]="{'font-weight':'normal'}">5. Employment information</p>
+                  </div>
+                  <br/><br/>
+                  <div class="row">
+                    <p [ngStyle]="{'font-weight':'bold', 'padding':'0', 'margin':'0' }">Important notices:</p>
+                  </div>
+                  <br/>
+
+                  <div class="row">
+                    <p [ngStyle]="{'font-weight':'normal', 'text-align':'justify'}">1. The purpose of the verification process is solely for the
+                      intent of
+                      developing a
+                      Community Development Practitioner voters roll, which is dependent on the Ministerial proclamation
+                      to
+                      constitute a professional board
+                      for Community Development Practitioners.
+                    </p>
+                  </div>
+                  <div class="row">
+                    <p [ngStyle]="{'font-weight':'normal' }">2. Practitioners are requested to submit all supporting
+                      documents as
+                      requested.</p>
+                  </div>
+                  <div class="row">
+                    <p [ngStyle]="{'font-weight':'normal', 'width':'auto' }">3. The verification system will not process any
+                      practitioner
+                      information in the absence of supporting documents or submission of incomplete information.</p>
+                  </div>
+                  <div class="row">
+                    <p [ngStyle]="{'font-weight':'normal', 'width':'auto' }">4. All practitioners will be issued with a unique reference
+                      number on
+                      submission of the verification form and supporting documents.</p>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <img src="assets/images/sacssp-department.png" [ngStyle]="{'float':'left','margin':'0', 'padding':'0'}">
+                    </div>
+                    <div class="col-lg-6">
+                      <img src="assets/images/sacssp-small-logo.png" height="200" [ngStyle]="{'float':'right','margin':'0', 'padding':'0'}">
+                    </div>
+                  </div>
+                </div>
+              </nb-card-body>
+            </nb-card>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

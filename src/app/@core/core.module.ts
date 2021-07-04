@@ -1,8 +1,8 @@
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  NbAuthModule, NbAuthOAuth2JWTToken,
-  NbOAuth2AuthStrategy, NbOAuth2ClientAuthMethod, NbOAuth2GrantType,
+  NbAuthModule, NbAuthOAuth2JWTToken, NbDummyAuthStrategy,
+  NbOAuth2AuthStrategy, NbOAuth2ClientAuthMethod, NbOAuth2GrantType, NbPasswordAuthStrategy,
 } from '@nebular/auth';
 import { NbSecurityModule, NbRoleProvider } from '@nebular/security';
 import { of as observableOf } from 'rxjs';
@@ -55,7 +55,6 @@ import { StatsProgressBarService } from './mock/stats-progress-bar.service';
 import { VisitorsAnalyticsService } from './mock/visitors-analytics.service';
 import { SecurityCamerasService } from './mock/security-cameras.service';
 import { MockDataModule } from './mock/mock-data.module';
-import {environment} from '@app/../environments/environment';
 
 const socialLinks = [
   {
@@ -109,28 +108,43 @@ export const NB_CORE_PROVIDERS = [
   ...DATA_SERVICES,
   ...NbAuthModule.forRoot({
 
+    // strategies: [
+    //     NbOAuth2AuthStrategy.setup({
+    //     name: 'email',
+    //     baseEndpoint: environment.baseAuthUrl,
+    //     clientId: environment.client_id,
+    //     clientSecret: environment.clientSecrete,
+    //     clientAuthMethod: NbOAuth2ClientAuthMethod.REQUEST_BODY,
+    //     redirect: {
+    //       success: '/pages/jbpm/cases-table',
+    //     },
+    //     token: {
+    //       endpoint: '/token',
+    //       grantType: NbOAuth2GrantType.PASSWORD,
+    //       class: NbAuthOAuth2JWTToken,
+    //     },
+    //     refresh: {
+    //       endpoint: '/token',
+    //       grantType: NbOAuth2GrantType.REFRESH_TOKEN,
+    //     },
+    //   }),
+    // ],
     strategies: [
-        NbOAuth2AuthStrategy.setup({
-        name: 'email',
-        baseEndpoint: environment.baseAuthUrl,
-        clientId: environment.client_id,
-        clientSecret: environment.clientSecrete,
-        clientAuthMethod: NbOAuth2ClientAuthMethod.REQUEST_BODY,
-        redirect: {
-          success: '/pages/jbpm/cases-table',
-        },
-        token: {
-          endpoint: '/token',
-          grantType: NbOAuth2GrantType.PASSWORD,
-          class: NbAuthOAuth2JWTToken,
-        },
-        refresh: {
-          endpoint: '/token',
-          grantType: NbOAuth2GrantType.REFRESH_TOKEN,
-        },
-      }),
-    ],
-    forms: {
+        NbPasswordAuthStrategy.setup({
+            name: 'email',
+            baseEndpoint: 'http://localhost:8080',
+            login: {
+              endpoint : '/v1/login',
+              method: 'post',
+              requireValidToken: false,
+              redirect: {
+                success: '/pages/jbpm/divisions',
+                failure: '/pages/jbpm/divisions',
+              },
+            },
+        }),
+    ]
+    , forms: {
       login: {
         socialLinks: socialLinks,
       },

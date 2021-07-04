@@ -1,15 +1,16 @@
-import {EpochDateRenderComponent} from '../blocks/epoch-date-render.component';
-import {CaseStatusRenderComponent} from '../blocks/case-status-render.component';
-import {SlaComplianceRenderComponent} from '../blocks/sla-compliance-render.component';
-
+import { EpochDateRenderComponent } from "../blocks/epoch-date-render.component";
+import { CaseStatusRenderComponent } from "../blocks/case-status-render.component";
+import { SlaComplianceRenderComponent } from "../blocks/sla-compliance-render.component";
 
 export const case_table_settings: any = {
-  mode: 'external',
+  mode: "external",
   actions: {
     add: false,
     edit: true,
     delete: false,
     position: 'right',
+    columnTitle : 'Edit',
+
   },
   add: {
     addButtonContent: '<i class="nb-plus"></i>',
@@ -22,83 +23,32 @@ export const case_table_settings: any = {
     confirmSave: true,
   },
   columns: {
-    'case-id': {
-      title: 'Case ID',
+    'name1': {
+      title: 'First-Name',
     },
-    'case-status': {
-      title: 'Status',
-      type: 'custom',
-      renderComponent: CaseStatusRenderComponent,
+    'surname': {
+      title: 'Surname',
     },
-    'case-sla-compliance': {
-      title: 'SLA',
-      type: 'custom',
-      renderComponent: SlaComplianceRenderComponent,
+    'gender': {
+      title: 'Gender',
     },
-    'case-started-at': {
-      title: 'Created',
-      type: 'custom',
-      renderComponent: EpochDateRenderComponent,
+    'language': {
+      title: 'Language',
     },
-    'case-sla-due-date': {
-      title: 'Due',
-      type: 'custom',
-      renderComponent: EpochDateRenderComponent,
+    'birthdate': {
+      title: 'Birth Date',
     },
-
-    'received-from': {
-      title: 'Received From',
+    'idnumber': {
+      title: "Identification Number",
     },
-    'email-subject': {
-      title: 'Subject',
+    'passport':{
+      title : 'Passport'
     },
-    'fund-administrator': {
-      title: 'Fund Admin/Coordinator',
+    'ethnicalstatus': {
+      title: "Ethnical Status",
     },
-    'operations-user': {
-      title: 'Operations',
-    },
-  },
-};
-
-export const task_table_settings: any = {
-  mode: 'external',
-  actions: {
-    add: false,
-    edit: true,
-    delete: false,
-    position: 'right',
-  },
-  add: {
-    addButtonContent: '<i class="nb-plus"></i>',
-    confirmCreate: true,
-  },
-  edit: {
-    editButtonContent: '<i class="nb-edit"></i>',
-    saveButtonContent: '<i class="nb-checkmark"></i>',
-    cancelButtonContent: '<i class="nb-close"></i>',
-    confirmSave: true,
-  },
-  columns: {
-    'task-id': {
-      title: 'ID',
-    },
-    'task-name': {
-      title: 'Task Name',
-    },
-    'task-description': {
-      title: 'Description',
-    },
-    'task-status': {
-      title: 'Status',
-    },
-    'task-subject': {
-      title: 'Subject',
-    },
-    'task-created-on': {
-      title: 'Created',
-      type: 'custom',
-      renderComponent: EpochDateRenderComponent,
+    'cellphone': {
+      title: 'Primary Contact Number'
     },
   },
 };

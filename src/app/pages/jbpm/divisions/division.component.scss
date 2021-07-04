@@ -5,6 +5,19 @@
     transform: translate3d(0, 0, 0);
   }
 
+  nb-card-body {
+
+    -ms-flex: 1 1 auto;
+    overflow: auto;
+    padding: 1rem 1.5rem;
+    position: relative;
+    height: 700px;
+
+
+  }
+
+
+
 }
 
 :host {
@@ -31,6 +44,23 @@
 .invalid-feedback{
   display: block;
 }
+
+
+//.button:hover {
+//  background-color: #0a7827;
+//  cursor: pointer;
+//}
+.button:hover {
+  background-color: #ddffbe;
+  cursor: pointer;
+}
+
+.button:active {
+  background-color: #0a7827;
+}
+
+
+
 
 
 

@@ -2,6 +2,7 @@ import { environment } from '@environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {Document} from '@app/jbpm/domain/document';
 
 @Injectable({
   providedIn: 'root',
@@ -10,14 +11,18 @@ export class DocumentService {
 
   constructor(private http: HttpClient) {  }
 
-  uploadDocument(containerId: string, caseId: string, _documents: Array<any>): Observable<any> {
-    const url = `${environment.baseUrl}/containers/${containerId}/cases/instances/${caseId}/caseFile`;
-    const  documents = {  'documents' : _documents };
-    return this.http.post<any[]>(url , documents);
+  uploadDocument(document: Document): Observable<any> {
+    const url = `${environment.baseBackEnd}/v1/uploadAttachment`;
+    return this.http.post<any[]>(url , document);
   }
 
-  getDocument(containerId: string, caseId: string): Observable<any> {
-    const url = `${environment.baseUrl}/containers/${containerId}/cases/instances/${caseId}/caseFile`;
+  deleteDocument(document: Document): Observable<any> {
+    const url = `${environment.baseBackEnd}/v1/deleteAttachment`;
+    return this.http.post<any[]>(url , document);
+  }
+
+  getDocuments(reference: string): Observable<any> {
+    const url = `${environment.baseBackEnd}/v1/getPartyAttachments?reference=${reference}`;
     return this.http.get<any[]>(url, { headers: this.getHeaders() });
   }
 

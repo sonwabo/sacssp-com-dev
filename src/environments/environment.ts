@@ -13,7 +13,7 @@ export const environment = {
   // baseHref: './',
   baseAuthUrl: '/auth/realms/JBPM/protocol/openid-connect',
   baseUrl: '/kie-server/services/rest/server',
-  baseBackEnd: '/demandtracker',
+  baseBackEnd: '/data-tracker',
   containerId: 'DemandTracker_1.0.0-SNAPSHOT',
   caseDefinition: 'SchemeDemandTracker.DemandTracker',
   clientSecrete: 'c90badbb-442c-41f0-8719-e9fbc894cd21',
@@ -21,4 +21,10 @@ export const environment = {
   administrator: 'fund_administrator',
   reviewer: 'operations_sme',
   process_date_type: 'java.sql.Timestamp',
+  allusers: 'http://localhost/data-tracker/v1/listAllUsers',
 };
+
+
+//    "target": "http://41.79.79.17",
+
+// "target": "http://192.168.31.69:8080",

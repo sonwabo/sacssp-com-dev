@@ -1,21 +1,61 @@
-<nb-card>
-  <nb-card-body>
-    <nb-tabset fullWidth (changeTab)="onSelectedTab($event)">
+<br/><br/>
+<table [ngStyle]="{'margin-left':'auto','margin-right':'auto'}">
+  <tr>
 
-      <nb-tab id="myCases" *ngIf="!reviewer" tabTitle="My Cases" [nbSpinner]="loading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-        <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEdit($event)" >
-        </ng2-smart-table>
-        <br/><br/>
-        <button nbButton status="info" (click)="onCreateConfirm($event)" >Create Case</button>&nbsp;
-      </nb-tab>
+    <td>
+      <table>
+        <tr>
+          <td>&nbsp;&nbsp;</td>
+          <td>
+            &nbsp;
+          </td>
+        </tr>
+        <tr>
 
-      <nb-tab id="tasks" tabTitle="My Tasks" [nbSpinner]="loading" nbSpinnerStatus="primary" nbSpinnerSize="giant">
-        <ng2-smart-table [settings]="taskSettings" [source]="taskSource" (edit)="onEdit($event)" >
-        </ng2-smart-table>
-      </nb-tab>
+          <td [ngStyle]="{'align-content':'left','vertical-align':'top', 'padding': '10px'}">
+            <nb-card [size]="'50px'" [ngStyle]="{'border':'6px solid #a46109'}">
+              <nb-card-body [ngStyle]="{'background-color':'#dfedf2'}">
+                <nb-list>
+                  <nb-list-item class="button" (click)="selectedMenuItem(menuItem)" *ngFor="let menuItem of menuItems">
+                    {{ menuItem }}
+                  </nb-list-item>
+                </nb-list>
+              </nb-card-body>
+            </nb-card>
+          </td>
 
-    </nb-tabset>
-  </nb-card-body>
-  <nb-card-footer>
-  </nb-card-footer>
-</nb-card>
+          <td [ngStyle]="{'align-content':'center','vertical-align':'top', 'padding': '10px'}">
+
+            <nb-card [ngStyle]="{'border':'6px solid #a46109', 'margin':'0','padding':'0'}">
+              <nb-card-body>
+                <nb-tabset fullWidth (changeTab)="onSelectedTab($event)">
+                  <nb-tab id="myCases" tabTitle="All Users" [nbSpinner]="false" nbSpinnerStatus="primary" nbSpinnerSize="giant">
+                    <ng2-smart-table [settings]="settings" [source]="source" (edit)="onEdit($event)" >
+                    </ng2-smart-table>
+                    <br/><br/>
+                    <a nbButton  status="info"
+                       [class.disabled]="isDisabled"
+                       (click)="onCreateConfirm($event)"
+                       [ngStyle]="{
+                          'border':'0px',
+                              'color':'black',
+                              'background-color':'#ddffbe'
+                              }"
+                       [href]="link" download="UserData.xlsx">Generate Sheets</a>
+                  </nb-tab>
+                </nb-tabset>
+              </nb-card-body>
+              <nb-card-footer>
+              </nb-card-footer>
+            </nb-card>
+
+
+
+
+
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
