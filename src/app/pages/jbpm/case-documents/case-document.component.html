@@ -15,7 +15,7 @@
 
       <nb-card *ngIf="iscommunityPractitioner === '' || iscommunityPractitioner === 'Yes'">
         <nb-card-header>
-<!--          <div [ngStyle]="iscommunityPractitioner !== ''? {'text-align': 'center'} : {'text-align': 'left'} ">-->
+          <!--          <div [ngStyle]="iscommunityPractitioner !== ''? {'text-align': 'center'} : {'text-align': 'left'} ">-->
           <div>
             Supporting documents to be submitted by practitioners with Community development
             qualifications
@@ -67,10 +67,10 @@
                   type="submit"
                   [disabled]="iscommunityPractitioner === '' || iscommunityPractitioner === 'No'"
                   [ngStyle]="{
-                              'border':'0px',
-                              'color':'white',
-                              'background-color':'#0a7827'
-                              }">Add documents
+                               'border':'0px',
+                               'color':'black',
+                               'background-color':'#a0dc3d'
+                              }"><div  [ngStyle]="{ 'text-transform':'capitalize'}">Add</div>&nbsp;<div [ngStyle]="{'text-transform': 'lowercase'}">documents</div>
           </button>
 
         </nb-card-body>
@@ -82,9 +82,9 @@
 
       <nb-card *ngIf="iscommunityPractitioner === '' || iscommunityPractitioner === 'No'">
         <nb-card-header>
-<!--          <div [ngStyle]="iscommunityPractitioner !== ''? {'text-align': 'center'} : {'text-align': 'left'} ">Supporting-->
+          <!--          <div [ngStyle]="iscommunityPractitioner !== ''? {'text-align': 'center'} : {'text-align': 'left'} ">Supporting-->
           <div>
-          documents to be submitted by practitioners without Community development
+            Documents to be submitted by practitioners without Community development
             qualifications
           </div>
         </nb-card-header>
@@ -113,10 +113,10 @@
                   (click)="addDocuments()"
                   type="submit"
                   [ngStyle]="{
-                              'border':'0px',
-                              'color':'white',
-                              'background-color':'#0a7827'
-                              }">Add documents
+                               'border':'0px',
+                               'color':'black',
+                               'background-color':'#a0dc3d'
+                              }"><div  [ngStyle]="{ 'text-transform':'capitalize'}">Add</div>&nbsp;<div [ngStyle]="{'text-transform': 'lowercase'}">documents</div>
           </button>&nbsp;
         </nb-card-body>
       </nb-card>
@@ -124,3 +124,4 @@
     </div>
   </div>
 </div>
+

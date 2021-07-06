@@ -74,6 +74,7 @@ export class CaseFileComponent implements OnInit, OnDestroy {
 
   submitted = false;
   loading = false;
+  doYouHaveFormalEducation: string = '';
   isReadOnly: boolean = false;
   calendar: string = 'calendar';
   isCommunityPractitioner: any;
@@ -87,6 +88,11 @@ export class CaseFileComponent implements OnInit, OnDestroy {
   citizenshipCount: any;
   practitionerCount: any;
 
+  contactInformationTab: boolean = false;
+  demographicInformationTab: boolean = false;
+  academicInformationTab: boolean = false;
+  employmentInformationTab: boolean = false;
+  supportingDocumentsTab: boolean = false;
 
   constructor(
     protected usermanagenent: UserManagementService,
@@ -125,6 +131,10 @@ export class CaseFileComponent implements OnInit, OnDestroy {
     });
   }
 
+  checked( contrls: string[], event: any) {
+    this.doYouHaveFormalEducation =  (event === 'true') ? 'No' : 'Yes';
+    this.disableFormElements(contrls, (event === 'true'));
+  }
 
   private prepopulateData() {
     this.usermanagenent.getCitizenCount().subscribe(res => {
@@ -139,14 +149,33 @@ export class CaseFileComponent implements OnInit, OnDestroy {
     if (this.case != null) {
       this.loadData();
       this.disableFormElements(['disclaimer']);
-
     }
 
     this.subscription = this.dataShare.currentMessage.subscribe(msg => {
       this.message = msg;
       this.enableSaveButton = ('enable' === msg);
     });
+
   }
+
+  onfocus(): void {
+
+    console.log(' --------- Test -------- ');
+
+    if ( this.getFormValue('name1').length > 0 &&  this.getFormValue('citizenship').length > 0 &&
+         this.getFormValue('title').length > 0 &&
+         this.getFormValue('surname').length > 0  &&
+         this.getFormValue('birthdate').length > 0 &&
+       ( this.getFormValue('idnumber').length > 0  || this.getFormValue('passport').length > 0 )
+    ) {
+          this.contactInformationTab = false;
+    }
+
+
+
+
+  }
+
 
   private loadData() {
     this.populateControlIfEmpty('title', this.case['title']);
@@ -241,15 +270,22 @@ export class CaseFileComponent implements OnInit, OnDestroy {
         this.userForm.controls[`${type}`].reset();
       }
     }, err => this.handleError(`Error trying to validate ${type}`));
+
   }
 
   private convertToDate(dateStr: string): Date {
     return new Date(dateStr);
   }
 
-  disableFormElements(list: string[]): void {
+  disableFormElements(list: string[], event: boolean = true): void {
+
     list.forEach((contrl) => {
-      this.userForm.controls[`${contrl}`].disable({onlySelf: true});
+      this.userForm.controls[`${contrl}`].reset('');
+      if (event) {
+        this.userForm.controls[`${contrl}`].disable({onlySelf: true});
+      } else {
+        this.userForm.controls[`${contrl}`].enable({onlySelf: true});
+      }
     });
   }
 
@@ -267,6 +303,8 @@ export class CaseFileComponent implements OnInit, OnDestroy {
     } else {
       this.yearcompletedStr = date;
     }
+
+    this.onfocus();
   }
 
   private initialiseUseerFormControl() {
@@ -335,6 +373,10 @@ export class CaseFileComponent implements OnInit, OnDestroy {
 
     });
 
+  }
+
+  private getFormValue(controlName: string): string {
+    return this.userForm.controls[`${controlName}`].value;
   }
 
   private populateControlIfEmpty(controlName: string, value: any): void {

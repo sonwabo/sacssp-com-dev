@@ -4,18 +4,23 @@ import {NbDialogRef} from '@nebular/theme';
 @Component({
 
   template: `
-    <nb-card size="small" status="success">
+    <nb-card size="small">
       <nb-card-header>{{title}}</nb-card-header>
       <nb-card-body>
-        <div [ngStyle]="{'background-position': 'center', 'inline-size': '400px','overflow-wrap': 'break-all'}">
-           {{message}}
-        </div>
+        <br/><br/>
+            <ol>
+              <li>Your unique personal reference number is: {{message}},</li>
+              <li>Your unique personal reference number was also submitted to your personal e-mail address.</li>
+              <li>Please keep your unique personal reference safe.</li>
+              <li>Your unique personal reference number should be used during all enquiries and updates.</li>
+            </ol>
+
       </nb-card-body>
       <nb-card-footer>
         <button nbButton status="info"
                 [ngStyle]="{
                        'border':'0px',
-                       'background-color':'#a46109'
+                       'background-color':'#a0dc3d'
                    }"
                 (click)="ref.close()">Close</button>
       </nb-card-footer>

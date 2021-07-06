@@ -6,9 +6,11 @@
           <td>&nbsp;&nbsp;</td>
           <td [ngStyle]="{'align-content':'center', 'padding': '10px'}">
 
-            <nb-card  [ngStyle]="{'border':'6px solid transparent', 'background-color':'#e6f7e3', 'margin':'0','padding':'0'}">
+            <nb-card
+              [ngStyle]="{'border':'6px solid transparent', 'background-color':'#e6f7e3', 'margin':'0','padding':'0'}">
               <nb-card-body>
-                <div [ngStyle]="{'text-align':'center', 'font-weight':'bold', 'color':'#0a7827'}">WELCOME TO THE COMMUNITY DEVELOPMENT PRACTITIONER
+                <div [ngStyle]="{'text-align':'center', 'font-weight':'bold', 'color':'#0a7827'}">WELCOME TO THE
+                  COMMUNITY DEVELOPMENT PRACTITIONER
                   VERIFICATION DATABASE
                 </div>
               </nb-card-body>
@@ -20,9 +22,9 @@
 
           <td [ngStyle]="{'align-content':'center','vertical-align':'top', 'padding': '10px'}">
 
-            <nb-card [size]="'50px'" [ngStyle]="{'border':'6px solid #a46109', 'margin':'0','padding':'0'}" >
-              <nb-card-body [ngStyle]="{'background-color':'#dfedf2'}"  >
-                <nb-list >
+            <nb-card [size]="'50px'" [ngStyle]="{'border':'6px solid #a46109', 'margin':'0','padding':'0'}">
+              <nb-card-body [ngStyle]="{'background-color':'#dfedf2'}">
+                <nb-list>
                   <nb-list-item class="button" (click)="selectedMenuItem(menuItem)" *ngFor="let menuItem of menuItems">
                     {{ menuItem }}
                   </nb-list-item>
@@ -34,70 +36,101 @@
 
           <td [ngStyle]="{'align-content':'center','vertical-align':'top', 'padding': '10px'}">
 
-          <nb-card [ngStyle]="{'border':'6px solid #a46109', 'margin':'0','padding':'0'}">
+            <nb-card [ngStyle]="{'border':'6px solid #a46109', 'margin':'0','padding':'0'}">
               <nb-card-body [ngStyle]="{
                 'background-image':'url(assets/images/background-two.png)',
                 'background-size':'cover',
-                'background-repeat':'no-repeat' }" >
+                'background-repeat':'no-repeat',
+                'padding': '8px',
+                'overflow': 'hidden'
+                }">
                 <br/>
                 <p [ngStyle]="{'font-weight':'bold', 'padding':'0', 'margin':'0' }">All practitioners are requested to
                   complete the following mandatory fields:</p>
                 <br/>
-                <div class="container ">
 
-                  <div class="row">
-                    <p [ngStyle]="{'font-weight':'normal'}">1. Personal information</p>
+                <div class="row">
+                  <div class="col-lg-12">
+                  <p [ngStyle]="{'font-weight':'normal'}">1. Personal information</p>
                   </div>
-                  <div class="row">
-                    <p [ngStyle]="{'font-weight':'normal'}">2. Contact information</p>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                  <p [ngStyle]="{'font-weight':'normal'}">2. Contact information</p>
                   </div>
-                  <div class="row">
-                    <p [ngStyle]="{'font-weight':'normal'}">3. Demographic information</p>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                  <p [ngStyle]="{'font-weight':'normal'}">3. Demographic information</p>
                   </div>
-                  <div class="row">
-                    <p [ngStyle]="{'font-weight':'normal'}">4. Academic information</p>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                  <p [ngStyle]="{'font-weight':'normal'}">4. Academic information</p>
                   </div>
-                  <div class="row">
-                    <p [ngStyle]="{'font-weight':'normal'}">5. Employment information</p>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                  <p [ngStyle]="{'font-weight':'normal'}">5. Employment information</p>
                   </div>
-                  <br/><br/>
-                  <div class="row">
-                    <p [ngStyle]="{'font-weight':'bold', 'padding':'0', 'margin':'0' }">Important notices:</p>
-                  </div>
-                  <br/>
+                </div>
+                <br/><br/>
+                <div class="row">
+                  <div class="col-lg-12">
+                  <p [ngStyle]="{'font-weight':'bold', 'padding':'0', 'margin':'0' }">Important notices:</p>
+                </div>
+                </div>
 
-                  <div class="row">
-                    <p [ngStyle]="{'font-weight':'normal', 'text-align':'justify'}">1. The purpose of the verification process is solely for the
-                      intent of
-                      developing a
-                      Community Development Practitioner voters roll, which is dependent on the Ministerial proclamation
-                      to
-                      constitute a professional board
-                      for Community Development Practitioners.
+                <br/>
+
+                <div class="row">
+                  <div class="col-lg-12">
+                  <p [ngStyle]="{'font-weight':'normal', 'text-align':'justify', 'overflow-wrap': 'break-word', 'word-wrap': 'break-word'}">
+                    1.
+                    The purpose of the verification
+                    process is solely for the
+                    intent of
+                    developing a
+                    Community Development Practitioner voters roll, which is dependent on the Ministerial proclamation
+                    to
+                    constitute a professional board
+                    for Community Development Practitioners.
                     </p>
-                  </div>
-                  <div class="row">
+
+                </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-12">
                     <p [ngStyle]="{'font-weight':'normal' }">2. Practitioners are requested to submit all supporting
                       documents as
                       requested.</p>
                   </div>
-                  <div class="row">
-                    <p [ngStyle]="{'font-weight':'normal', 'width':'auto' }">3. The verification system will not process any
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <p [ngStyle]="{'font-weight':'normal', 'width':'auto' }">3. The verification system will not process
+                      any
                       practitioner
                       information in the absence of supporting documents or submission of incomplete information.</p>
                   </div>
-                  <div class="row">
-                    <p [ngStyle]="{'font-weight':'normal', 'width':'auto' }">4. All practitioners will be issued with a unique reference
+                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div [ngStyle]="{'font-weight':'normal', 'width':'auto' }">4. All practitioners will be issued with a
+                      unique reference
                       number on
-                      submission of the verification form and supporting documents.</p>
+                      submission of the verification form and supporting documents.</div>
                   </div>
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <img src="assets/images/sacssp-department.png" [ngStyle]="{'float':'left','margin':'0', 'padding':'0'}">
-                    </div>
-                    <div class="col-lg-6">
-                      <img src="assets/images/sacssp-small-logo.png" height="200" [ngStyle]="{'float':'right','margin':'0', 'padding':'0'}">
-                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    <img src="assets/images/sacssp-department.png"
+                         [ngStyle]="{'float':'left','margin':'0', 'padding':'0'}">
+                  </div>
+                  <div class="col-lg-6">
+                    <img src="assets/images/sacssp-small-logo.png" height="200"
+                         [ngStyle]="{'float':'right','margin':'0', 'padding':'0'}">
                   </div>
                 </div>
               </nb-card-body>

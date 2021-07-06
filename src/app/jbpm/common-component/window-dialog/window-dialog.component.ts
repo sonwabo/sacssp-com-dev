@@ -44,7 +44,7 @@ import {Router} from '@angular/router';
                       [ngStyle]="{
                        'border':'0px',
                        'color':'white',
-                       'background-color':'#0a7827'
+                       'background-color':'#ddffbe'
                        }"
                       (click)="formSubmit(searchFom)">Search
               </button>
@@ -67,7 +67,7 @@ import {Router} from '@angular/router';
                   [ngStyle]="{
                        'border':'0px',
                        'color':'white',
-                       'background-color':'#0a7827'
+                       'background-color':'#ddffbe'
                    }"
                   (click)="closeCard()">OK
           </button>

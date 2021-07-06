@@ -36,37 +36,42 @@
                           <nb-card-body>
 
                             <label for="input-title">Title</label>
-                            <!--                <nb-icon icon="question-mark-circle" nbTooltip="Title" nbTooltipStatus="primary"-->
-                            <!--                         status="info"></nb-icon>-->
-                            <nb-select class="align-text" fullWidth formControlName="title" id="input-title">
-                              <nb-option [value]="title" [disabled]="isReadOnly"
+                            <nb-select class="align-text" fullWidth formControlName="title"
+                                       id="input-title">
+                              <nb-option
+                                (blur)="onfocus()" [value]="title" [disabled]="isReadOnly"
                                          *ngFor="let title of titlesList ">{{title}}</nb-option>
                             </nb-select>
                             <div *ngIf="submitted && form.title.errors" class="invalid-feedback">
                               <div *ngIf="form.title.errors.required">Title is required</div>
                             </div>
-
-
+                            <br/>
                             <label for="input-name1">Firstname of practitioner</label>
-                            <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
+                            <br/>
+                            <input nbInput fullWidth (blur)="onfocus()"  type="text" [readOnly]="isReadOnly"
                                    formControlName="name1"
+                                   [ngStyle]="{
+                                   'text-align': 'left !important',
+                                   'direction':'ltr',
+                                   'padding':'-5px !important'
+                                   }"
                                    id="input-name1">
                             <div *ngIf="submitted && form.name1.errors" class="invalid-feedback">
                               <div *ngIf="form.name1.errors.required">FirstName is required</div>
-                            </div>
+                            </div> <br/>
 
                             <label for="input-name2">Second name of practitioner</label>
-                            <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
+                            <input (blur)="onfocus()"  nbInput fullWidth type="text" [readOnly]="isReadOnly"
                                    formControlName="name2" id="input-name2">
 
 
                             <label for="input-name3">Third name of practitioner</label>
-                            <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
+                            <input (blur)="onfocus()"  nbInput fullWidth type="text" [readOnly]="isReadOnly"
                                    formControlName="name3" id="input-name3">
 
 
                             <label for="input-surname">Surname of practitioner</label>
-                            <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
+                            <input (blur)="onfocus()" nbInput fullWidth type="text" [readOnly]="isReadOnly"
                                    formControlName="surname"
                                    id="input-surname">
                             <div *ngIf="submitted && form.surname.errors" class="invalid-feedback">
@@ -74,7 +79,7 @@
                             </div>
 
                             <label for="input-maidensurname">Maiden surname if applicable</label>
-                            <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
+                            <input (blur)="onfocus()"  nbInput fullWidth type="text" [readOnly]="isReadOnly"
                                    formControlName="maidensurname" id="input-maidensurname">
 
                           </nb-card-body>
@@ -91,14 +96,15 @@
                             <br/>
                             <!--                <input formControlName="bithdate" nbInput id="input-bithdate" [nbDatepicker]="bithdate">-->
                             <!--                <nb-datepicker #bithdate></nb-datepicker>-->
-                            <input (dateTimeChange)="dateTime($event, 'birthdate')" nbInput [owlDateTime]="birthdate"
+                            <input  (dateTimeChange)="dateTime($event, 'birthdate')" nbInput [owlDateTime]="birthdate"
                                    formControlName="birthdate" id="input-bithdate" [owlDateTimeTrigger]="birthdate">
-                            <owl-date-time [pickerType]="calendar" #birthdate></owl-date-time>
+                            <owl-date-time  [pickerType]="calendar" #birthdate></owl-date-time>
                             <br/>
 
                             <div *ngIf="form.passport.value.length == 0">
                               <label for="input-idnumber">Identification number</label>
                               <input nbInput fullWidth
+                                     (focus)="onfocus()"
                                      [readOnly]="form.passport.value.length > 0"
                                      type="text"
                                      [maxLength]="13"
@@ -111,24 +117,26 @@
                               <input nbInput fullWidth
                                      [readOnly]="form.idnumber.value.length > 0"
                                      (blur)="validateId(form.passport.value, 'passport')"
+                                     (focus)="onfocus()"
                                      type="text"
                                      formControlName="passport" id="input-passport">
                             </div>
 
-                            <label for="input-citizenship">Are you a south african citizen</label>
+                            <label for="input-citizenship">Are you a South African citizen</label>
                             <br/>
-                            <nb-select fullWidth formControlName="citizenship" id="input-citizenship">
+                            <nb-select  fullWidth formControlName="citizenship" id="input-citizenship">
                               <nb-option [value]="dis" *ngFor="let dis of disclaimerList"
+                                         (blur)="onfocus()"
                                          (selectionChange)="selected($event)">{{dis}}</nb-option>
                             </nb-select>
 
                             <div *ngIf="stats">
-                              <label for="input-southafricancitezen">South african citizen count</label>
+                              <label for="input-southafricancitezen">South African citizen count</label>
                               <input nbInput fullWidth readonly type="text"
                                      class="size-input"
                                      formControlName="southafricancitezen" id="input-southafricancitezen">
 
-                              <label for="input-nonsouthafricancitezen">Non south african citizen count</label>
+                              <label for="input-nonsouthafricancitezen">Non South African citizen count</label>
 
                               <input nbInput fullWidth readonly type="text"
                                      class="size-input"
@@ -141,14 +149,14 @@
                     </div>
                   </nb-tab>
 
-                  <nb-tab tabTitle="Contact information" tabIcon="list">
+                  <nb-tab tabTitle="Contact information" tabIcon="list" [active]="contactInformationTab"   [disabled]="contactInformationTab">
                     <div class="row">
                       <div class="col-lg-6">
                         <nb-card>
                           <nb-card-header>Residential address</nb-card-header>
                           <nb-card-body>
 
-                            <label for="input-houseorcomplexnameandnumber">Complex or House number</label>
+                            <label for="input-houseorcomplexnameandnumber">Complex or house number</label>
                             <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
                                    formControlName="houseorcomplexnameandnumber" id="input-houseorcomplexnameandnumber">
 
@@ -177,7 +185,6 @@
                             <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
                                    formControlName="postalcode" id="input-postalcode">
 
-
                           </nb-card-body>
                         </nb-card>
                       </div>
@@ -203,7 +210,7 @@
                     </div>
                   </nb-tab>
 
-                  <nb-tab tabTitle="Demographic information" tabIcon="list">
+                  <nb-tab tabTitle="Demographic information" tabIcon="list" [disabled]="demographicInformationTab">
                     <div class="row">
                       <div class="col">
                         <nb-card>
@@ -265,12 +272,37 @@
                     </div>
                   </nb-tab>
 
-                  <nb-tab tabTitle="Academic information" tabIcon="list">
+
+
+                  <nb-tab tabTitle="Academic information" tabIcon="list" [disabled]="academicInformationTab">
                     <div class="row">
                       <div class="col">
                         <nb-card>
                           <nb-card-header>Institution details</nb-card-header>
                           <nb-card-body>
+
+                            <label for="input-doyouhavequalification">Do you have a formal qualification</label><br/>
+                            <div class="form-control-group accept-group">
+
+                              <nb-radio-group  id="input-doyouhavequalification" (valueChange)="checked(
+
+                                   ['institutionname'
+                                           ,'institutionname'
+                                           ,'institutiontel'
+                                           ,'qualificationname'
+                                           ,'yearcompleted'
+                                           ,'qualificationlevel'
+                                           ,'durationofcourse'
+                                           ,'universityobtained']
+
+                                           ,$event)">
+
+                              <nb-radio [ngStyle]="{'display': 'inline'}" value="true">No</nb-radio>
+                              <nb-radio [ngStyle]="{'display': 'inline'}" value="false">Yes</nb-radio>
+                            </nb-radio-group>
+                            </div>
+                            <br/>
+
                             <label for="input-institutionname">Institution name</label>
                             <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
                                    formControlName="institutionname" id="input-institutionname">
@@ -278,7 +310,6 @@
                             <label for="input-institutiontel">Telephone number</label>
                             <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
                                    formControlName="institutiontel" id="input-institutiontel">
-
 
                             <label for="input-qualificationname">Name of your community development
                               qualification</label>
@@ -312,7 +343,6 @@
                                          *ngFor="let qualificationlevel of qualificationLevelList ">{{qualificationlevel}}</nb-option>
                             </nb-select>
 
-
                             <label for="input-durationofcourse">Duration of your course</label>
                             <div *ngIf="submitted && form.durationofcourse.errors" class="invalid-feedback">
                               <div *ngIf="form.durationofcourse.errors.required">Duration of course is required</div>
@@ -341,7 +371,7 @@
                     </div>
                   </nb-tab>
 
-                  <nb-tab tabTitle="Employment information" tabIcon="list">
+                  <nb-tab tabTitle="Employment information" tabIcon="list" [disabled]="employmentInformationTab" >
                     <div class="row">
                       <div class="col-lg-12">
                       <nb-card>
@@ -387,6 +417,27 @@
 
                     </div>
                     <div class="row">
+
+                      <div class="col-lg-6">
+                        <nb-card>
+                          <nb-card-header>Employment contact details</nb-card-header>
+                          <nb-card-body>
+
+                            <label for="input-empcellphone">Work cellular number</label>
+                            <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
+                                   formControlName="empcellphone" id="input-empcellphone">
+
+                            <label for="input-empworknumber">Work telephone number</label>
+                            <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
+                                   formControlName="empworknumber" id="input-empworknumber">
+
+                            <label for="input-empemail">Work e-mail</label>
+                            <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
+                                   formControlName="empemail" id="input-empemail">
+
+                          </nb-card-body>
+                        </nb-card>
+                      </div>
                       <div class="col-lg-6">
                         <nb-card>
                           <nb-card-header>Employment address</nb-card-header>
@@ -428,33 +479,13 @@
                         </nb-card>
                       </div>
 
-                      <div class="col-lg-6">
-                        <nb-card>
-                          <nb-card-header>Employment contact details</nb-card-header>
-                          <nb-card-body>
-
-                            <label for="input-empcellphone">Work cellular number</label>
-                            <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
-                                   formControlName="empcellphone" id="input-empcellphone">
-
-                            <label for="input-empworknumber">Work telephone number</label>
-                            <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
-                                   formControlName="empworknumber" id="input-empworknumber">
-
-                            <label for="input-empemail">Work e-mail</label>
-                            <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
-                                   formControlName="empemail" id="input-empemail">
-
-                          </nb-card-body>
-                        </nb-card>
-                      </div>
                     </div>
                   </nb-tab>
 
-                  <nb-tab tabTitle="Supporting documents" tabIcon="list">
+                  <nb-tab tabTitle="Supporting documents" tabIcon="list" [disabled]="supportingDocumentsTab">
                     <ngx-case-documents [case]='case'
-                                        [disableOptions]="form.iscommunitypractitioner.value.length === 0"
-                                        [iscommunityPractitioner]='form.iscommunitypractitioner.value'></ngx-case-documents>
+                                        [disableOptions]="doYouHaveFormalEducation.length === 0"
+                                        [iscommunityPractitioner]='doYouHaveFormalEducation'></ngx-case-documents>
                   </nb-tab>
 
 
@@ -467,20 +498,21 @@
                       and correct in all aspects
                     </label>
                     &nbsp;&nbsp;
-                    <nb-select placeholder="Yes/No" formControlName="disclaimer" id="input-disclaimer" class="size">
+                    <nb-select placeholder="yes/no" formControlName="disclaimer" id="input-disclaimer" class="size">
                       <nb-option [value]="dis" *ngFor="let dis of disclaimerList"
                                  (selectionChange)="selected($event)">{{dis}}</nb-option>
                     </nb-select>
                     <div class="float-right">
                     <button nbTooltip='{{(!enableSaveButton) ? "Add Documents to enable button" : "Submit" }}'
                             nbTooltipPlacement="top" nbButton status="info" type="button"
-                            [disabled]="!enableSaveButton"
+
                             [ngStyle]="{
                                         'border':'0px',
-                                        'color':'white',
-                                        'background-color':'#0a7827'
+                                        'color':'black',
+                                        'background-color':'#a0dc3d',
+                                        'text-transform': 'lowercase'
                                         }"
-                            (click)="formSubmit(userForm)">Submit
+                            (click)="formSubmit(userForm)"> Submit
                     </button>
                     </div>
                   </div>

@@ -38,7 +38,6 @@ export class CaseDocumentComponent implements OnInit, AfterViewInit, OnDestroy {
 
   loading: false;
 
-  //selectedFiles: FileList;
   selectedFiles: Array<any> = [];
   progressInfo: Array<any> = [];
   message = '';
