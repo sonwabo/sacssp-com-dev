@@ -4,12 +4,12 @@ import {NbDialogRef} from '@nebular/theme';
 @Component({
 
   template: `
-    <nb-card size="small">
+    <nb-card size="small" status="success">
       <nb-card-header>{{title}}</nb-card-header>
-      <nb-card-body>
+      <nb-card-body  [ngStyle]="{'background-color':'#dfedf2'}">
         <br/><br/>
             <ol>
-              <li>Your unique personal reference number is: {{message}},</li>
+              <li>Your unique personal reference number is: {{message}}.</li>
               <li>Your unique personal reference number was also submitted to your personal e-mail address.</li>
               <li>Please keep your unique personal reference safe.</li>
               <li>Your unique personal reference number should be used during all enquiries and updates.</li>
@@ -19,6 +19,7 @@ import {NbDialogRef} from '@nebular/theme';
       <nb-card-footer>
         <button nbButton status="info"
                 [ngStyle]="{
+                       'color':'black',
                        'border':'0px',
                        'background-color':'#a0dc3d'
                    }"
@@ -34,5 +35,6 @@ export class DialogWithBackdropComponent {
 
   constructor(public ref: NbDialogRef<DialogWithBackdropComponent>) {
   }
+
 }
 

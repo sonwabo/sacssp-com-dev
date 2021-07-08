@@ -136,6 +136,7 @@ export class CaseFileComponent implements OnInit, OnDestroy {
     this.disableFormElements(contrls, (event === 'true'));
   }
 
+
   private prepopulateData() {
     this.usermanagenent.getCitizenCount().subscribe(res => {
       this.populateControlIfEmpty('southafricancitezen', res.southafricans);
@@ -170,9 +171,6 @@ export class CaseFileComponent implements OnInit, OnDestroy {
     ) {
           this.contactInformationTab = false;
     }
-
-
-
 
   }
 
@@ -389,7 +387,25 @@ export class CaseFileComponent implements OnInit, OnDestroy {
     }
   }
 
+  private setEmptyDefaultValues(userdto: any): void {
+    if ( this.doYouHaveFormalEducation === 'No') {
+      userdto['institutionname'] = 'n/a';
+      userdto['institutionname'] = 'n/a';
+      userdto['institutiontel'] = 'n/a';
+      userdto['qualificationname'] = 'n/a';
+      userdto['yearcompleted'] = 'n/a';
+      userdto['qualificationlevel'] = 'n/a';
+      userdto['durationofcourse'] = 'n/a';
+      userdto['universityobtained'] = 'n/a';
+    }
+  }
+
+
+
   formSubmit(userForm: FormGroup) {
+
+    if ( userForm.value['disclaimer'] === '') {  this.showWarning('Please capture the disclaimer'); return; }
+
     this.submitted = true;
     if (this.userForm.invalid) {
       this.showWarning();
@@ -397,8 +413,10 @@ export class CaseFileComponent implements OnInit, OnDestroy {
     }
 
     const userdto = userForm.value;
+    this.setEmptyDefaultValues(userdto);
+
     userdto['birthdate'] = this.birthdateStr;
-    userdto['yearcompleted'] = this.yearcompletedStr;
+    userdto['yearcompleted'] = (this.doYouHaveFormalEducation === 'Yes') ? this.yearcompletedStr : '9999/01/01';
     // These we should not send to the database
     delete userdto['southafricancitezen'];
     delete userdto['nonsouthafricancitezen'];
@@ -439,12 +457,15 @@ export class CaseFileComponent implements OnInit, OnDestroy {
 
        this.dialogService.open(DialogWithBackdropComponent, {
          context: {
-           title: 'User Created Successfully',
-           message: `User Data has been Created Successfully, User Reference has been generated : ${r.reference}
-          ,also an email with the generated reference has been sent to your email`,
+           title: 'Congratulations. Your personal user profile was created successfully',
+           message: `${r.reference}`,
          },
+       }).onClose.subscribe(rer => {
+         this.router.navigate([COMPONENT_LIST.WELCOME]);
        });
      }
+
+
 
       this.usermanagenent.getUserById(r.userid).subscribe(ca => {
         this.case = ca;
@@ -510,9 +531,9 @@ export class CaseFileComponent implements OnInit, OnDestroy {
     this.router.navigate(['pages/jbpm/cases-table'], {replaceUrl: true});
   }
 
-  private showWarning(): void {
+  private showWarning(msg: string = 'Additional Fields required'): void {
     this.toastrService.show(
-      'Additional Fields required',
+      `${msg}`,
       `Please capture required field`,
       {position: NbGlobalPhysicalPosition.TOP_RIGHT, status: 'warning'},
     );

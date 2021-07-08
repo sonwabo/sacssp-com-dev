@@ -46,7 +46,7 @@
                               <div *ngIf="form.title.errors.required">Title is required</div>
                             </div>
                             <br/>
-                            <label for="input-name1">Firstname of practitioner</label>
+                            <label for="input-name1">First name of practitioner</label>
                             <br/>
                             <input nbInput fullWidth (blur)="onfocus()"  type="text" [readOnly]="isReadOnly"
                                    formControlName="name1"
@@ -57,7 +57,7 @@
                                    }"
                                    id="input-name1">
                             <div *ngIf="submitted && form.name1.errors" class="invalid-feedback">
-                              <div *ngIf="form.name1.errors.required">FirstName is required</div>
+                              <div *ngIf="form.name1.errors.required">First Name is required</div>
                             </div> <br/>
 
                             <label for="input-name2">Second name of practitioner</label>
@@ -174,7 +174,7 @@
 
                             <label for="input-provincename">Province</label>
                             <div *ngIf="submitted && form.provincename.errors" class="invalid-feedback">
-                              <div *ngIf="form.provincename.errors.required">Gender is required</div>
+                              <div *ngIf="form.provincename.errors.required">Province is required</div>
                             </div>
                             <nb-select fullWidth formControlName="provincename" id="input-provincename">
                               <nb-option [value]="provincename" [disabled]="isReadOnly"
@@ -192,7 +192,7 @@
                         <nb-card>
                           <nb-card-header>Contact details</nb-card-header>
                           <nb-card-body>
-                            <label for="input-cellphone">Personal cellular number</label>
+                            <label for="input-cellphone">Personal cellular phone number</label>
                             <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
                                    formControlName="cellphone" id="input-cellphone">
 
@@ -294,11 +294,28 @@
                                            ,'qualificationlevel'
                                            ,'durationofcourse'
                                            ,'universityobtained']
-
                                            ,$event)">
 
-                              <nb-radio [ngStyle]="{'display': 'inline'}" value="true">No</nb-radio>
-                              <nb-radio [ngStyle]="{'display': 'inline'}" value="false">Yes</nb-radio>
+
+
+                              <nb-radio [ngStyle]="{'display': 'inline'}" value="true">
+                                <div [ngStyle]=" {
+                                        'color': '#222b45',
+                                        'font-family': 'Open Sans, sans-serif',
+                                        'font-size': '0.9375rem',
+                                        'font-weight': '400',
+                                        'line-height': '1.25rem'
+                                        }">no</div>
+                              </nb-radio>
+                              <nb-radio [ngStyle]="{'display': 'inline'}" value="false">
+                                <div [ngStyle]=" {
+                                        'color': '#222b45',
+                                        'font-family': 'Open Sans, sans-serif',
+                                        'font-size': '0.9375rem',
+                                        'font-weight': '400',
+                                        'line-height': '1.25rem'
+                                        }">yes</div>
+                              </nb-radio>
                             </nb-radio-group>
                             </div>
                             <br/>
@@ -448,7 +465,7 @@
                                    formControlName="empbusinessparknameorunitname"
                                    id="input-empbusinessparknameorunitname">
 
-                            <label for="input-empstreetnameandnumber">Street name & Street number</label>
+                            <label for="input-empstreetnameandnumber">Street name and street number</label>
                             <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
                                    formControlName="empstreetnameandnumber" id="input-empstreetnameandnumber">
 
@@ -502,7 +519,8 @@
                       <nb-option [value]="dis" *ngFor="let dis of disclaimerList"
                                  (selectionChange)="selected($event)">{{dis}}</nb-option>
                     </nb-select>
-                    <div class="float-right">
+
+                    <div *ngIf="enableSaveButton" class="float-right">
                     <button nbTooltip='{{(!enableSaveButton) ? "Add Documents to enable button" : "Submit" }}'
                             nbTooltipPlacement="top" nbButton status="info" type="button"
 

@@ -28,7 +28,7 @@ import {Router} from '@angular/router';
           <form [formGroup]="searchFom" xmlns="http://www.w3.org/1999/html">
             <div class="row">
 
-              <label for="input-name1">User reference</label>
+              <label for="input-name1">Enter user reference to search</label>
               <div *ngIf="submitted && form.searchBox.errors" class="invalid-feedback">
                 <div *ngIf="form.searchBox.errors.required">Reference is required</div>
               </div>
@@ -43,8 +43,9 @@ import {Router} from '@angular/router';
                       type="button"
                       [ngStyle]="{
                        'border':'0px',
-                       'color':'white',
-                       'background-color':'#ddffbe'
+                       'color':'black',
+                       'background-color':'#a0dc3d',
+                       'text-transform': 'lowercase'
                        }"
                       (click)="formSubmit(searchFom)">Search
               </button>
