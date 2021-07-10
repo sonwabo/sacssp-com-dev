@@ -40,7 +40,7 @@ import {Router} from '@angular/router';
                       [ngStyle]="{
                        'border':'0px',
                        'color':'white',
-                       'background-color':'#0a7827'
+                       'background-color':'#a3fb5b'
                        }"
                       (click)="formSubmit(searchFom)">Search
               </button>

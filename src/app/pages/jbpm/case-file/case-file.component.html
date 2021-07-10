@@ -48,7 +48,10 @@
                             <br/>
                             <label for="input-name1">First name of practitioner</label>
                             <br/>
-                            <input nbInput fullWidth (blur)="onfocus()"  type="text" [readOnly]="isReadOnly"
+                            <input nbInput fullWidth
+                                   (keypress)="onfocus()"
+                                   type="text"
+                                   [readOnly]="isReadOnly"
                                    formControlName="name1"
                                    [ngStyle]="{
                                    'text-align': 'left !important',
@@ -124,11 +127,17 @@
 
                             <label for="input-citizenship">Are you a South African citizen</label>
                             <br/>
-                            <nb-select  fullWidth formControlName="citizenship" id="input-citizenship">
-                              <nb-option [value]="dis" *ngFor="let dis of disclaimerList"
-                                         (blur)="onfocus()"
-                                         (selectionChange)="selected($event)">{{dis}}</nb-option>
-                            </nb-select>
+                            <input nbInput fullWidth readonly type="text"
+                                   class="size-input"
+                                   formControlName="citizenship" id="input-citizenship">
+
+<!--                            [value]="(form.idnumber.value.length == 0 )?'No':'Yes'"-->
+
+                            <!--                            <nb-select  fullWidth formControlName="citizenship" id="input-citizenship">-->
+<!--                              <nb-option [value]="dis" *ngFor="let dis of disclaimerList"-->
+<!--                                         (blur)="onfocus()"-->
+<!--                                         (selectionChange)="selected($event)">{{dis}}</nb-option>-->
+<!--                            </nb-select>-->
 
                             <div *ngIf="stats">
                               <label for="input-southafricancitezen">South African citizen count</label>
@@ -194,6 +203,7 @@
                           <nb-card-body>
                             <label for="input-cellphone">Personal cellular phone number</label>
                             <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
+
                                    formControlName="cellphone" id="input-cellphone">
 
                             <label for="input-worknumber">Personal telephone number</label>
@@ -201,6 +211,10 @@
                                    formControlName="worknumber" id="input-worknumber">
 
                             <label for="input-email">Personal e-mail</label>
+                            <div *ngIf="submitted && form.email.errors" class="invalid-feedback">
+                              <div *ngIf="form.email.errors.required">Email is required</div>
+                              <div *ngIf="form.email.errors.email">Email must be a valid e-mail address</div>
+                            </div>
                             <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
                                    formControlName="email" id="input-email">
 
@@ -440,7 +454,7 @@
                           <nb-card-header>Employment contact details</nb-card-header>
                           <nb-card-body>
 
-                            <label for="input-empcellphone">Work cellular number</label>
+                            <label for="input-empcellphone">Work cellular phone number</label>
                             <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
                                    formControlName="empcellphone" id="input-empcellphone">
 
@@ -504,13 +518,12 @@
                                         [disableOptions]="doYouHaveFormalEducation.length === 0"
                                         [iscommunityPractitioner]='doYouHaveFormalEducation'></ngx-case-documents>
                   </nb-tab>
-
-
                 </nb-tabset>
 
-                <div class="row">
+                <ng-container *ngIf="enableSaveButton">
+                  <div class="row">
                   <div class="col-lg-12"><br/>
-                    <label class="text required" for="input-disclaimer">
+                    <label class="text" for="input-disclaimer">
                       I, hereby declare that the information provided in the verification form to be true
                       and correct in all aspects
                     </label>
@@ -520,14 +533,14 @@
                                  (selectionChange)="selected($event)">{{dis}}</nb-option>
                     </nb-select>
 
-                    <div *ngIf="enableSaveButton" class="float-right">
+                    <div class="float-right">
                     <button nbTooltip='{{(!enableSaveButton) ? "Add Documents to enable button" : "Submit" }}'
                             nbTooltipPlacement="top" nbButton status="info" type="button"
 
                             [ngStyle]="{
                                         'border':'0px',
                                         'color':'black',
-                                        'background-color':'#a0dc3d',
+                                        'background-color':'#a3fb5b',
                                         'text-transform': 'lowercase'
                                         }"
                             (click)="formSubmit(userForm)"> Submit
@@ -535,6 +548,7 @@
                     </div>
                   </div>
                 </div>
+                </ng-container>
               </div>
             </form>
           </td>

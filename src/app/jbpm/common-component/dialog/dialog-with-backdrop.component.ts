@@ -4,9 +4,9 @@ import {NbDialogRef} from '@nebular/theme';
 @Component({
 
   template: `
-    <nb-card size="small" status="success">
+    <nb-card [size]="size" status="success">
       <nb-card-header>{{title}}</nb-card-header>
-      <nb-card-body  [ngStyle]="{'background-color':'#dfedf2'}">
+      <nb-card-body *ngIf="flag === 'success'" [ngStyle]="{'background-color':'#dfedf2'}">
         <br/><br/>
             <ol>
               <li>Your unique personal reference number is: {{message}}.</li>
@@ -14,8 +14,12 @@ import {NbDialogRef} from '@nebular/theme';
               <li>Please keep your unique personal reference safe.</li>
               <li>Your unique personal reference number should be used during all enquiries and updates.</li>
             </ol>
-
       </nb-card-body>
+
+      <nb-card-body *ngIf="flag === 'success-tab'" [ngStyle]="{'background-color':'#dfedf2'}">
+        <p> Thank you. Please click on {{message}} (above) and complete the content.</p>
+      </nb-card-body>
+
       <nb-card-footer>
         <button nbButton status="info"
                 [ngStyle]="{
@@ -32,6 +36,8 @@ import {NbDialogRef} from '@nebular/theme';
 export class DialogWithBackdropComponent {
   @Input() title: string;
   @Input() message: string;
+  @Input() flag: string;
+  @Input() size: string = 'small';
 
   constructor(public ref: NbDialogRef<DialogWithBackdropComponent>) {
   }

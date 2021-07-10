@@ -1,11 +1,8 @@
-import {Request, CaseRequest, Settings, Status, TaskNames} from './../../../jbpm/domain/demand';
-import {ProcessService} from './../../../jbpm/service/process.service';
-import {TaskService} from './../../../jbpm/service/task.service';
 import {
   Component,
   Input,
   OnInit,
-  OnDestroy,
+  OnDestroy, AfterViewInit,
 } from '@angular/core';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
@@ -20,7 +17,7 @@ import {
 import {UserManagementService} from '../../../jbpm/service/user-management.service';
 import {DialogWithBackdropComponent} from '../../../jbpm/common-component/dialog/dialog-with-backdrop.component';
 import {UserDetails} from '@app/authentication/model/user.details';
-import {Observable, Subscription} from 'rxjs';
+import {Observable, Subscription, timer} from 'rxjs';
 import {DataShareService} from '@app/jbpm/service/data-share.service';
 import {DocumentService} from '@app/jbpm/service/document.service';
 import {Document} from '@app/jbpm/domain/document';
@@ -34,7 +31,8 @@ import {WindowsDialogComponent} from '@app/jbpm/common-component/window-dialog/w
   styleUrls: ['./case-file.component.scss'],
 })
 
-export class CaseFileComponent implements OnInit, OnDestroy {
+export class CaseFileComponent implements OnInit, OnDestroy, AfterViewInit {
+
   @Input() case: any = null;
   @Input() taskSummary?: Promise<any>;
   @Input() documentsResponse: any;
@@ -82,17 +80,21 @@ export class CaseFileComponent implements OnInit, OnDestroy {
   yearcompletedStr: string;
   message: string;
   subscription: Subscription;
+  timerSubscription: Subscription;
   enableSaveButton: boolean = false;
+  enableSaveButtonStr: string = 'false';
 
   stats: boolean = true;
   citizenshipCount: any;
   practitionerCount: any;
 
-  contactInformationTab: boolean = false;
-  demographicInformationTab: boolean = false;
-  academicInformationTab: boolean = false;
-  employmentInformationTab: boolean = false;
-  supportingDocumentsTab: boolean = false;
+  contactInformationTab: boolean = true;
+  demographicInformationTab: boolean = true;
+  academicInformationTab: boolean = true;
+  employmentInformationTab: boolean = true;
+  supportingDocumentsTab: boolean = true;
+
+  subscriptions: any[];
 
   constructor(
     protected usermanagenent: UserManagementService,
@@ -106,8 +108,10 @@ export class CaseFileComponent implements OnInit, OnDestroy {
 
     this.initialiseUseerFormControl();
     this.prepopulateData();
-
+    this.enableSaveButton = false;
+    this.enableSaveButtonStr = 'false';
   }
+
 
   selectedMenuItem(value: string): void {
 
@@ -155,23 +159,178 @@ export class CaseFileComponent implements OnInit, OnDestroy {
     this.subscription = this.dataShare.currentMessage.subscribe(msg => {
       this.message = msg;
       this.enableSaveButton = ('enable' === msg);
+      this.enableSaveButtonStr = (this.enableSaveButton) ? 'true' : 'false';
     });
 
   }
 
-  onfocus(): void {
+  pauseProcessing = true;
+  ngAfterViewInit(): void {
 
-    console.log(' --------- Test -------- ');
+      this.timerSubscription = timer(0, 3000).subscribe(() => {
+        if ( this.pauseProcessing ) {
+          this.personalInformation();
+          if ( !this.contactInformationTab) {
+            this.contactInformation();
+          }
+          if ( !this.demographicInformationTab ) {
+             this.demographicInformation();
+          }
+          if (!this.academicInformationTab ) {
+             this.academicInformation();
+          }
+          if ( !this.employmentInformationTab ) {
+             this.employmentInformation();
+          }
+        }
+      });
+  }
 
-    if ( this.getFormValue('name1').length > 0 &&  this.getFormValue('citizenship').length > 0 &&
-         this.getFormValue('title').length > 0 &&
-         this.getFormValue('surname').length > 0  &&
-         this.getFormValue('birthdate').length > 0 &&
-       ( this.getFormValue('idnumber').length > 0  || this.getFormValue('passport').length > 0 )
-    ) {
-          this.contactInformationTab = false;
+  onfocus(): void {}
+
+  private stopOrStartProcessing(value: boolean): void {
+     this.pauseProcessing = value;
+  }
+
+  private personalInformation(): void {
+
+    if (this.contactInformationTab === true &&
+      ((this.idValid !== null && this.idValid === true) || this.getFormValue('passport').length > 0 )
+      &&
+
+      this.getFormValue('name1').length > 0 &&  this.getFormValue('citizenship').length > 0 &&
+      this.getFormValue('title').length > 0 &&
+      this.getFormValue('surname').length > 0  &&
+      new Date(this.getFormValue('birthdate')).toLocaleDateString().length > 0) {
+      this.stopOrStartProcessing(false);
+      this.dialogService.open(DialogWithBackdropComponent, {
+        context: {
+          title: 'Data successfully captured',
+          message: `Contact information`,
+          flag: 'success-tab',
+          size: 'tiny',
+        },
+      }).onClose.subscribe(() => {
+        this.contactInformationTab = false;
+        this.stopOrStartProcessing(true);
+      });
     }
+  }
 
+  private contactInformation(): void {
+
+    if (this.demographicInformationTab === true &&
+      this.getFormValue('email').length > 0 &&
+      this.getFormValue('cellphone').length > 0 &&
+      this.getFormValue('houseorcomplexnameandnumber').length > 0 &&
+      this.getFormValue('suburbname').length > 0  &&
+      this.getFormValue('provincename').length > 0 &&
+      this.getFormValue('postalcode').length > 0
+    ) {
+      this.stopOrStartProcessing(false);
+      this.dialogService.open(DialogWithBackdropComponent, {
+        context: {
+          title: 'Data successfully captured',
+          message: `Demographic information`,
+          flag: 'success-tab',
+          size: 'tiny',
+        },
+      }).onClose.subscribe(() => {
+        this.demographicInformationTab = false;
+        this.stopOrStartProcessing(true);
+      });
+    }
+  }
+
+
+  private demographicInformation(): void {
+
+    if (this.academicInformationTab === true &&
+      this.getFormValue('gender').length > 0 &&
+      this.getFormValue('language').length > 0 &&
+      this.getFormValue('maritalstatus').length > 0 &&
+      this.getFormValue('ethnicalstatus').length > 0  &&
+      this.getFormValue('disabilitystatus').length > 0 ) {
+      this.stopOrStartProcessing(false);
+      this.dialogService.open(DialogWithBackdropComponent, {
+        context: {
+          title: 'Data successfully captured',
+          message: `Academic information`,
+          flag: 'success-tab',
+          size: 'tiny',
+        },
+      }).onClose.subscribe(() => {
+        this.academicInformationTab = false;
+        this.stopOrStartProcessing(true);
+      });
+    }
+  }
+
+
+  private academicInformation(): void {
+
+    if ( this.employmentInformationTab === true && this.doYouHaveFormalEducation === 'No') {
+
+      this.stopOrStartProcessing(false);
+      this.dialogService.open(DialogWithBackdropComponent, {
+        context: {
+          title: 'Data successfully captured',
+          message: `Employment information`,
+          flag: 'success-tab',
+          size: 'tiny',
+        },
+      }).onClose.subscribe(() => {
+        this.employmentInformationTab = false;
+        this.stopOrStartProcessing(true);
+      });
+    } else if (this.employmentInformationTab === true &&
+      this.getFormValue('institutionname').length > 0 &&
+      this.getFormValue('qualificationname').length > 0 &&
+      new Date(this.getFormValue('yearcompleted')).toLocaleDateString().length > 0 &&
+      this.getFormValue('qualificationlevel').length > 0 &&
+      this.getFormValue('durationofcourse').length > 0 &&
+      this.getFormValue('universityobtained').length > 0 ) {
+
+      this.stopOrStartProcessing(false);
+      this.dialogService.open(DialogWithBackdropComponent, {
+        context: {
+          title: 'Data successfully captured',
+          message: `Employment information`,
+          flag: 'success-tab',
+          size: 'tiny',
+        },
+      }).onClose.subscribe(() => {
+        this.employmentInformationTab = false;
+        this.stopOrStartProcessing(true);
+      });
+    }
+  }
+
+  private employmentInformation(): void {
+
+    if (this.supportingDocumentsTab === true &&
+      this.getFormValue('employername').length > 0 &&
+      this.getFormValue('sectorofemployment').length > 0 &&
+      this.getFormValue('jobtitle').length > 0 &&
+      this.getFormValue('iscommunitypractitioner').length > 0 &&
+      this.getFormValue('empbusinessparknameorunitname').length > 0 &&
+      this.getFormValue('emptownname').length > 0 &&
+      this.getFormValue('empprovincename').length > 0 &&
+      this.getFormValue('empworknumber').length > 0 &&
+      this.getFormValue('empemail').length > 0 ) {
+      this.stopOrStartProcessing(false);
+      this.dialogService.open(DialogWithBackdropComponent, {
+        context: {
+          title: 'Data successfully captured',
+          message: `Supporting documents`,
+          flag: 'success-tab',
+          size: 'tiny',
+        },
+      }).onClose.subscribe(() => {
+        this.supportingDocumentsTab = false;
+        this.stopOrStartProcessing(true);
+      });
+    }
   }
 
 
@@ -241,10 +400,21 @@ export class CaseFileComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.dataShare.clearStorageForKey(this.DOCS_STORAGE_KEY);
+    this.enableSaveButton = false;
+    this.enableSaveButtonStr = 'false';
     this.subscription.unsubscribe();
+    this.timerSubscription.unsubscribe();
   }
 
+  idValid: any = null;
   public validateId(value: any, type: string): void {
+
+    if ( type === 'passport') {
+      this.userForm.controls['citizenship'].setValue('No');
+    } else {
+      this.userForm.controls['citizenship'].setValue('Yes');
+    }
 
     value = (value == null) ? this.userForm.controls[`${type}`].value : value;
 
@@ -255,17 +425,23 @@ export class CaseFileComponent implements OnInit, OnDestroy {
     if (type === 'idnumber' && value.length !== 13 && !isNaN(value) ) {
       this.showToast('South African Id Number must be 13 digits long', false, 'warning');
       this.userForm.controls[`${type}`].reset();
+      this.userForm.controls['citizenship'].reset();
       return;
     }
 
     this.usermanagenent.validateIdentification(value, type).subscribe(res => {
+      this.idValid = true;
       if (res?.response === 'exists') {
+        this.idValid = false;
         this.showToast('Identification already exists, please inserts new', false, 'warning');
         this.userForm.controls[`${type}`].reset();
+        this.userForm.controls['citizenship'].reset();
       }
       if (res?.response === 'text') {
+        this.idValid = false;
         this.showToast('South African Id Number must be numbers only', false, 'warning');
         this.userForm.controls[`${type}`].reset();
+        this.userForm.controls['citizenship'].reset();
       }
     }, err => this.handleError(`Error trying to validate ${type}`));
 
@@ -328,7 +504,8 @@ export class CaseFileComponent implements OnInit, OnDestroy {
 
       cellphone: new FormControl('', Validators.required),
       worknumber: new FormControl('', []),
-      email: new FormControl('', [Validators.required, Validators.email]),
+      email: new FormControl('', [Validators.required, Validators.email,  Validators.email,
+        Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]),
 
       houseorcomplexnameandnumber: new FormControl('', []),
       streetnumberandname: new FormControl('', Validators.required),
@@ -373,7 +550,7 @@ export class CaseFileComponent implements OnInit, OnDestroy {
 
   }
 
-  private getFormValue(controlName: string): string {
+  private getFormValue(controlName: string): any {
     return this.userForm.controls[`${controlName}`].value;
   }
 
@@ -398,9 +575,8 @@ export class CaseFileComponent implements OnInit, OnDestroy {
       userdto['durationofcourse'] = 'n/a';
       userdto['universityobtained'] = 'n/a';
     }
+
   }
-
-
 
   formSubmit(userForm: FormGroup) {
 
@@ -451,6 +627,7 @@ export class CaseFileComponent implements OnInit, OnDestroy {
          context: {
            title: 'User Updated Successfully',
            message: `Data has been updated Successfully`,
+           flag: 'success',
          },
        });
      } else {
@@ -459,13 +636,15 @@ export class CaseFileComponent implements OnInit, OnDestroy {
          context: {
            title: 'Congratulations. Your personal user profile was created successfully',
            message: `${r.reference}`,
+           flag: 'success',
          },
        }).onClose.subscribe(rer => {
+         this.dataShare.changeMessage('disable');
+         this.enableSaveButton = false;
+         this.enableSaveButtonStr = 'false';
          this.router.navigate([COMPONENT_LIST.WELCOME]);
        });
      }
-
-
 
       this.usermanagenent.getUserById(r.userid).subscribe(ca => {
         this.case = ca;

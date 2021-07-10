@@ -127,5 +127,11 @@
   background-color: #ddffbe;
 }
 
+.required::after {
+  color: red;
+  content: '*';
+}
 
-
+.invalid-feedback {
+  display: block;
+}
