@@ -40,11 +40,11 @@ import { casesTableRouting } from './cases-table-routing.module';
         OwlDateTimeModule,
         OwlNativeDateTimeModule,
         casesTableRouting,
-        NbListModule
+        NbListModule,
     ],
   declarations: [
-    CasesTableComponent
+    CasesTableComponent,
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
 })
-export class casesTableModule { }
+export class CasesTableModule { }

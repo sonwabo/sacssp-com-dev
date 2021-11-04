@@ -21,10 +21,8 @@ export const environment = {
   administrator: 'fund_administrator',
   reviewer: 'operations_sme',
   process_date_type: 'java.sql.Timestamp',
-  allusers: 'http://localhost/data-tracker/v1/listAllUsers',
+  allusers: '/data-tracker/v1/listAllUsers',
+  guestusername: 'guestuser',
+  guestpassword: 'password',
 };
 
-
-//    "target": "http://41.79.79.17",
-
-// "target": "http://192.168.31.69:8080",

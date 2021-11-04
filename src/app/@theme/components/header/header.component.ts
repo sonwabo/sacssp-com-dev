@@ -3,7 +3,7 @@ import {NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeServi
 import {LayoutService} from '@app/@core/utils';
 import {map, takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
-import {getDeepFromObject, NB_AUTH_OPTIONS, NbAuthResult, NbAuthService} from '@nebular/auth';
+import {getDeepFromObject, NB_AUTH_OPTIONS, NbAuthJWTToken, NbAuthResult, NbAuthService} from '@nebular/auth';
 import {Router} from '@angular/router';
 import {UserDetails} from '@app/authentication/model/user.details';
 
@@ -46,14 +46,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(private sidebarService: NbSidebarService,
               private menuService: NbMenuService,
               private themeService: NbThemeService,
-              // private userService: UserData,
               private layoutService: LayoutService,
               private breakpointService: NbMediaBreakpointsService,
-              protected service: NbAuthService,
+              protected authService: NbAuthService,
               @Inject(NB_AUTH_OPTIONS) protected options = {},
               protected router: Router) {
     this.redirectDelay = this.getConfigValue('forms.logout.redirectDelay');
     this.strategy = this.getConfigValue('forms.logout.strategy');
+
   }
 
   ngOnInit() {
@@ -84,7 +84,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
 
   logout(strategy: string): void {
-    this.service.logout(strategy).subscribe((result: NbAuthResult) => {
+    this.authService.logout(strategy).subscribe((result: NbAuthResult) => {
       UserDetails.empty();
       setTimeout(() => {
         return this.router.navigate(['verify/login'], {replaceUrl: true});

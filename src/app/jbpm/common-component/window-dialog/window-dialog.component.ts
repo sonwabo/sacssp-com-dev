@@ -126,7 +126,7 @@ export class WindowsDialogComponent implements OnInit {
      }
      this.loadSpinner(true);
 
-     this.service.getUserByReference(userForm.value.searchBox).subscribe(res => {
+     this.service.getUserByReference(userForm.value.searchBox?.trim()).subscribe(res => {
 
         const response = res.response;
         if (response === null) {

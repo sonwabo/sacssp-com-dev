@@ -27,7 +27,7 @@ import { DocTypeComponent } from './blocks/doc-type.component';
 import { CommonConfigsComponent } from './utils/CommonConfigs';
 import { divisionModule } from './divisions/division.module';
 import { schemeModule } from './schemes/scheme.module';
-import { casesTableModule } from './cases-table/cases-table.module';
+import { CasesTableModule } from './cases-table/cases-table.module';
 import { casesDetailModule } from './case-detail/case-detail.module';
 import { schemeOfficialsModule } from './scheme-officials/scheme-officials.module';
 import { operationsDepartmentModule } from './operations-departments/operations-department..module';
@@ -64,7 +64,7 @@ import { WindowsGenericComponent } from '@app/jbpm/common-component/window-dialo
     OwlNativeDateTimeModule,
     divisionModule,
     schemeModule,
-    casesTableModule,
+    CasesTableModule,
     casesDetailModule,
     userManagementModule,
     schemeOfficialsModule,

@@ -1,6 +1,7 @@
 import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+  NbAuthJWTToken,
   NbAuthModule, NbAuthOAuth2JWTToken, NbDummyAuthStrategy,
   NbOAuth2AuthStrategy, NbOAuth2ClientAuthMethod, NbOAuth2GrantType, NbPasswordAuthStrategy,
 } from '@nebular/auth';
@@ -108,33 +109,14 @@ export const NB_CORE_PROVIDERS = [
   ...DATA_SERVICES,
   ...NbAuthModule.forRoot({
 
-    // strategies: [
-    //     NbOAuth2AuthStrategy.setup({
-    //     name: 'email',
-    //     baseEndpoint: environment.baseAuthUrl,
-    //     clientId: environment.client_id,
-    //     clientSecret: environment.clientSecrete,
-    //     clientAuthMethod: NbOAuth2ClientAuthMethod.REQUEST_BODY,
-    //     redirect: {
-    //       success: '/pages/jbpm/cases-table',
-    //     },
-    //     token: {
-    //       endpoint: '/token',
-    //       grantType: NbOAuth2GrantType.PASSWORD,
-    //       class: NbAuthOAuth2JWTToken,
-    //     },
-    //     refresh: {
-    //       endpoint: '/token',
-    //       grantType: NbOAuth2GrantType.REFRESH_TOKEN,
-    //     },
-    //   }),
-    // ],
+
     strategies: [
         NbPasswordAuthStrategy.setup({
             name: 'email',
-            baseEndpoint: 'http://localhost:8080',
+            baseEndpoint: 'http://41.79.79.17/data-tracker',
             login: {
-              endpoint : '/v1/login',
+              endpoint : '/v1/authenticate',
+
               method: 'post',
               requireValidToken: false,
               redirect: {
@@ -142,6 +124,10 @@ export const NB_CORE_PROVIDERS = [
                 failure: '/pages/jbpm/divisions',
               },
             },
+          token: {
+            class: NbAuthJWTToken,
+            key: 'jwt',
+          },
         }),
     ]
     , forms: {

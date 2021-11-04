@@ -227,7 +227,7 @@ export class CaseDocumentComponent implements OnInit, AfterViewInit, OnDestroy {
       this.flipCard();
     });
     this.dcoumentTypesAdded.push(this.documentType);
-    this.dataShare.changeMessage('enable');
+    //this.dataShare.changeMessage('enable');
   }
 
   addDocuments(): void {
@@ -246,8 +246,6 @@ export class CaseDocumentComponent implements OnInit, AfterViewInit, OnDestroy {
     this.clearDocFromStorage(doctype);
     const _file = event.target.files[0];
     this.selectedFiles.push( {'file': _file, 'doctype': doctype});
-    console.log('<<<<<<<< Test >>>>>>>>');
-    console.log(this.selectedFiles );
   }
 
   clearDocFromStorage(doctype: string): void {

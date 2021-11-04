@@ -9,7 +9,7 @@ export class NgxLoginComponent extends NbLoginComponent {
 
   login() {
 
-    console.log('Email', this.user.email );
+    console.log('Email', this.user.username );
     console.log('Password', this.user.password );
     super.login();
   }

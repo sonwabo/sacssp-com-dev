@@ -1,10 +1,11 @@
 <h1 id="title" class="title">Login</h1>
-<p class="sub-title">Hello! Log in with your email.</p>
+<p class="sub-title">Hello! Log in with your username and password.</p>
 
 <nb-alert *ngIf="showMessages.error && errors?.length && !submitted" outline="danger" role="alert">
   <p class="alert-title"><b>Oh snap!</b></p>
   <ul class="alert-message-list">
-    <li *ngFor="let error of errors" class="alert-message">{{ error }}</li>
+<!--    <li *ngFor="let error of errors" class="alert-message">{{ error }}</li>-->
+  <li *ngFor="let error of errors" class="alert-message">Username/Password combination is not correct, please try again</li>
   </ul>
 </nb-alert>
 
@@ -18,24 +19,24 @@
 <form (ngSubmit)="login()" #form="ngForm" aria-labelledby="title">
 
   <div class="form-control-group">
-    <label class="label" for="input-email">Email address:</label>
+    <label class="label" for="input-username">Username</label>
     <input nbInput
            fullWidth
-           [(ngModel)]="user.email"
+           [(ngModel)]="user.username"
            #email="ngModel"
-           name="email"
-           id="input-email"
-           placeholder="Email address"
+           name="username"
+           id="input-username"
+           placeholder="Username"
            autofocus
            [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : ''"
            [attr.aria-invalid]="email.invalid && email.touched ? true : null">
     <ng-container *ngIf="email.invalid && email.touched">
       <p class="error-message" *ngIf="email.errors?.required">
-        Email is required!
+        Usernme is required!
       </p>
-      <p class="error-message" *ngIf="email.errors?.pattern">
-        Email should be the real one!
-      </p>
+<!--      <p class="error-message" *ngIf="email.errors?.pattern">-->
+<!--        Username or password invalid!-->
+<!--      </p>-->
     </ng-container>
   </div>
 

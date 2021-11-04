@@ -1,21 +1,20 @@
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import {
   NbDialogService,
-  NbGlobalPhysicalPosition,
   NbStepperComponent,
   NbToastrService,
-  NbWindowService
+  NbWindowService,
 } from '@nebular/theme';
 import {LocalDataSource} from 'ng2-smart-table';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
 import { DepartmentManagementService } from '../../../jbpm/service/department-management.service';
 import {division_management_table_settings} from './divisions-utils';
-import { ConfirmDialogComponent } from '../../../jbpm/common-component/confirm-dialog/confirm-dialog.component';
 import {Router} from '@angular/router';
 import {WindowsDialogComponent} from '@app/jbpm/common-component/window-dialog/window-dialog.component';
-import {COMPONENT_LIST} from "@app/pages/jbpm/utils/routes-list-enum";
-import {DataShareService} from "@app/jbpm/service/data-share.service";
+import {COMPONENT_LIST} from '@app/pages/jbpm/utils/routes-list-enum';
+import {DataShareService} from '@app/jbpm/service/data-share.service';
+import {NbAuthJWTToken, NbAuthService} from '@nebular/auth';
 
 @Component({
   selector: 'ngx-division',
@@ -41,16 +40,25 @@ export class DivisionComponent implements OnInit {
   loading = false;
   readonly DOCS_STORAGE_KEY: string = 'documents';
 
-  readonly menuItems: Array<string> = ['Welcome', 'All users', 'Create user profile', 'Edit user profile'];
+  menuItems: Array<string>;
 
   constructor(private formBuilder: FormBuilder,
     private dialogService: NbDialogService,
     private toastrService: NbToastrService,
     private windowService: NbWindowService,
     private dataShare: DataShareService,
-    private router: Router,
-    private http: HttpClient,
-    private service: DepartmentManagementService) {
+    private authService: NbAuthService,
+    private router: Router) {
+
+    this.authService.onTokenChange()
+      .subscribe((token: NbAuthJWTToken) => {
+        if (token.getPayload()?.['roles'].includes('ADMIN')) {
+            this.menuItems =  ['Welcome', 'All users', 'Create user profile', 'Edit user profile'];
+        } else {
+          this.menuItems =  ['Welcome', 'Create user profile', 'Edit user profile'];
+        }
+      });
+
   }
 
   ngOnInit(): void {

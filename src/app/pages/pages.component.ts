@@ -7,6 +7,7 @@ import { UserDetails } from '../authentication/model/user.details';
 import {WindowsDialogComponent} from '@app/jbpm/common-component/window-dialog/window-dialog.component';
 import {NbWindowService} from '@nebular/theme';
 import {Router} from '@angular/router';
+import {NbAuthJWTToken} from "@nebular/auth";
 
 @Component({
   selector: 'ngx-pages',
@@ -39,8 +40,10 @@ export class PagesComponent implements OnInit, OnDestroy {
   constructor(private jwtTokenService: JWTTokenService,
               private windowService: NbWindowService, private router: Router) {
      UserDetails.tokenObject = 'testing'; //this.jwtTokenService
-    //   .refreshToken()
-    //   .getDecodedToken();
+
+    console.log('<<<<<<<<<, This Pages  >>>>>>>>');
+     jwtTokenService.getPayload();
+
   }
 
   ngOnInit() {

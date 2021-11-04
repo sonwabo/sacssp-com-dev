@@ -1,13 +1,14 @@
 import {Component} from '@angular/core';
-import {LocalDataSource, ServerDataSource} from 'ng2-smart-table';
+import {ServerDataSource} from 'ng2-smart-table';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {case_table_settings} from './table-settings';
-import { UserManagementService } from '../../../jbpm/service/user-management.service';
+import {UserManagementService} from '../../../jbpm/service/user-management.service';
 import {environment} from '@environments/environment';
 import {COMPONENT_LIST} from '@app/pages/jbpm/utils/routes-list-enum';
 import {WindowsDialogComponent} from '@app/jbpm/common-component/window-dialog/window-dialog.component';
 import {NbWindowService} from '@nebular/theme';
+import {NbAuthJWTToken, NbAuthService} from '@nebular/auth';
 
 @Component({
   selector: 'ngx-cases-table',
@@ -27,27 +28,36 @@ export class CasesTableComponent {
   link: string;
   isDisabled: boolean = true;
 
-  readonly menuItems: Array<string> = ['Welcome', 'All users', 'Create user profile', 'Edit user profile'];
-
+  menuItems: Array<string>;
 
   constructor(
+    protected authService: NbAuthService,
     protected service: UserManagementService,
     protected router: Router,
     protected windowService: NbWindowService,
     protected http: HttpClient) {
 
+
+    this.authService.onTokenChange()
+      .subscribe((token: NbAuthJWTToken) => {
+        if (token.getPayload()?.['roles'].includes('ADMIN')) {
+          this.menuItems = ['Welcome', 'All users', 'Create user profile', 'Edit user profile'];
+        } else {
+          this.menuItems = ['Welcome', 'Create user profile', 'Edit user profile'];
+        }
+      });
     this.loadCases();
   }
+
   loadCases(allCases: boolean = false): void {
 
-    // const url = environment.allusers;
-    const url = 'http://41.79.79.17/data-tracker/v1/listAllUsers';
+    //const url = 'http://41.79.79.17/data-tracker/v1/listAllUsers';
     //const url = 'http://192.168.31.69:8080/data-tracker/v1/listAllUsers';
 
     this.source = new ServerDataSource(
       this.http,
       {
-        endPoint: url,
+        endPoint: environment.allusers,
         dataKey: 'content',
         totalKey: `totalElements`,
         pagerPageKey: `number`,
@@ -75,6 +85,7 @@ export class CasesTableComponent {
       this.router.navigate([COMPONENT_LIST.WELCOME]);
     }
   }
+
   private searchAndUpdateUserProfile(): void {
     this.windowService.open(WindowsDialogComponent, {
       context: {

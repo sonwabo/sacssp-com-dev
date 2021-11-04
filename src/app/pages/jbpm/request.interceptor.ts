@@ -3,6 +3,7 @@ import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/com
 import {Observable, Subject} from 'rxjs';
 import {NbAuthService} from '@nebular/auth';
 import {switchMap} from 'rxjs/operators';
+import {JWTTokenService} from '@app/jbpm/service/JWTTokenService';
 
 @Injectable()
 export class RequestInterceptor implements HttpInterceptor, OnInit, OnDestroy {
@@ -12,13 +13,16 @@ export class RequestInterceptor implements HttpInterceptor, OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private authService: NbAuthService) { }
+  constructor(private authService: NbAuthService, private jwtTnService: JWTTokenService ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if ( request.url.match(RequestInterceptor.authUrl) /* || request.url.match(RequestInterceptor.be) */) {
-       return next.handle(request);
-    }
-    return this.authService.isAuthenticatedOrRefresh()
+
+    console.log('>>>>>>>>>>>>>>.. Request UR: <<<<<<<<<<<<< ');
+    console.log(request.url);
+   // if ( request.url.match(RequestInterceptor.authUrl) /* || request.url.match(RequestInterceptor.be) */) {
+   //    return next.handle(request);
+   // }
+   /* return this.authService.isAuthenticatedOrRefresh()
       .pipe(
         switchMap(authenticated => {
           if (authenticated) {
@@ -39,9 +43,11 @@ export class RequestInterceptor implements HttpInterceptor, OnInit, OnDestroy {
           }
         }),
       );
-    request = request.clone({setHeaders : {
-        'Authorization': 'Basic ZnVuZC1hZG1pbmlzdHJhdG9yOmp1bXBjbzIwMTc=',
-    }});
+
+    */
+
+    //jwtTnService.guestCreadentials
+
     return next.handle(request);
   }
 

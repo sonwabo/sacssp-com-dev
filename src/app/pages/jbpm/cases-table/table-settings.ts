@@ -1,9 +1,5 @@
-import { EpochDateRenderComponent } from "../blocks/epoch-date-render.component";
-import { CaseStatusRenderComponent } from "../blocks/case-status-render.component";
-import { SlaComplianceRenderComponent } from "../blocks/sla-compliance-render.component";
-
 export const case_table_settings: any = {
-  mode: "external",
+  mode: 'external',
   actions: {
     add: false,
     edit: true,
@@ -39,16 +35,16 @@ export const case_table_settings: any = {
       title: 'Birth Date',
     },
     'idnumber': {
-      title: "Identification Number",
+      title: 'Identification Number',
     },
-    'passport':{
-      title : 'Passport'
+    'passport': {
+      title : 'Passport',
     },
     'ethnicalstatus': {
-      title: "Ethnical Status",
+      title: 'Ethnical Status',
     },
     'cellphone': {
-      title: 'Primary Contact Number'
+      title: 'Primary Contact Number',
     },
   },
 };

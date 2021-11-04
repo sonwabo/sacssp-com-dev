@@ -58,6 +58,7 @@
                                    'direction':'ltr',
                                    'padding':'-5px !important'
                                    }"
+                                   #input_name1
                                    id="input-name1">
                             <div *ngIf="submitted && form.name1.errors" class="invalid-feedback">
                               <div *ngIf="form.name1.errors.required">First Name is required</div>
@@ -76,6 +77,7 @@
                             <label for="input-surname">Surname of practitioner</label>
                             <input (blur)="onfocus()" nbInput fullWidth type="text" [readOnly]="isReadOnly"
                                    formControlName="surname"
+                                   #surname
                                    id="input-surname">
                             <div *ngIf="submitted && form.surname.errors" class="invalid-feedback">
                               <div *ngIf="form.surname.errors.required">Surname is required</div>
@@ -104,42 +106,34 @@
                             <owl-date-time  [pickerType]="calendar" #birthdate></owl-date-time>
                             <br/>
 
-                            <div *ngIf="form.passport.value.length == 0">
+<!--                            <div *ngIf="form.passport.value.length == 0">-->
                               <label for="input-idnumber">Identification number</label>
                               <input nbInput fullWidth
                                      (focus)="onfocus()"
-                                     [readOnly]="form.passport.value.length > 0"
                                      type="text"
                                      [maxLength]="13"
                                      (blur)="validateId(form.idnumber.value, 'idnumber')"
                                      formControlName="idnumber" id="input-idnumber">
-                            </div>
+<!--                            </div>-->
 
-                            <div *ngIf="form.idnumber.value.length == 0">
+<!--                            <div *ngIf="form.idnumber.value.length == 0">-->
                               <label for="input-passport">Passport</label>
                               <input nbInput fullWidth
-                                     [readOnly]="form.idnumber.value.length > 0"
                                      (blur)="validateId(form.passport.value, 'passport')"
                                      (focus)="onfocus()"
                                      type="text"
                                      formControlName="passport" id="input-passport">
-                            </div>
+<!--                            </div>-->
 
-                            <label for="input-citizenship">Are you a South African citizen</label>
+                            <label for="input-citizenship">Nationality</label>
                             <br/>
-                            <input nbInput fullWidth readonly type="text"
-                                   class="size-input"
-                                   formControlName="citizenship" id="input-citizenship">
+                            <nb-select fullWidth formControlName="citizenship" id="input-citizenship">
+                              <nb-option [value]="nationality" [disabled]="isReadOnly"
+                                         *ngFor="let nationality of nationalityList ">{{nationality}}</nb-option>
+                            </nb-select>
 
-<!--                            [value]="(form.idnumber.value.length == 0 )?'No':'Yes'"-->
 
-                            <!--                            <nb-select  fullWidth formControlName="citizenship" id="input-citizenship">-->
-<!--                              <nb-option [value]="dis" *ngFor="let dis of disclaimerList"-->
-<!--                                         (blur)="onfocus()"-->
-<!--                                         (selectionChange)="selected($event)">{{dis}}</nb-option>-->
-<!--                            </nb-select>-->
-
-                            <div *ngIf="stats">
+                            <div *ngIf="isAdminUser">
                               <label for="input-southafricancitezen">South African citizen count</label>
                               <input nbInput fullWidth readonly type="text"
                                      class="size-input"
@@ -188,6 +182,16 @@
                             <nb-select fullWidth formControlName="provincename" id="input-provincename">
                               <nb-option [value]="provincename" [disabled]="isReadOnly"
                                          *ngFor="let provincename of provinceNameList ">{{provincename}}</nb-option>
+                            </nb-select>
+
+                            <label for="input-districtname">District</label>
+<!--                            <div *ngIf="submitted && form.districtname.errors" class="invalid-feedback">-->
+<!--                              <div *ngIf="form.districtname.errors.required">District is required</div>-->
+<!--                            </div>-->
+                            <nb-select fullWidth formControlName="disabilitystatus"
+                                       id="input-districtname">
+                              <nb-option [value]="districtname" [disabled]="isReadOnly"
+                                         *ngFor="let districtname of districtnameList ">{{districtname}}</nb-option>
                             </nb-select>
 
                             <label for="input-postalcode">Postal code</label>
@@ -260,7 +264,7 @@
                                          *ngFor="let maritalstatus of maritalStatusList ">{{maritalstatus}}</nb-option>
                             </nb-select>
 
-                            <label for="input-ethnicalstatus">Ethnical status</label>
+                            <label for="input-ethnicalstatus">Race</label>
                             <div *ngIf="submitted && form.ethnicalstatus.errors" class="invalid-feedback">
                               <div *ngIf="form.ethnicalstatus.errors.required">Ethnical Status is required</div>
                             </div>
@@ -270,11 +274,11 @@
                                          *ngFor="let ethnicalstatus of ethnicalStatusList ">{{ethnicalstatus}}</nb-option>
                             </nb-select>
 
-                            <label for="input-disabilitystatus">Disability status</label>
+                            <label for="input-disabilitystatus">Do you have a disability</label>
                             <div *ngIf="submitted && form.disabilitystatus.errors" class="invalid-feedback">
                               <div *ngIf="form.disabilitystatus.errors.required">Disability Status is required</div>
                             </div>
-                            <nb-select fullWidth formControlName="disabilitystatus"
+                            <nb-select fullWidth formControlName="disability"
                                        id="input-disabilitystatus">
                               <nb-option [value]="disabilitystatus" [disabled]="isReadOnly"
                                          *ngFor="let disabilitystatus of disabilityStatusList ">{{disabilitystatus}}</nb-option>
@@ -295,10 +299,10 @@
                           <nb-card-header>Institution details</nb-card-header>
                           <nb-card-body>
 
-                            <label for="input-doyouhavequalification">Do you have a formal qualification</label><br/>
+                            <label for="input-doyouhavequalification">Do you have a qualification</label><br/>
                             <div class="form-control-group accept-group">
 
-                              <nb-radio-group  id="input-doyouhavequalification" (valueChange)="checked(
+                              <nb-radio-group [status]=""  id="input-doyouhavequalification" (valueChange)="checked(
 
                                    ['institutionname'
                                            ,'institutionname'
@@ -310,9 +314,8 @@
                                            ,'universityobtained']
                                            ,$event)">
 
+                              <nb-radio [checked]="!haveQualification" [ngStyle]="{'display': 'inline'}" value="true">
 
-
-                              <nb-radio [ngStyle]="{'display': 'inline'}" value="true">
                                 <div [ngStyle]=" {
                                         'color': '#222b45',
                                         'font-family': 'Open Sans, sans-serif',
@@ -321,7 +324,7 @@
                                         'line-height': '1.25rem'
                                         }">no</div>
                               </nb-radio>
-                              <nb-radio [ngStyle]="{'display': 'inline'}" value="false">
+                              <nb-radio [checked]="haveQualification" [ngStyle]="{'display': 'inline'}" value="false">
                                 <div [ngStyle]=" {
                                         'color': '#222b45',
                                         'font-family': 'Open Sans, sans-serif',
@@ -342,8 +345,7 @@
                             <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
                                    formControlName="institutiontel" id="input-institutiontel">
 
-                            <label for="input-qualificationname">Name of your community development
-                              qualification</label>
+                            <label for="input-qualificationname">Name of your qualifications</label>
                             <div *ngIf="submitted && form.qualificationname.errors" class="invalid-feedback">
                               <div *ngIf="form.qualificationname.errors.required">Qualification Name is required</div>
                             </div>
@@ -352,8 +354,6 @@
                               <nb-option [value]="qualification" [disabled]="isReadOnly"
                                          *ngFor="let qualification of qualificationNameList ">{{qualification}}</nb-option>
                             </nb-select>
-
-
                             <label for="input-yearcompleted">Year of graduation</label>
                             <br/>
                             <input (dateTimeChange)="dateTime($event, 'yearcompleted')" nbInput
@@ -361,8 +361,8 @@
                                    formControlName="yearcompleted" id="input-yearcompleted"
                                    [owlDateTimeTrigger]="yearcompleted">
                             <owl-date-time [pickerType]="'calendar'" #yearcompleted></owl-date-time>
-
                             <br/>
+
 
                             <label for="input-qualificationlevel">Qualification level</label>
                             <div *ngIf="submitted && form.qualificationlevel.errors" class="invalid-feedback">
@@ -374,18 +374,17 @@
                                          *ngFor="let qualificationlevel of qualificationLevelList ">{{qualificationlevel}}</nb-option>
                             </nb-select>
 
-                            <label for="input-durationofcourse">Duration of your course</label>
-                            <div *ngIf="submitted && form.durationofcourse.errors" class="invalid-feedback">
-                              <div *ngIf="form.durationofcourse.errors.required">Duration of course is required</div>
-                            </div>
-                            <nb-select fullWidth formControlName="durationofcourse"
-                                       id="input-durationofcourse">
-                              <nb-option [value]="durationofcourse" [disabled]="isReadOnly"
-                                         *ngFor="let durationofcourse of durationList ">{{durationofcourse}}</nb-option>
-                            </nb-select>
+<!--                            <label for="input-durationofcourse">Duration of your course</label>-->
+<!--                            <div *ngIf="submitted && form.durationofcourse.errors" class="invalid-feedback">-->
+<!--                              <div *ngIf="form.durationofcourse.errors.required">Duration of course is required</div>-->
+<!--                            </div>-->
+<!--                            <nb-select fullWidth formControlName="durationofcourse"-->
+<!--                                       id="input-durationofcourse">-->
+<!--                              <nb-option [value]="durationofcourse" [disabled]="isReadOnly"-->
+<!--                                         *ngFor="let durationofcourse of durationList ">{{durationofcourse}}</nb-option>-->
+<!--                            </nb-select>-->
 
-                            <label for="input-universityobtained">University where your community development
-                              qualification was obtained</label>
+                            <label for="input-universityobtained">University where qualification was obtained</label>
                             <div *ngIf="submitted && form.universityobtained.errors" class="invalid-feedback">
                               <div *ngIf="form.universityobtained.errors.required">Institution obtained is required
                               </div>
@@ -394,7 +393,43 @@
                                        id="input-universityobtained">
                               <nb-option [value]="university" [disabled]="isReadOnly"
                                          *ngFor="let university of universityNamesList">{{university}}</nb-option>
-                            </nb-select>
+                            </nb-select><br/><br/>
+
+
+                            <form [formGroup]="productForm">
+                              <table class="table table-bordered" formArrayName="quantities">
+                                <tr>
+                                  <th colspan="2">  <p [ngStyle]="{'font-weight':'normal','padding':'0', 'margin':'0' }">Add other qualifications</p>
+                                  </th>
+                                  <th width="150px">
+                                    <button nbButton status="info"
+                                            (click)="addQuantity()"
+                                            [disabled]="this.doYouHaveFormalEducation === 'No'"
+                                            type="button"
+                                            [ngStyle]="{
+                                                      'border':'0px',
+                                                      'color':'black',
+                                                      'background-color':'#a3fb5b'
+                                                      }"><div  [ngStyle]="{ 'text-transform':'capitalize'}">A</div><div [ngStyle]="{'text-transform': 'lowercase'}">dd</div>
+                                    </button>
+                                  </th>
+                                </tr>
+                                <tr *ngFor="let quantity of quantities().controls; let i=index" [formGroupName]="i">
+                                  <td>
+                                   <input nbInput fullWidth type="text" formControlName="otherqualificationname">
+                                  </td>
+                                  <td>
+                                    <button (click)="removeQuantity(i)" nbButton status="info" type="button"
+                                            [ngStyle]="{
+                                                      'border':'0px',
+                                                      'color':'black',
+                                                      'background-color':'#a3fb5b'
+                                                      }">R<div [ngStyle]="{'text-transform': 'lowercase'}">emove</div></button>
+                                  </td>
+                                </tr>
+                              </table>
+                            </form>
+
 
                           </nb-card-body>
                         </nb-card>
@@ -500,7 +535,6 @@
                               <nb-option [value]="provincename" [disabled]="isReadOnly"
                                          *ngFor="let provincename of provinceNameList ">{{provincename}}</nb-option>
                             </nb-select>
-
 
                             <label for="input-emppostalcode">Postal code</label>
                             <input nbInput fullWidth type="text" [readOnly]="isReadOnly"
